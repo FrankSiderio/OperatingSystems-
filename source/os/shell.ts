@@ -79,6 +79,9 @@ module TSOS {
                                   "<string> - Sets the prompt.");
             this.commandList[this.commandList.length] = sc;
 
+            //whereami command
+            sc = new ShellCommand(this.shellWhereAmI, "whereami", "<string> - Tells you where you are.");
+            this.commandList[this.commandList.length] = sc;
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
 
@@ -230,10 +233,18 @@ module TSOS {
             _StdOut.resetXY();
         }
 
-        public shellMan(args) {
-            if (args.length > 0) {
+        public shellWhereAmI(args)
+        {
+          _StdOut.putText("You are in front of a computer screen");
+        }
+
+        public shellMan(args)
+        {
+            if (args.length > 0)
+            {
                 var topic = args[0];
-                switch (topic) {
+                switch (topic)
+                {
                     case "help":
                         _StdOut.putText("Help displays a list of (hopefully) valid commands.");
                         break;
@@ -241,9 +252,13 @@ module TSOS {
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
-            } else {
+            }
+
+            else
+            {
                 _StdOut.putText("Usage: man <topic>  Please supply a topic.");
             }
+
         }
 
         public shellTrace(args) {
