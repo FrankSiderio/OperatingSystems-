@@ -80,8 +80,17 @@ module TSOS {
             this.commandList[this.commandList.length] = sc;
 
             //whereami command
-            sc = new ShellCommand(this.shellWhereAmI, "whereami", "<string> - Tells you where you are.");
+            sc = new ShellCommand(this.shellWhereAmI, "whereami", "Tells you where you are.");
             this.commandList[this.commandList.length] = sc;
+
+            //date and time command
+            sc = new ShellCommand(this.shellDateAndTime, "dateandtime", "Displays the current date and time.");
+            this.commandList[this.commandList.length] = sc;
+
+            //joke command
+            sc = new ShellCommand(this.shellJoke, "joke", "Tells a joke");
+            this.commandList[this.commandList.length] = sc;
+
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
 
@@ -238,6 +247,19 @@ module TSOS {
           _StdOut.putText("You are in front of a computer screen");
         }
 
+        public shellDateAndTime(args)
+        {
+          //gets the date and time
+          var displayDateAndTime = new Date().toString();
+
+          _StdOut.putText(displayDateAndTime);
+        }
+
+        public joke(args)
+        {
+          _StdOut.putText("Why did the plane crash?...Because the pilot was a pineapple.")
+        }
+
         public shellMan(args)
         {
             if (args.length > 0)
@@ -249,6 +271,10 @@ module TSOS {
                         _StdOut.putText("Help displays a list of (hopefully) valid commands.");
                         break;
                     // TODO: Make descriptive MANual page entries for the the rest of the shell commands here.
+
+                    case "whereami":
+                      _StdOut.putText("Displays where you are.");
+                      break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }

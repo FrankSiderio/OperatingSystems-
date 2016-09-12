@@ -49,6 +49,12 @@ var TSOS;
             // prompt <string>
             sc = new TSOS.ShellCommand(this.shellPrompt, "prompt", "<string> - Sets the prompt.");
             this.commandList[this.commandList.length] = sc;
+            //whereami command
+            sc = new TSOS.ShellCommand(this.shellWhereAmI, "whereami", "Tells you where you are.");
+            this.commandList[this.commandList.length] = sc;
+            //date and time command
+            sc = new TSOS.ShellCommand(this.shellDateAndTime, "dateandtime", "Displays the current date and time.");
+            this.commandList[this.commandList.length] = sc;
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
             //
@@ -188,6 +194,16 @@ var TSOS;
             _StdOut.clearScreen();
             _StdOut.resetXY();
         };
+        Shell.prototype.shellWhereAmI = function (args) {
+            _StdOut.putText("You are in front of a computer screen");
+        };
+        Shell.prototype.shellDateAndTime = function (args) {
+            //gets the date
+            var displayDate = new Date().toLocaleDateString();
+            //gets the time
+            var displayTime = new Date().toString();
+            _StdOut.putText(displayTime);
+        };
         Shell.prototype.shellMan = function (args) {
             if (args.length > 0) {
                 var topic = args[0];
@@ -196,6 +212,9 @@ var TSOS;
                         _StdOut.putText("Help displays a list of (hopefully) valid commands.");
                         break;
                     // TODO: Make descriptive MANual page entries for the the rest of the shell commands here.
+                    case "whereami":
+                        _StdOut.putText("Displays where you are.");
+                        break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
@@ -247,6 +266,6 @@ var TSOS;
             }
         };
         return Shell;
-    })();
+    }());
     TSOS.Shell = Shell;
 })(TSOS || (TSOS = {}));
