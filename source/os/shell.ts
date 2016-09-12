@@ -255,9 +255,9 @@ module TSOS {
           _StdOut.putText(displayDateAndTime);
         }
 
-        public joke(args)
+        public shellJoke(args)
         {
-          _StdOut.putText("Why did the plane crash?...Because the pilot was a pineapple.")
+          _StdOut.putText("Why did the plane crash?Because the pilot was a pineapple.")
         }
 
         public shellMan(args)

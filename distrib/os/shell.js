@@ -55,6 +55,9 @@ var TSOS;
             //date and time command
             sc = new TSOS.ShellCommand(this.shellDateAndTime, "dateandtime", "Displays the current date and time.");
             this.commandList[this.commandList.length] = sc;
+            //joke command
+            sc = new TSOS.ShellCommand(this.shellJoke, "joke", "Tells a joke");
+            this.commandList[this.commandList.length] = sc;
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
             //
@@ -198,11 +201,12 @@ var TSOS;
             _StdOut.putText("You are in front of a computer screen");
         };
         Shell.prototype.shellDateAndTime = function (args) {
-            //gets the date
-            var displayDate = new Date().toLocaleDateString();
-            //gets the time
-            var displayTime = new Date().toString();
-            _StdOut.putText(displayTime);
+            //gets the date and time
+            var displayDateAndTime = new Date().toString();
+            _StdOut.putText(displayDateAndTime);
+        };
+        Shell.prototype.shellJoke = function (args) {
+            _StdOut.putText("Why did the plane crash?Because the pilot was a pineapple.");
         };
         Shell.prototype.shellMan = function (args) {
             if (args.length > 0) {
