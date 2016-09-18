@@ -58,6 +58,9 @@ var TSOS;
             //joke command
             sc = new TSOS.ShellCommand(this.shellJoke, "joke", "Tells a joke");
             this.commandList[this.commandList.length] = sc;
+            //status command
+            sc = new TSOS.ShellCommand(this.shellStatus, "status", "<string> - Sets the status");
+            this.commandList[this.commandList.length] = sc;
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
             //
@@ -207,6 +210,10 @@ var TSOS;
         };
         Shell.prototype.shellJoke = function (args) {
             _StdOut.putText("Why did the plane crash?Because the pilot was a pineapple.");
+        };
+        Shell.prototype.shellStatus = function (args) {
+            //deleting commas
+            document.getElementById("statusBox2").value = args.length;
         };
         Shell.prototype.shellMan = function (args) {
             if (args.length > 0) {

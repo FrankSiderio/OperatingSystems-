@@ -91,6 +91,10 @@ module TSOS {
             sc = new ShellCommand(this.shellJoke, "joke", "Tells a joke");
             this.commandList[this.commandList.length] = sc;
 
+            //status command
+            sc = new ShellCommand(this.shellStatus, "status", "<string> - Sets the status");
+            this.commandList[this.commandList.length] = sc;
+
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
 
@@ -258,6 +262,13 @@ module TSOS {
         public shellJoke(args)
         {
           _StdOut.putText("Why did the plane crash?Because the pilot was a pineapple.")
+        }
+
+        public shellStatus(args)
+        {
+          //TODO: deleting commas
+
+          (<HTMLInputElement>document.getElementById("statusBox2")).value = args;
         }
 
         public shellMan(args)
