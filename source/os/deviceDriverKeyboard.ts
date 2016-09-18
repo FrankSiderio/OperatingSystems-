@@ -55,6 +55,10 @@ module TSOS {
                 chr = String.fromCharCode(keyCode);
                 _KernelInputQueue.enqueue(chr);
             }
+
+          
         }
+
+
     }
 }

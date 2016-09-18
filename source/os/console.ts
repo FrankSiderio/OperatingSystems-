@@ -38,8 +38,10 @@ module TSOS {
             while (_KernelInputQueue.getSize() > 0) {
                 // Get the next character from the kernel input queue.
                 var chr = _KernelInputQueue.dequeue();
+
                 // Check to see if it's "special" (enter or ctrl-c) or "normal" (anything else that the keyboard device driver gave us).
                 if (chr === String.fromCharCode(13)) { //     Enter key
+
                     // The enter key marks the end of a console command, so ...
                     // ... tell the shell ...
                     _OsShell.handleInput(this.buffer);
@@ -65,27 +67,55 @@ module TSOS {
             //
             // UPDATE: Even though we are now working in TypeScript, char and string remain undistinguished.
             //         Consider fixing that.
-            if (text !== "") {
-                // Draw the text at the current X and Y coordinates.
-                _DrawingContext.drawText(this.currentFont, this.currentFontSize, this.currentXPosition, this.currentYPosition, text);
+            if (text !== "")
+            {
                 // Move the current X position.
                 var offset = _DrawingContext.measureText(this.currentFont, this.currentFontSize, text);
+
+                // Draw the text at the current X and Y coordinates.
+                _DrawingContext.drawText(this.currentFont, this.currentFontSize, this.currentXPosition, this.currentYPosition, text);
                 this.currentXPosition = this.currentXPosition + offset;
+
+
+
             }
          }
 
+
         public advanceLine(): void {
             this.currentXPosition = 0;
+
             /*
              * Font size measures from the baseline to the highest point in the font.
              * Font descent measures from the baseline to the lowest point in the font.
              * Font height margin is extra spacing between the lines.
              */
-            this.currentYPosition += _DefaultFontSize + 
+             //gets line height
+             this.currentYPosition += _DefaultFontSize +
                                      _DrawingContext.fontDescent(this.currentFont, this.currentFontSize) +
-                                     _FontHeightMargin;
+                                    _FontHeightMargin;
+
+
 
             // TODO: Handle scrolling. (iProject 1)
+            //scrolling
+            var canvas = <HTMLCanvasElement> document.getElementById("display");
+            var canvasContext = canvas.getContext("2d");
+
+            if(this.currentYPosition >= canvas.height)
+            {
+              var moveDown = 13 + CanvasTextFunctions.descent(this.currentFont, this.currentFontSize) + 4;
+              var currentCanvas = canvasContext.getImageData(0, moveDown, canvas.width, canvas.height);
+
+              canvasContext.putImageData(currentCanvas, 0, 0);
+              this.currentYPosition = canvas.height - this.currentFontSize;
+            }
+
+
         }
+
+
+
+
     }
  }
