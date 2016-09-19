@@ -61,6 +61,9 @@ var TSOS;
             //status command
             sc = new TSOS.ShellCommand(this.shellStatus, "status", "<string> - Sets the status");
             this.commandList[this.commandList.length] = sc;
+            //load command
+            sc = new TSOS.ShellCommand(this.shellLoad, "load", "loads user code from the text area");
+            this.commandList[this.commandList.length] = sc;
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
             //
@@ -238,6 +241,57 @@ var TSOS;
             _ExecutedCommands.push("status");
             _CountUp = 0;
             _CountDown = 0;
+        };
+        Shell.prototype.shellLoad = function (args) {
+            var input = document.getElementById("taProgramInput").value;
+            var valid = true;
+            //var x = 0;
+            //validate its hex
+            //while(input.length > x)
+            for (var x = 0; input.length > x; x++) {
+                if (input.charAt(x) == "0") {
+                }
+                else if (input.charAt(x) == '1') {
+                }
+                else if (input.charAt(x) == '2') {
+                }
+                else if (input.charAt(x) == '3') {
+                }
+                else if (input.charAt(x) == '4') {
+                }
+                else if (input.charAt(x) == '5') {
+                }
+                else if (input.charAt(x) == '6') {
+                }
+                else if (input.charAt(x) == '7') {
+                }
+                else if (input.charAt(x) == '8') {
+                }
+                else if (input.charAt(x) == '9') {
+                }
+                else if (input.charAt(x).toLocaleUpperCase() == 'A') {
+                }
+                else if (input.charAt(x).toLocaleUpperCase() == 'B') {
+                }
+                else if (input.charAt(x).toLocaleUpperCase() == 'C') {
+                }
+                else if (input.charAt(x).toLocaleUpperCase() == 'D') {
+                }
+                else if (input.charAt(x).toLocaleUpperCase() == 'E') {
+                }
+                else if (input.charAt(x).toLocaleUpperCase() == 'F') {
+                }
+                else if (input.charAt(x).toLocaleUpperCase() == 'G') {
+                }
+                else if (input.charAt(x) == ' ') {
+                }
+                else {
+                    valid = false;
+                }
+            }
+            if (valid == false) {
+                alert("Yes. The infamous alert. That is the punishment you get for having incorrect input. HEX VALUES ONLY!");
+            }
         };
         Shell.prototype.shellMan = function (args) {
             if (args.length > 0) {
