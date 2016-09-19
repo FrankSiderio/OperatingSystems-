@@ -224,6 +224,8 @@ module TSOS {
 
         public shellVer(args) {
             _StdOut.putText(APP_NAME + " version " + APP_VERSION);
+            _ExecutedCommands.push("ver");
+            _CountUp = 0;
         }
 
         public shellHelp(args) {
@@ -232,6 +234,8 @@ module TSOS {
                 _StdOut.advanceLine();
                 _StdOut.putText("  " + _OsShell.commandList[i].command + " " + _OsShell.commandList[i].description);
             }
+            _ExecutedCommands.push("help");
+            _CountUp = 0;
         }
 
         public shellShutdown(args) {
@@ -239,16 +243,24 @@ module TSOS {
              // Call Kernel shutdown routine.
             _Kernel.krnShutdown();
             // TODO: Stop the final prompt from being displayed.  If possible.  Not a high priority.  (Damn OCD!)
+
+            _ExecutedCommands.push("shutdown");
+            _CountUp = 0;
         }
 
         public shellCls(args) {
             _StdOut.clearScreen();
             _StdOut.resetXY();
+
+            _ExecutedCommands.push("cli");
+            _CountUp = 0;
         }
 
         public shellWhereAmI(args)
         {
           _StdOut.putText("You are in front of a computer screen");
+          _ExecutedCommands.push("whereami");
+          _CountUp = 0;
         }
 
         public shellDateAndTime(args)
@@ -257,11 +269,15 @@ module TSOS {
           var displayDateAndTime = new Date().toString();
 
           _StdOut.putText(displayDateAndTime);
+          _ExecutedCommands.push("dateandtime");
+          _CountUp = 0;
         }
 
         public shellJoke(args)
         {
-          _StdOut.putText("Why did the plane crash?Because the pilot was a pineapple.")
+          _StdOut.putText("Why did the plane crash?Because the pilot was a pineapple.");
+          _ExecutedCommands.push("joke");
+          _CountUp = 0;
         }
 
         public shellStatus(args)
@@ -269,7 +285,10 @@ module TSOS {
           //TODO: deleting commas
 
           (<HTMLInputElement>document.getElementById("statusBox2")).value = args;
+          _ExecutedCommands.push("status");
+          _CountUp = 0;
         }
+
 
         public shellMan(args)
         {
@@ -320,6 +339,8 @@ module TSOS {
             } else {
                 _StdOut.putText("Usage: trace <on | off>");
             }
+            _ExecutedCommands.push("trace");
+            _CountUp = 0;
         }
 
         public shellRot13(args) {
@@ -329,6 +350,8 @@ module TSOS {
             } else {
                 _StdOut.putText("Usage: rot13 <string>  Please supply a string.");
             }
+            _ExecutedCommands.push("rot13");
+            _CountUp = 0;
         }
 
         public shellPrompt(args) {
@@ -337,6 +360,8 @@ module TSOS {
             } else {
                 _StdOut.putText("Usage: prompt <string>  Please supply a string.");
             }
+            _ExecutedCommands.push("prompt");
+            _CountUp = 0;
         }
 
     }

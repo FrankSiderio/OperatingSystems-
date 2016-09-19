@@ -182,6 +182,8 @@ var TSOS;
         };
         Shell.prototype.shellVer = function (args) {
             _StdOut.putText(APP_NAME + " version " + APP_VERSION);
+            _ExecutedCommands.push("ver");
+            _CountUp = 0;
         };
         Shell.prototype.shellHelp = function (args) {
             _StdOut.putText("Commands:");
@@ -189,31 +191,45 @@ var TSOS;
                 _StdOut.advanceLine();
                 _StdOut.putText("  " + _OsShell.commandList[i].command + " " + _OsShell.commandList[i].description);
             }
+            _ExecutedCommands.push("help");
+            _CountUp = 0;
         };
         Shell.prototype.shellShutdown = function (args) {
             _StdOut.putText("Shutting down...");
             // Call Kernel shutdown routine.
             _Kernel.krnShutdown();
             // TODO: Stop the final prompt from being displayed.  If possible.  Not a high priority.  (Damn OCD!)
+            _ExecutedCommands.push("shutdown");
+            _CountUp = 0;
         };
         Shell.prototype.shellCls = function (args) {
             _StdOut.clearScreen();
             _StdOut.resetXY();
+            _ExecutedCommands.push("cli");
+            _CountUp = 0;
         };
         Shell.prototype.shellWhereAmI = function (args) {
             _StdOut.putText("You are in front of a computer screen");
+            _ExecutedCommands.push("whereami");
+            _CountUp = 0;
         };
         Shell.prototype.shellDateAndTime = function (args) {
             //gets the date and time
             var displayDateAndTime = new Date().toString();
             _StdOut.putText(displayDateAndTime);
+            _ExecutedCommands.push("dateandtime");
+            _CountUp = 0;
         };
         Shell.prototype.shellJoke = function (args) {
             _StdOut.putText("Why did the plane crash?Because the pilot was a pineapple.");
+            _ExecutedCommands.push("joke");
+            _CountUp = 0;
         };
         Shell.prototype.shellStatus = function (args) {
             //TODO: deleting commas
             document.getElementById("statusBox2").value = args;
+            _ExecutedCommands.push("status");
+            _CountUp = 0;
         };
         Shell.prototype.shellMan = function (args) {
             if (args.length > 0) {

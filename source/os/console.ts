@@ -60,6 +60,8 @@ module TSOS {
             }
         }
 
+
+
         //handles the backspace
         public handleBackspace(): void
         {
@@ -87,6 +89,50 @@ module TSOS {
 
           //Sets the new buffer
           _Console.buffer = newBuffer;
+        }
+
+        //handles the up key
+        public upArrow(): void
+        {
+          //setting to the last executed command
+          var command = _ExecutedCommands[_ExecutedCommands.length - _CountUp];
+
+          if(command == null || command == "")
+          {
+            var command = _ExecutedCommands[_ExecutedCommands.length - 1];
+          }
+
+          //clear the buffer and text
+          this.clearCommandLine();
+
+          //setting the buffer (so the os completes the correct command)
+          _Console.buffer = command;
+          //puts the text on the cli
+          this.putText(command);
+        }
+
+        //handles the down key
+        public downArrow(): void
+        {
+          //setting to the command previous
+          var command = _ExecutedCommands[_ExecutedCommands.length];
+
+          alert(command);
+        }
+
+        //clears the command line
+        private clearCommandLine(): void
+        {
+          var inputString = _Console.buffer;
+          var cursorPosition = _Console.currentXPosition;
+          var newBuffer= "";
+          var length = CanvasTextFunctions.measure(_DefaultFontFamily, _DefaultFontSize, inputString);
+
+          //set the cursor
+          _Console.currentXPosition = cursorPosition - length;
+          _DrawingContext.fillStyle = "#DFDBC3";
+
+          _DrawingContext.fillRect(_Console.currentXPosition, _Console.currentYPosition - _DefaultFontSize - 2, length, _DefaultFontSize + _FontHeightMargin + 4);
         }
 
         public putText(text): void {

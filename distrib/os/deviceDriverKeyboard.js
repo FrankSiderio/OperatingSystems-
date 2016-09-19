@@ -181,6 +181,18 @@ var TSOS;
             else if (keyCode == 8 && isShifted == false) {
                 _StdIn.handleBackspace();
             }
+            else if (keyCode == 38 && isShifted == false) {
+                _CountUp++;
+                _StdIn.upArrow();
+            }
+            else if (keyCode == 40 && isShifted == false) {
+                _CountDown++;
+                _StdIn.downArrow();
+            }
+            else if (keyCode == 9 && isShifted == false) {
+                chr = String.fromCharCode(9);
+                _KernelInputQueue.enqueue(chr);
+            }
             else if (((keyCode >= 48) && (keyCode <= 57)) ||
                 (keyCode == 32) ||
                 (keyCode == 13)) {

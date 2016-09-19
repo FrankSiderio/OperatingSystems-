@@ -65,6 +65,10 @@ var _hardwareClockID: number = null;
 var Glados: any = null;  // This is the function Glados() in glados.js on Labouseur.com.
 var _GLaDOS: any = null; // If the above is linked in, this is the instantiated instance of Glados.
 
+var _ExecutedCommands = new Array<string>();  // Keeps track of all the commands enter
+var _CountUp: number = 0; // Keeps count of up key presses
+var _CountDown: number = 0; // Keeps count of down key presses   
+
 var onDocumentLoad = function() {
 	TSOS.Control.hostInit();
 };

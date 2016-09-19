@@ -73,6 +73,37 @@ var TSOS;
             //Sets the new buffer
             _Console.buffer = newBuffer;
         };
+        //handles the up key
+        Console.prototype.upArrow = function () {
+            //setting to the last executed command
+            var command = _ExecutedCommands[_ExecutedCommands.length - _CountUp];
+            if (command == null || command == "") {
+                var command = _ExecutedCommands[_ExecutedCommands.length - 1];
+            }
+            //clear the buffer and text
+            this.clearCommandLine();
+            //setting the buffer (so the os completes the correct command)
+            _Console.buffer = command;
+            //puts the text on the cli
+            this.putText(command);
+        };
+        //handles the down key
+        Console.prototype.downArrow = function () {
+            //setting to the command previous
+            var command = _ExecutedCommands[_ExecutedCommands.length];
+            alert(command);
+        };
+        //clears the command line
+        Console.prototype.clearCommandLine = function () {
+            var inputString = _Console.buffer;
+            var cursorPosition = _Console.currentXPosition;
+            var newBuffer = "";
+            var length = TSOS.CanvasTextFunctions.measure(_DefaultFontFamily, _DefaultFontSize, inputString);
+            //set the cursor
+            _Console.currentXPosition = cursorPosition - length;
+            _DrawingContext.fillStyle = "#DFDBC3";
+            _DrawingContext.fillRect(_Console.currentXPosition, _Console.currentYPosition - _DefaultFontSize - 2, length, _DefaultFontSize + _FontHeightMargin + 4);
+        };
         Console.prototype.putText = function (text) {
             // My first inclination here was to write two functions: putChar() and putString().
             // Then I remembered that JavaScript is (sadly) untyped and it won't differentiate
