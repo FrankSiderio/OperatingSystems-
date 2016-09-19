@@ -10,9 +10,9 @@
 
 //
 // Global CONSTANTS (TypeScript 1.5 introduced const. Very cool.)
-//
-const APP_NAME: string    = "TSOS";   // 'cause Bob and I were at a loss for a better name.
-const APP_VERSION: string = "0.07";   // What did you expect?
+//																									//This one is better I think
+const APP_NAME: string    = "Frank's Awesome OS";   // 'cause Bob and I were at a loss for a better name.
+const APP_VERSION: string = "0.7";   // What did you expect?...I wanted to keep 007 though
 
 const CPU_CLOCK_INTERVAL: number = 100;   // This is in ms (milliseconds) so 1000 = 1 second.
 
@@ -68,7 +68,7 @@ var _GLaDOS: any = null; // If the above is linked in, this is the instantiated 
 var _ExecutedCommands = new Array<string>();  // Keeps track of all the commands enter
 var _CountUp: number = 0; // Keeps count of up key presses
 var _CountDown: number = 0; // Keeps count of down key presses
-var _ExecutedCommandsPointer: number = 0; // This points to where we are in the executedCommands list where scrolling through with the arrow keys  
+var _ExecutedCommandsPointer: number = 0; // This points to where we are in the executedCommands list where scrolling through with the arrow keys
 
 var onDocumentLoad = function() {
 	TSOS.Control.hostInit();
