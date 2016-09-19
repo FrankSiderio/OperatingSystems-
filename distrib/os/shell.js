@@ -64,6 +64,9 @@ var TSOS;
             //load command
             sc = new TSOS.ShellCommand(this.shellLoad, "load", "loads user code from the text area");
             this.commandList[this.commandList.length] = sc;
+            //bsod
+            sc = new TSOS.ShellCommand(this.shellBsod, "bsod", "blue screen of death");
+            this.commandList[this.commandList.length] = sc;
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
             //
@@ -298,6 +301,9 @@ var TSOS;
             _ExecutedCommands.push("load");
             _CountUp = 0;
             _CountDown = 0;
+        };
+        Shell.prototype.shellBsod = function (args) {
+            _Kernel.krnTrapError("Oh no");
         };
         Shell.prototype.shellMan = function (args) {
             if (args.length > 0) {

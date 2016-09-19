@@ -98,6 +98,11 @@ module TSOS {
             //load command
             sc = new ShellCommand(this.shellLoad, "load", "loads user code from the text area");
             this.commandList[this.commandList.length] = sc;
+
+            //bsod
+            sc = new ShellCommand(this.shellBsod, "bsod", "blue screen of death");
+            this.commandList[this.commandList.length] = sc;
+
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
 
@@ -349,6 +354,11 @@ module TSOS {
           _ExecutedCommands.push("load");
           _CountUp = 0;
           _CountDown = 0;
+        }
+
+        public shellBsod(args)
+        {
+          _Kernel.krnTrapError("Oh no");
         }
 
 

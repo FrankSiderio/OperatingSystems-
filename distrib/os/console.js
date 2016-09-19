@@ -39,6 +39,7 @@ var TSOS;
                 var chr = _KernelInputQueue.dequeue();
                 // Check to see if it's "special" (enter or ctrl-c) or "normal" (anything else that the keyboard device driver gave us).
                 if (chr === String.fromCharCode(13)) {
+                    alert(_Console.buffer);
                     // The enter key marks the end of a console command, so ...
                     // ... tell the shell ...
                     _OsShell.handleInput(this.buffer);
@@ -91,13 +92,19 @@ var TSOS;
         };
         //handles the down key
         Console.prototype.downArrow = function () {
+            //alert(_ExecutedCommandsPointer);
             if (_ExecutedCommandsPointer != 0) {
+                alert("if");
                 //setting to the command previous
                 var command = _ExecutedCommands[_ExecutedCommandsPointer + 1];
                 this.clearCommandLine();
                 _Console.buffer = command;
                 this.putText(command);
                 _ExecutedCommandsPointer = _ExecutedCommandsPointer + 1; //sets the pointer
+            }
+            else {
+                alert("else");
+                this.clearCommandLine();
             }
         };
         //clears the command line
@@ -114,13 +121,11 @@ var TSOS;
         };
         //handles tab for command completion
         Console.prototype.handleTab = function () {
-            //alert("hi");
-            var commands = new Array();
+            //this loop goes through all the commands and compares them to what is on the buffer
             for (var i = 0; i < _OsShell.commandList.length; i++) {
                 if (_OsShell.commandList[i].command.search(_Console.buffer) == 0) {
                     this.clearCommandLine();
                     var c = _OsShell.commandList[i].command;
-                    //_Console.buffer = "";
                     _Console.buffer = c;
                     this.putText(c);
                 }

@@ -41,12 +41,13 @@ module TSOS {
 
                 // Check to see if it's "special" (enter or ctrl-c) or "normal" (anything else that the keyboard device driver gave us).
                 if (chr === String.fromCharCode(13)) { //     Enter key
-
                     // The enter key marks the end of a console command, so ...
                     // ... tell the shell ...
                     _OsShell.handleInput(this.buffer);
                     // ... and reset our buffer.
                     this.buffer = "";
+
+
                 }
 
                 else {
@@ -59,8 +60,6 @@ module TSOS {
                 // TODO: Write a case for Ctrl-C.
             }
         }
-
-
 
         //handles the backspace
         public handleBackspace(): void
@@ -115,14 +114,21 @@ module TSOS {
         //handles the down key
         public downArrow(): void
         {
+          //alert(_ExecutedCommandsPointer);
           if(_ExecutedCommandsPointer != 0)
           {
+            alert("if");
             //setting to the command previous
             var command = _ExecutedCommands[_ExecutedCommandsPointer + 1];
             this.clearCommandLine();
             _Console.buffer = command;
             this.putText(command);
             _ExecutedCommandsPointer = _ExecutedCommandsPointer + 1; //sets the pointer
+          }
+          else
+          {
+            alert("else");
+            this.clearCommandLine();
           }
         }
 
@@ -149,7 +155,7 @@ module TSOS {
           //this loop goes through all the commands and compares them to what is on the buffer
           for(var i = 0; i < _OsShell.commandList.length; i++)
           {
-            if(_OsShell.commandList[i].command.search(_Console.buffer) == 0) //found a match 
+            if(_OsShell.commandList[i].command.search(_Console.buffer) == 0) //found a match
             {
               this.clearCommandLine();
               var c = _OsShell.commandList[i].command;
@@ -157,7 +163,6 @@ module TSOS {
               _Console.buffer = c;
               this.putText(c);
             }
-
           }
         }
 
