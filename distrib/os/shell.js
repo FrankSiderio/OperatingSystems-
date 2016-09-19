@@ -212,8 +212,8 @@ var TSOS;
             _StdOut.putText("Why did the plane crash?Because the pilot was a pineapple.");
         };
         Shell.prototype.shellStatus = function (args) {
-            //deleting commas
-            document.getElementById("statusBox2").value = args.length;
+            //TODO: deleting commas
+            document.getElementById("statusBox2").value = args;
         };
         Shell.prototype.shellMan = function (args) {
             if (args.length > 0) {
