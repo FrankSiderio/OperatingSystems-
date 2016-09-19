@@ -47,7 +47,9 @@ module TSOS {
                     _OsShell.handleInput(this.buffer);
                     // ... and reset our buffer.
                     this.buffer = "";
-                } else {
+                }
+
+                else {
                     // This is a "normal" character, so ...
                     // ... draw it on the screen...
                     this.putText(chr);
@@ -56,6 +58,35 @@ module TSOS {
                 }
                 // TODO: Write a case for Ctrl-C.
             }
+        }
+
+        //handles the backspace
+        public handleBackspace(): void
+        {
+          var inputString = _Console.buffer;
+          var cursorPosition = _Console.currentXPosition;
+          var newBuffer= "";
+          var lastChar = inputString[inputString.length-1];
+
+          for(var i=0; i<inputString.length-1; i++)
+          {
+            newBuffer += inputString[i];
+          }
+
+          if(_Console.buffer.length != 0)
+          {
+
+            //moves the cursor
+            _Console.currentXPosition = cursorPosition - CanvasTextFunctions.measure(_DefaultFontFamily, _DefaultFontSize, lastChar);
+            _DrawingContext.fillStyle = "#DFDBC3";
+
+            //replaces the character
+            _DrawingContext.fillRect(_Console.currentXPosition, _Console.currentYPosition - _DefaultFontSize - 2, CanvasTextFunctions.measure(_DefaultFontFamily, _DefaultFontSize, _Console.buffer.charAt(_Console.buffer.length - 1)), _DefaultFontSize + _FontHeightMargin + 4);
+
+          }
+
+          //Sets the new buffer
+          _Console.buffer = newBuffer;
         }
 
         public putText(text): void {

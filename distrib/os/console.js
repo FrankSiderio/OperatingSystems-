@@ -54,6 +54,25 @@ var TSOS;
                 }
             }
         };
+        //handles the backspace
+        Console.prototype.handleBackspace = function () {
+            var inputString = _Console.buffer;
+            var cursorPosition = _Console.currentXPosition;
+            var newBuffer = "";
+            var lastChar = inputString[inputString.length - 1];
+            for (var i = 0; i < inputString.length - 1; i++) {
+                newBuffer += inputString[i];
+            }
+            if (_Console.buffer.length != 0) {
+                //moves the cursor
+                _Console.currentXPosition = cursorPosition - TSOS.CanvasTextFunctions.measure(_DefaultFontFamily, _DefaultFontSize, lastChar);
+                _DrawingContext.fillStyle = "#DFDBC3";
+                //replaces the character
+                _DrawingContext.fillRect(_Console.currentXPosition, _Console.currentYPosition - _DefaultFontSize - 2, TSOS.CanvasTextFunctions.measure(_DefaultFontFamily, _DefaultFontSize, _Console.buffer.charAt(_Console.buffer.length - 1)), _DefaultFontSize + _FontHeightMargin + 4);
+            }
+            //Sets the new buffer
+            _Console.buffer = newBuffer;
+        };
         Console.prototype.putText = function (text) {
             // My first inclination here was to write two functions: putChar() and putString().
             // Then I remembered that JavaScript is (sadly) untyped and it won't differentiate

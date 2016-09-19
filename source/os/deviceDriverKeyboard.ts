@@ -231,7 +231,11 @@ module TSOS {
               chr = String.fromCharCode(126);
               _KernelInputQueue.enqueue(chr);
             }
-
+            //backspace
+            else if(keyCode == 8 && isShifted == false)
+            {
+              _StdIn.handleBackspace();
+            }
 
             else if (((keyCode >= 48) && (keyCode <= 57)) ||   // digits
                         (keyCode == 32)                     ||   // space

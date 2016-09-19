@@ -178,6 +178,9 @@ var TSOS;
                 chr = String.fromCharCode(126);
                 _KernelInputQueue.enqueue(chr);
             }
+            else if (keyCode == 8 && isShifted == false) {
+                _StdIn.handleBackspace();
+            }
             else if (((keyCode >= 48) && (keyCode <= 57)) ||
                 (keyCode == 32) ||
                 (keyCode == 13)) {
