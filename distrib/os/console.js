@@ -77,6 +77,8 @@ var TSOS;
         Console.prototype.upArrow = function () {
             //setting to the last executed command
             var command = _ExecutedCommands[_ExecutedCommands.length - _CountUp];
+            _ExecutedCommandsPointer = _ExecutedCommands.length - _CountUp; //set the pointer
+            //I dont think I need this
             if (command == null || command == "") {
                 var command = _ExecutedCommands[_ExecutedCommands.length - 1];
             }
@@ -89,9 +91,14 @@ var TSOS;
         };
         //handles the down key
         Console.prototype.downArrow = function () {
-            //setting to the command previous
-            var command = _ExecutedCommands[_ExecutedCommands.length];
-            alert(command);
+            if (_ExecutedCommandsPointer != 0) {
+                //setting to the command previous
+                var command = _ExecutedCommands[_ExecutedCommandsPointer + 1];
+                this.clearCommandLine();
+                _Console.buffer = command;
+                this.putText(command);
+                _ExecutedCommandsPointer = _ExecutedCommandsPointer + 1; //sets the pointer
+            }
         };
         //clears the command line
         Console.prototype.clearCommandLine = function () {

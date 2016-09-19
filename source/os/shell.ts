@@ -226,6 +226,7 @@ module TSOS {
             _StdOut.putText(APP_NAME + " version " + APP_VERSION);
             _ExecutedCommands.push("ver");
             _CountUp = 0;
+            _CountDown = 0;
         }
 
         public shellHelp(args) {
@@ -236,6 +237,7 @@ module TSOS {
             }
             _ExecutedCommands.push("help");
             _CountUp = 0;
+            _CountDown = 0;
         }
 
         public shellShutdown(args) {
@@ -246,6 +248,7 @@ module TSOS {
 
             _ExecutedCommands.push("shutdown");
             _CountUp = 0;
+            _CountDown = 0;
         }
 
         public shellCls(args) {
@@ -254,6 +257,7 @@ module TSOS {
 
             _ExecutedCommands.push("cli");
             _CountUp = 0;
+            _CountDown = 0;
         }
 
         public shellWhereAmI(args)
@@ -261,6 +265,7 @@ module TSOS {
           _StdOut.putText("You are in front of a computer screen");
           _ExecutedCommands.push("whereami");
           _CountUp = 0;
+          _CountDown = 0;
         }
 
         public shellDateAndTime(args)
@@ -271,6 +276,7 @@ module TSOS {
           _StdOut.putText(displayDateAndTime);
           _ExecutedCommands.push("dateandtime");
           _CountUp = 0;
+          _CountDown = 0;
         }
 
         public shellJoke(args)
@@ -278,6 +284,7 @@ module TSOS {
           _StdOut.putText("Why did the plane crash?Because the pilot was a pineapple.");
           _ExecutedCommands.push("joke");
           _CountUp = 0;
+          _CountDown = 0;
         }
 
         public shellStatus(args)
@@ -287,6 +294,7 @@ module TSOS {
           (<HTMLInputElement>document.getElementById("statusBox2")).value = args;
           _ExecutedCommands.push("status");
           _CountUp = 0;
+          _CountDown = 0;
         }
 
 
@@ -341,6 +349,7 @@ module TSOS {
             }
             _ExecutedCommands.push("trace");
             _CountUp = 0;
+            _CountDown = 0;
         }
 
         public shellRot13(args) {
@@ -352,6 +361,7 @@ module TSOS {
             }
             _ExecutedCommands.push("rot13");
             _CountUp = 0;
+            _CountDown = 0;
         }
 
         public shellPrompt(args) {
@@ -362,7 +372,14 @@ module TSOS {
             }
             _ExecutedCommands.push("prompt");
             _CountUp = 0;
+            _CountDown = 0;
         }
-
+        //clears the counts (this is better than executing these two lines every time a command is completed plus I am lazy)
+        //this screwed everything up so I'll try to use it later
+        public clearCounts(): void
+        {
+          _CountUp = 0;
+          _CountDown = 0;
+        }
     }
 }
