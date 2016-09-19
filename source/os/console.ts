@@ -139,6 +139,26 @@ module TSOS {
           _DrawingContext.fillStyle = "#DFDBC3";
 
           _DrawingContext.fillRect(_Console.currentXPosition, _Console.currentYPosition - _DefaultFontSize - 2, length, _DefaultFontSize + _FontHeightMargin + 4);
+
+          _Console.buffer = newBuffer;
+        }
+
+        //handles tab for command completion
+        public handleTab(): void
+        {
+          //this loop goes through all the commands and compares them to what is on the buffer
+          for(var i = 0; i < _OsShell.commandList.length; i++)
+          {
+            if(_OsShell.commandList[i].command.search(_Console.buffer) == 0) //found a match 
+            {
+              this.clearCommandLine();
+              var c = _OsShell.commandList[i].command;
+
+              _Console.buffer = c;
+              this.putText(c);
+            }
+
+          }
         }
 
         public putText(text): void {

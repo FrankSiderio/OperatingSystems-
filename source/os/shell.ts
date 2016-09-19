@@ -292,9 +292,16 @@ module TSOS {
 
         public shellStatus(args)
         {
-          //TODO: deleting commas
+          var status = "";
 
-          (<HTMLInputElement>document.getElementById("statusBox2")).value = args;
+          //makes it look nice (deletes commas)
+          for(var x = 0; x < args.length; x++)
+          {
+            status += args[x] + " ";
+          }
+
+          (<HTMLInputElement>document.getElementById("statusBox2")).value = status;
+
           _ExecutedCommands.push("status");
           _CountUp = 0;
           _CountDown = 0;
@@ -338,8 +345,8 @@ module TSOS {
           {
             alert("Yes. The infamous alert. That is the punishment you get for having incorrect input. HEX VALUES ONLY!");
           }
-          
-          _ExecutedCommands.push("trace");
+
+          _ExecutedCommands.push("load");
           _CountUp = 0;
           _CountDown = 0;
         }

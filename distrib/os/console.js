@@ -110,6 +110,21 @@ var TSOS;
             _Console.currentXPosition = cursorPosition - length;
             _DrawingContext.fillStyle = "#DFDBC3";
             _DrawingContext.fillRect(_Console.currentXPosition, _Console.currentYPosition - _DefaultFontSize - 2, length, _DefaultFontSize + _FontHeightMargin + 4);
+            _Console.buffer = newBuffer;
+        };
+        //handles tab for command completion
+        Console.prototype.handleTab = function () {
+            //alert("hi");
+            var commands = new Array();
+            for (var i = 0; i < _OsShell.commandList.length; i++) {
+                if (_OsShell.commandList[i].command.search(_Console.buffer) == 0) {
+                    this.clearCommandLine();
+                    var c = _OsShell.commandList[i].command;
+                    //_Console.buffer = "";
+                    _Console.buffer = c;
+                    this.putText(c);
+                }
+            }
         };
         Console.prototype.putText = function (text) {
             // My first inclination here was to write two functions: putChar() and putString().

@@ -236,8 +236,12 @@ var TSOS;
             _CountDown = 0;
         };
         Shell.prototype.shellStatus = function (args) {
-            //TODO: deleting commas
-            document.getElementById("statusBox2").value = args;
+            var status = "";
+            //makes it look nice (deletes commas)
+            for (var x = 0; x < args.length; x++) {
+                status += args[x] + " ";
+            }
+            document.getElementById("statusBox2").value = status;
             _ExecutedCommands.push("status");
             _CountUp = 0;
             _CountDown = 0;
@@ -245,9 +249,7 @@ var TSOS;
         Shell.prototype.shellLoad = function (args) {
             var input = document.getElementById("taProgramInput").value;
             var valid = true;
-            //var x = 0;
             //validate its hex
-            //while(input.length > x)
             for (var x = 0; input.length > x; x++) {
                 if (input.charAt(x) == "0") {
                 }
@@ -289,9 +291,13 @@ var TSOS;
                     valid = false;
                 }
             }
+            //You don't want this to happen to you
             if (valid == false) {
                 alert("Yes. The infamous alert. That is the punishment you get for having incorrect input. HEX VALUES ONLY!");
             }
+            _ExecutedCommands.push("load");
+            _CountUp = 0;
+            _CountDown = 0;
         };
         Shell.prototype.shellMan = function (args) {
             if (args.length > 0) {

@@ -190,8 +190,9 @@ var TSOS;
                 _StdIn.downArrow();
             }
             else if (keyCode == 9 && isShifted == false) {
-                chr = String.fromCharCode(9);
-                _KernelInputQueue.enqueue(chr);
+                //chr = String.fromCharCode(9);
+                //_KernelInputQueue.enqueue(chr);
+                _StdIn.handleTab();
             }
             else if (((keyCode >= 48) && (keyCode <= 57)) ||
                 (keyCode == 32) ||
