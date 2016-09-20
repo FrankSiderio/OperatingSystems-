@@ -14,6 +14,7 @@
    ------------ */
 
 // TODO: Write a base class / prototype for system services and let Shell inherit from it.
+// TODO: Enable more sarcasm so it's more fun for Alan to read
 
 module TSOS {
     export class Shell {
@@ -348,7 +349,21 @@ module TSOS {
           //You don't want this to happen to you
           if(valid == false)
           {
-            alert("Yes. The infamous alert. That is the punishment you get for having incorrect input. HEX VALUES ONLY!");
+            //Use this for torture later
+            //alert("Yes. The infamous alert. That is the punishment you get for having incorrect input. HEX VALUES ONLY!");
+            _StdOut.putText("Invalid code entered. Please try again");
+            //console.log(inputString);
+          }
+          else
+          {
+            if(input != "")
+            {
+              _StdOut.putText("Valid code. Congrats!");
+            }
+            else
+            {
+              _StdOut.putText("Hmm...seems like you have nothing there");
+            }
           }
 
           _ExecutedCommands.push("load");
@@ -367,6 +382,7 @@ module TSOS {
             if (args.length > 0)
             {
                 var topic = args[0];
+                // TODO: Have some fun with this with sarcastic mode set to true
                 switch (topic)
                 {
                     case "help":
@@ -375,8 +391,57 @@ module TSOS {
                     // TODO: Make descriptive MANual page entries for the the rest of the shell commands here.
 
                     case "whereami":
-                      _StdOut.putText("Displays where you are.");
+                      _StdOut.putText("Displays where you are. Kind of funny");
                       break;
+
+                    case "ver":
+                      _StdOut.putText("Displays the version of the operating system(which is awesome)");
+                      break;
+
+                    case "shutdown":
+                      _StdOut.putText("Shuts down the os.");
+                      break;
+
+                    case "cls":
+                      _StdOut.putText("Clears the screen completely and resets the position");
+                      break;
+
+                    case "man":
+                      _StdOut.putText("Gives a description for the given topic");
+                      break;
+
+                    case "trace":
+                      _StdOut.putText("Can enable or disable os trace. Example: trace on");
+                      break;
+
+                    case "rot13":
+                      _StdOut.putText("Does rot13 obfuscation on a given string");
+                      break;
+
+                    case "prompt":
+                      _StdOut.putText("Sets the prompt with a given string");
+                      break;
+
+                    case "dateandtime":
+                      _StdOut.putText("Hopefully displays the right date.");
+                      break;
+
+                    case "joke":
+                      _StdOut.putText("Best command in the os. Tells a funny joke");
+                      break;
+
+                    case "status":
+                      _StdOut.putText("Sets a status at the top bar. Example: status I love os!");
+                      break;
+
+                    case "load":
+                      _StdOut.putText("Loads code from the user program input box. Hex only.");
+                      break;
+
+                    case "bsod":
+                      _StdOut.putText("Blue screen of death yay!");
+                      break;
+
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
@@ -386,7 +451,9 @@ module TSOS {
             {
                 _StdOut.putText("Usage: man <topic>  Please supply a topic.");
             }
-
+            _ExecutedCommands.push("man");
+            _CountUp = 0;
+            _CountDown = 0;
         }
 
         public shellTrace(args) {

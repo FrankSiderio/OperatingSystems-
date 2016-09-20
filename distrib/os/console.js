@@ -39,7 +39,7 @@ var TSOS;
                 var chr = _KernelInputQueue.dequeue();
                 // Check to see if it's "special" (enter or ctrl-c) or "normal" (anything else that the keyboard device driver gave us).
                 if (chr === String.fromCharCode(13)) {
-                    alert(_Console.buffer);
+                    //console.log(_Console.buffer);
                     // The enter key marks the end of a console command, so ...
                     // ... tell the shell ...
                     _OsShell.handleInput(this.buffer);
@@ -79,6 +79,7 @@ var TSOS;
             //setting to the last executed command
             var command = _ExecutedCommands[_ExecutedCommands.length - _CountUp];
             _ExecutedCommandsPointer = _ExecutedCommands.length - _CountUp; //set the pointer
+            //alert(_ExecutedCommandsPointer);
             //I dont think I need this
             if (command == null || command == "") {
                 var command = _ExecutedCommands[_ExecutedCommands.length - 1];
@@ -93,8 +94,7 @@ var TSOS;
         //handles the down key
         Console.prototype.downArrow = function () {
             //alert(_ExecutedCommandsPointer);
-            if (_ExecutedCommandsPointer != 0) {
-                alert("if");
+            if (_ExecutedCommandsPointer != null) {
                 //setting to the command previous
                 var command = _ExecutedCommands[_ExecutedCommandsPointer + 1];
                 this.clearCommandLine();
@@ -102,10 +102,10 @@ var TSOS;
                 this.putText(command);
                 _ExecutedCommandsPointer = _ExecutedCommandsPointer + 1; //sets the pointer
             }
-            else {
-                alert("else");
-                this.clearCommandLine();
-            }
+            //else if(_ExecutedCommandsPointer == 0 && _ExecutedCommands == null)
+            //{
+            //this.clearCommandLine();
+            //}
         };
         //clears the command line
         Console.prototype.clearCommandLine = function () {
