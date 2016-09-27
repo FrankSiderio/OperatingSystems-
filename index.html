@@ -31,7 +31,7 @@
    <!-- Other Routines -->
    <script type="text/javascript" src="distrib/utils.js"></script>
    <!-- Uncomment this line below to enable GLaDOS testing -->
-   <script type="text/javascript" src="http://www.labouseur.com/courses/os/projects/glados.js"></script>
+   <!-- <script type="text/javascript" src="http://www.labouseur.com/courses/os/projects/glados.js"></script> -->
 </head>
 
 <body onload="onDocumentLoad()">
@@ -102,7 +102,13 @@
                    cols="48"
          ></textarea>
       </label>
-   </div>
+    </div>
+   <!-- Memory -->
+   <label class = "table" id="cpuMemory"> Memory </label>
+           <div style = "overflow-y: scroll; background: white; height: 250px; width: 400px">
+               <table class = "table" id = "memoryTable" style="font-family: Arial; font-size: larger">
+               </table>
+           </div>
 
    <div id="divUserProgramInput" style="margin-left:520px;">
       <label>

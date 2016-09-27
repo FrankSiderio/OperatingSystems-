@@ -69,6 +69,8 @@ var _ExecutedCommands = new Array<string>();  // Keeps track of all the commands
 var _CountUp: number = 0; // Keeps count of up key presses
 var _CountDown: number = 0; // Keeps count of down key presses
 var _ExecutedCommandsPointer: number = null; // This points to where we are in the executedCommands list where scrolling through with the arrow keys
+var _MemoryTable: any = null; // Memory table
+var _PID: number = 0; // pid
 
 var onDocumentLoad = function() {
 	TSOS.Control.hostInit();

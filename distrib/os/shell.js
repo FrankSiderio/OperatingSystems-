@@ -304,6 +304,11 @@ var TSOS;
             else {
                 if (input != "") {
                     _StdOut.putText("Valid code. Congrats!");
+                    _PID++;
+                    _StdOut.putText("PID " + _PID);
+                    var newInput = input.replace(/\n/g, " ").split(" ");
+                    //alert(newInput);
+                    _CPU.loadOpCode(newInput);
                 }
                 else {
                     _StdOut.putText("Hmm...seems like you have nothing there");

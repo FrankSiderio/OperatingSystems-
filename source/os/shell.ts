@@ -359,6 +359,11 @@ module TSOS {
             if(input != "")
             {
               _StdOut.putText("Valid code. Congrats!");
+              _StdOut.putText("PID " + _PID);
+              _PID++; //so next time a program input is loaded it is the correct pid
+              var newInput = input.replace(/\n/g, " " ).split( " " );
+              //alert(newInput);
+              _CPU.loadOpCode(newInput);
             }
             else
             {
