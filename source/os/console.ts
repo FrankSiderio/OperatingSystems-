@@ -48,7 +48,6 @@ module TSOS {
                     // ... and reset our buffer.
                     this.buffer = "";
 
-
                 }
 
                 else {
@@ -57,6 +56,25 @@ module TSOS {
                     this.putText(chr);
                     // ... and add it to our buffer.
                     this.buffer += chr;
+                    //var bufferLength = _Console.buffer.length;
+
+                    //line wrap
+                    var canvas = <HTMLCanvasElement> document.getElementById("display");
+                    var currentLength = CanvasTextFunctions.measure(_DefaultFontFamily, _DefaultFontSize, _Console.buffer);
+                    //console.log(currentLength);
+                    //console.log(canvas.width);
+
+                    //if the buffer is as long as the canvas width 
+                    if(currentLength >= canvas.width - 20)
+                    {
+                      //advancing the line, setting the length back to 0 and resetting the buffer
+                      this.advanceLine();
+                      currentLength = 0;
+                      console.log(currentLength);
+                      _Console.buffer = "";
+                    }
+
+
                 }
                 // TODO: Write a case for Ctrl-C.
             }

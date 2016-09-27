@@ -52,6 +52,20 @@ var TSOS;
                     this.putText(chr);
                     // ... and add it to our buffer.
                     this.buffer += chr;
+                    //var bufferLength = _Console.buffer.length;
+                    //line wrap
+                    var canvas = document.getElementById("display");
+                    var currentLength = TSOS.CanvasTextFunctions.measure(_DefaultFontFamily, _DefaultFontSize, _Console.buffer);
+                    //console.log(currentLength);
+                    //console.log(canvas.width);
+                    //if the buffer is as long as the canvas width 
+                    if (currentLength >= canvas.width - 20) {
+                        //advancing the line, setting the length back to 0 and resetting the buffer
+                        this.advanceLine();
+                        currentLength = 0;
+                        console.log(currentLength);
+                        _Console.buffer = "";
+                    }
                 }
             }
         };

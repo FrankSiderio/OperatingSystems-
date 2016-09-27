@@ -116,11 +116,21 @@ var TSOS;
                     var tr = document.createElement("tr");
                     _MemoryTable.appendChild(tr);
                 }
-                for (var j = 0; j < 8; j++) {
-                    var td = document.createElement("td");
-                    td.innerHTML = "00";
+                for (var j = 0; j < 9; j++) {
+                    if (j == 0) {
+                        var td = document.createElement("td");
+                        td.innerHTML = "0x";
+                    }
+                    else {
+                        var td = document.createElement("td");
+                        td.innerHTML = "00";
+                    }
                     tr.appendChild(td);
                 }
+                //add the line
+                var s = document.createElement("s");
+                s.innerHTML = "<br>";
+                _MemoryTable.appendChild(s);
             }
         };
         return Control;

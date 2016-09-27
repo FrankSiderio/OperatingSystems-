@@ -144,27 +144,26 @@ module TSOS {
                 var tr = document.createElement("tr");
                 _MemoryTable.appendChild(tr);
             }
-            for(var j = 0; j < 8; j++)
+            for(var j = 0; j < 9; j++)
             {
-
-              var td = document.createElement("td");
-
-
-              td.innerHTML = "00";
-
-
-          
-
-              tr.appendChild(td);
+              if(j == 0)
+              {
+                var td = document.createElement("td");
+                td.innerHTML = "0x";
+                //td.innerHTML += "00" + i.toString();
+              }
+              else
+              {
+                var td = document.createElement("td");
+                td.innerHTML = "00";
+              }
+                tr.appendChild(td);
             }
-            /*
-            if(i == 8 || i == 16)
-            {
-              var s = document.createElement("s");
-              s.innerHTML = "----------------"
-              memoryTable.appendChild(s);
-            }
-            */
+
+            //add the line
+            var s = document.createElement("s");
+            s.innerHTML = "<br>";
+            _MemoryTable.appendChild(s);
 
           }
         }

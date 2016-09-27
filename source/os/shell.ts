@@ -104,6 +104,10 @@ module TSOS {
             sc = new ShellCommand(this.shellBsod, "bsod", "blue screen of death");
             this.commandList[this.commandList.length] = sc;
 
+            //run
+            sc = new ShellCommand(this.shellRun, "run", "run <pid> runs the specified program");
+            this.commandList[this.commandList.length] = sc;
+
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
 
@@ -234,8 +238,7 @@ module TSOS {
         public shellVer(args) {
             _StdOut.putText(APP_NAME + " version " + APP_VERSION);
             _ExecutedCommands.push("ver");
-            _CountUp = 0;
-            _CountDown = 0;
+            Shell.clearCounts();    
         }
 
         public shellHelp(args) {
@@ -245,8 +248,7 @@ module TSOS {
                 _StdOut.putText("  " + _OsShell.commandList[i].command + " " + _OsShell.commandList[i].description);
             }
             _ExecutedCommands.push("help");
-            _CountUp = 0;
-            _CountDown = 0;
+            Shell.clearCounts();
         }
 
         public shellShutdown(args) {
@@ -256,8 +258,7 @@ module TSOS {
             // TODO: Stop the final prompt from being displayed.  If possible.  Not a high priority.  (Damn OCD!)
 
             _ExecutedCommands.push("shutdown");
-            _CountUp = 0;
-            _CountDown = 0;
+            Shell.clearCounts();
         }
 
         public shellCls(args) {
@@ -265,16 +266,14 @@ module TSOS {
             _StdOut.resetXY();
 
             _ExecutedCommands.push("cli");
-            _CountUp = 0;
-            _CountDown = 0;
+            Shell.clearCounts();
         }
 
         public shellWhereAmI(args)
         {
           _StdOut.putText("You are in front of a computer screen");
           _ExecutedCommands.push("whereami");
-          _CountUp = 0;
-          _CountDown = 0;
+          Shell.clearCounts();
         }
 
         public shellDateAndTime(args)
@@ -284,16 +283,14 @@ module TSOS {
 
           _StdOut.putText(displayDateAndTime);
           _ExecutedCommands.push("dateandtime");
-          _CountUp = 0;
-          _CountDown = 0;
+          Shell.clearCounts();
         }
 
         public shellJoke(args)
         {
           _StdOut.putText("Why did the plane crash?Because the pilot was a pineapple.");
           _ExecutedCommands.push("joke");
-          _CountUp = 0;
-          _CountDown = 0;
+          Shell.clearCounts();
         }
 
         public shellStatus(args)
@@ -309,8 +306,7 @@ module TSOS {
           (<HTMLInputElement>document.getElementById("statusBox2")).value = status;
 
           _ExecutedCommands.push("status");
-          _CountUp = 0;
-          _CountDown = 0;
+          Shell.clearCounts();
         }
 
         public shellLoad(args)
@@ -372,13 +368,18 @@ module TSOS {
           }
 
           _ExecutedCommands.push("load");
-          _CountUp = 0;
-          _CountDown = 0;
+          Shell.clearCounts();
         }
 
         public shellBsod(args)
         {
           _Kernel.krnTrapError("Oh no");
+        }
+
+        public shellRun(args)
+        {
+          _ExecutedCommands.push("run");
+          Shell.clearCounts();
         }
 
 
@@ -457,8 +458,7 @@ module TSOS {
                 _StdOut.putText("Usage: man <topic>  Please supply a topic.");
             }
             _ExecutedCommands.push("man");
-            _CountUp = 0;
-            _CountDown = 0;
+            Shell.clearCounts();
         }
 
         public shellTrace(args) {
@@ -484,8 +484,7 @@ module TSOS {
                 _StdOut.putText("Usage: trace <on | off>");
             }
             _ExecutedCommands.push("trace");
-            _CountUp = 0;
-            _CountDown = 0;
+            Shell.clearCounts();
         }
 
         public shellRot13(args) {
@@ -496,8 +495,7 @@ module TSOS {
                 _StdOut.putText("Usage: rot13 <string>  Please supply a string.");
             }
             _ExecutedCommands.push("rot13");
-            _CountUp = 0;
-            _CountDown = 0;
+            Shell.clearCounts();
         }
 
         public shellPrompt(args) {
@@ -507,12 +505,11 @@ module TSOS {
                 _StdOut.putText("Usage: prompt <string>  Please supply a string.");
             }
             _ExecutedCommands.push("prompt");
-            _CountUp = 0;
-            _CountDown = 0;
+            Shell.clearCounts();
         }
         //clears the counts (this is better than executing these two lines every time a command is completed plus I am lazy)
         //this screwed everything up so I'll try to use it later
-        public clearCounts(): void
+        public static clearCounts(): void
         {
           _CountUp = 0;
           _CountDown = 0;

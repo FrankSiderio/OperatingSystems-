@@ -68,6 +68,9 @@ var TSOS;
             //bsod
             sc = new TSOS.ShellCommand(this.shellBsod, "bsod", "blue screen of death");
             this.commandList[this.commandList.length] = sc;
+            //run
+            sc = new TSOS.ShellCommand(this.shellRun, "run", "run <pid> runs the specified program");
+            this.commandList[this.commandList.length] = sc;
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
             //
@@ -190,8 +193,7 @@ var TSOS;
         Shell.prototype.shellVer = function (args) {
             _StdOut.putText(APP_NAME + " version " + APP_VERSION);
             _ExecutedCommands.push("ver");
-            _CountUp = 0;
-            _CountDown = 0;
+            Shell.clearCounts();
         };
         Shell.prototype.shellHelp = function (args) {
             _StdOut.putText("Commands:");
@@ -200,8 +202,7 @@ var TSOS;
                 _StdOut.putText("  " + _OsShell.commandList[i].command + " " + _OsShell.commandList[i].description);
             }
             _ExecutedCommands.push("help");
-            _CountUp = 0;
-            _CountDown = 0;
+            Shell.clearCounts();
         };
         Shell.prototype.shellShutdown = function (args) {
             _StdOut.putText("Shutting down...");
@@ -209,35 +210,30 @@ var TSOS;
             _Kernel.krnShutdown();
             // TODO: Stop the final prompt from being displayed.  If possible.  Not a high priority.  (Damn OCD!)
             _ExecutedCommands.push("shutdown");
-            _CountUp = 0;
-            _CountDown = 0;
+            Shell.clearCounts();
         };
         Shell.prototype.shellCls = function (args) {
             _StdOut.clearScreen();
             _StdOut.resetXY();
             _ExecutedCommands.push("cli");
-            _CountUp = 0;
-            _CountDown = 0;
+            Shell.clearCounts();
         };
         Shell.prototype.shellWhereAmI = function (args) {
             _StdOut.putText("You are in front of a computer screen");
             _ExecutedCommands.push("whereami");
-            _CountUp = 0;
-            _CountDown = 0;
+            Shell.clearCounts();
         };
         Shell.prototype.shellDateAndTime = function (args) {
             //gets the date and time
             var displayDateAndTime = new Date().toString();
             _StdOut.putText(displayDateAndTime);
             _ExecutedCommands.push("dateandtime");
-            _CountUp = 0;
-            _CountDown = 0;
+            Shell.clearCounts();
         };
         Shell.prototype.shellJoke = function (args) {
             _StdOut.putText("Why did the plane crash?Because the pilot was a pineapple.");
             _ExecutedCommands.push("joke");
-            _CountUp = 0;
-            _CountDown = 0;
+            Shell.clearCounts();
         };
         Shell.prototype.shellStatus = function (args) {
             var status = "";
@@ -247,8 +243,7 @@ var TSOS;
             }
             document.getElementById("statusBox2").value = status;
             _ExecutedCommands.push("status");
-            _CountUp = 0;
-            _CountDown = 0;
+            Shell.clearCounts();
         };
         Shell.prototype.shellLoad = function (args) {
             var input = document.getElementById("taProgramInput").value;
@@ -304,8 +299,8 @@ var TSOS;
             else {
                 if (input != "") {
                     _StdOut.putText("Valid code. Congrats!");
-                    _PID++;
                     _StdOut.putText("PID " + _PID);
+                    _PID++; //so next time a program input is loaded it is the correct pid
                     var newInput = input.replace(/\n/g, " ").split(" ");
                     //alert(newInput);
                     _CPU.loadOpCode(newInput);
@@ -315,11 +310,14 @@ var TSOS;
                 }
             }
             _ExecutedCommands.push("load");
-            _CountUp = 0;
-            _CountDown = 0;
+            Shell.clearCounts();
         };
         Shell.prototype.shellBsod = function (args) {
             _Kernel.krnTrapError("Oh no");
+        };
+        Shell.prototype.shellRun = function (args) {
+            _ExecutedCommands.push("run");
+            Shell.clearCounts();
         };
         Shell.prototype.shellMan = function (args) {
             if (args.length > 0) {
@@ -377,8 +375,7 @@ var TSOS;
                 _StdOut.putText("Usage: man <topic>  Please supply a topic.");
             }
             _ExecutedCommands.push("man");
-            _CountUp = 0;
-            _CountDown = 0;
+            Shell.clearCounts();
         };
         Shell.prototype.shellTrace = function (args) {
             if (args.length > 0) {
@@ -405,8 +402,7 @@ var TSOS;
                 _StdOut.putText("Usage: trace <on | off>");
             }
             _ExecutedCommands.push("trace");
-            _CountUp = 0;
-            _CountDown = 0;
+            Shell.clearCounts();
         };
         Shell.prototype.shellRot13 = function (args) {
             if (args.length > 0) {
@@ -417,8 +413,7 @@ var TSOS;
                 _StdOut.putText("Usage: rot13 <string>  Please supply a string.");
             }
             _ExecutedCommands.push("rot13");
-            _CountUp = 0;
-            _CountDown = 0;
+            Shell.clearCounts();
         };
         Shell.prototype.shellPrompt = function (args) {
             if (args.length > 0) {
@@ -428,12 +423,11 @@ var TSOS;
                 _StdOut.putText("Usage: prompt <string>  Please supply a string.");
             }
             _ExecutedCommands.push("prompt");
-            _CountUp = 0;
-            _CountDown = 0;
+            Shell.clearCounts();
         };
         //clears the counts (this is better than executing these two lines every time a command is completed plus I am lazy)
         //this screwed everything up so I'll try to use it later
-        Shell.prototype.clearCounts = function () {
+        Shell.clearCounts = function () {
             _CountUp = 0;
             _CountDown = 0;
         };
