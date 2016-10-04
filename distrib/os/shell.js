@@ -54,7 +54,7 @@ var TSOS;
             sc = new TSOS.ShellCommand(this.shellWhereAmI, "whereami", "Tells you where you are.");
             this.commandList[this.commandList.length] = sc;
             //date and time command
-            sc = new TSOS.ShellCommand(this.shellDateAndTime, "dateandtime", "Displays the current date and time.");
+            sc = new TSOS.ShellCommand(this.shellDate, "date", "Displays the current date and time.");
             this.commandList[this.commandList.length] = sc;
             //joke command
             sc = new TSOS.ShellCommand(this.shellJoke, "joke", "Tells a joke");
@@ -223,7 +223,7 @@ var TSOS;
             _ExecutedCommands.push("whereami");
             Shell.clearCounts();
         };
-        Shell.prototype.shellDateAndTime = function (args) {
+        Shell.prototype.shellDate = function (args) {
             //gets the date and time
             var displayDateAndTime = new Date().toString();
             _StdOut.putText(displayDateAndTime);

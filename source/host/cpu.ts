@@ -57,8 +57,10 @@ module TSOS {
             {
               case "A9":
                 //load the accumulator with a constant
-                //this.PC = this.PC + 1;
-                Control.updateMemoryTable(opCode[i]);
+                //alert(opCode[i + 1]);
+                Control.updateMemoryTable(i, opCode[i]);
+                Control.updateMemoryTable(i + 1, opCode[i + 1]);
+
               break;
 
               case "AD":
@@ -111,7 +113,7 @@ module TSOS {
 
               case "FF":
                 //System call
-              default: alert("default");
+              //default: alert("default");
           }
           i++;
         }

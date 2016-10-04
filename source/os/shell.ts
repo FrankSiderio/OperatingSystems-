@@ -85,7 +85,7 @@ module TSOS {
             this.commandList[this.commandList.length] = sc;
 
             //date and time command
-            sc = new ShellCommand(this.shellDateAndTime, "dateandtime", "Displays the current date and time.");
+            sc = new ShellCommand(this.shellDate, "date", "Displays the current date and time.");
             this.commandList[this.commandList.length] = sc;
 
             //joke command
@@ -238,7 +238,7 @@ module TSOS {
         public shellVer(args) {
             _StdOut.putText(APP_NAME + " version " + APP_VERSION);
             _ExecutedCommands.push("ver");
-            Shell.clearCounts();    
+            Shell.clearCounts();
         }
 
         public shellHelp(args) {
@@ -276,7 +276,7 @@ module TSOS {
           Shell.clearCounts();
         }
 
-        public shellDateAndTime(args)
+        public shellDate(args)
         {
           //gets the date and time
           var displayDateAndTime = new Date().toString();

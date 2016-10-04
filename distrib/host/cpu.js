@@ -51,8 +51,9 @@ var TSOS;
                 switch (opCode[i]) {
                     case "A9":
                         //load the accumulator with a constant
-                        //this.PC = this.PC + 1;
-                        TSOS.Control.updateMemoryTable(opCode[i]);
+                        //alert(opCode[i + 1]);
+                        TSOS.Control.updateMemoryTable(i, opCode[i]);
+                        TSOS.Control.updateMemoryTable(i + 1, opCode[i + 1]);
                         break;
                     case "AD":
                         //load the accumulator from memory
@@ -91,8 +92,6 @@ var TSOS;
                         //Increment the value of a byte
                         break;
                     case "FF":
-                    //System call
-                    default: alert("default");
                 }
                 i++;
             }

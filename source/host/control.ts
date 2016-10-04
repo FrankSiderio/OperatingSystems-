@@ -121,9 +121,9 @@ module TSOS {
             // page from its cache, which is not what we want.
         }
 
-        public static updateMemoryTable(newCode)
+        public static updateMemoryTable(location, newCode)
         {
-          _MemoryTable.rows[0].cells[0 + 1].innerHTML = newCode;
+          _MemoryTable.rows[location].cells[location + 1].innerHTML = newCode;
         }
 
         //draws memory table

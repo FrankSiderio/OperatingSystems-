@@ -100,8 +100,8 @@ var TSOS;
             // be reloaded from the server. If it is false or not specified the browser may reload the
             // page from its cache, which is not what we want.
         };
-        Control.updateMemoryTable = function (newCode) {
-            _MemoryTable.rows[0].cells[0 + 1].innerHTML = newCode;
+        Control.updateMemoryTable = function (location, newCode) {
+            _MemoryTable.rows[location].cells[location + 1].innerHTML = newCode;
         };
         //draws memory table
         Control.drawMemory = function () {

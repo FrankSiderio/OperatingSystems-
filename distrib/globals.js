@@ -48,11 +48,13 @@ var _hardwareClockID = null;
 // For testing (and enrichment)...
 var Glados = null; // This is the function Glados() in glados.js on Labouseur.com.
 var _GLaDOS = null; // If the above is linked in, this is the instantiated instance of Glados.
+//Memory stuff
+var _MemoryTable = null; // Memory table
+var _MemoryManager = null;
 var _ExecutedCommands = new Array(); // Keeps track of all the commands enter
 var _CountUp = 0; // Keeps count of up key presses
 var _CountDown = 0; // Keeps count of down key presses
 var _ExecutedCommandsPointer = null; // This points to where we are in the executedCommands list where scrolling through with the arrow keys
-var _MemoryTable = null; // Memory table
 var _PID = 0; // pid
 var onDocumentLoad = function () {
     TSOS.Control.hostInit();
