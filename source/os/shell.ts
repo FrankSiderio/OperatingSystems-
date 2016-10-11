@@ -360,6 +360,8 @@ module TSOS {
               var newInput = input.replace(/\n/g, " " ).split( " " );
               //alert(newInput);
               _CPU.loadOpCode(newInput);
+              //_StdOut.putText(_MemoryManager.loadProgram(newInput));
+              //_StdOut.advanceLine();
             }
             else
             {

@@ -121,9 +121,9 @@ module TSOS {
             // page from its cache, which is not what we want.
         }
 
-        public static updateMemoryTable(location, newCode)
+        public static updateMemoryTable(row, cell, newCode)
         {
-          _MemoryTable.rows[location].cells[location + 1].innerHTML = newCode;
+          _MemoryTable.rows[row].cells[cell].innerHTML = newCode;
         }
 
         //draws memory table
@@ -149,8 +149,8 @@ module TSOS {
               if(j == 0)
               {
                 var td = document.createElement("td");
-                td.innerHTML = "0x";
-                //td.innerHTML += "00" + i.toString();
+                //td.innerHTML = "0x";
+                td.innerHTML += "00" + i.toString();
               }
               else
               {
