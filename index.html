@@ -16,6 +16,7 @@
    <script type="text/javascript" src="distrib/host/control.js"></script>
    <script type="text/javascript" src="distrib/host/devices.js"></script>
    <script type="text/javascript" src="distrib/host/cpu.js"></script>
+   <script type="text/javascript" src="distrib/host/memory.js"></script>
 
    <!-- Virtual OS Routines: Make sure Kernel code is last, since it needs those above it. -->
    <script type="text/javascript" src="distrib/os/interrupt.js"></script>
@@ -28,6 +29,9 @@
    <script type="text/javascript" src="distrib/os/shellCommand.js"></script>
    <script type="text/javascript" src="distrib/os/userCommand.js"></script>
    <script type="text/javascript" src="distrib/os/kernel.js"></script>
+   <script type="text/javascript" src="distrib/os/memoryManager.js"></script>
+   <script type="text/javascript" src="distrib/os/pcbPrototype.js"></script>
+
 
    <!-- Other Routines -->
    <script type="text/javascript" src="distrib/utils.js"></script>
@@ -116,6 +120,25 @@
              value="Reset"
              tabindex="2"
              onclick="TSOS.Control.hostBtnReset_click(this);">
+
+      <input type="button"
+             id = "btnSingleStep"
+             name = "btnSingleStep"
+             class = "normal_button"
+             disabled = "disabled"
+             value = "Single Step"
+             tabindex="2"
+             onclick="TSOS.Control.hostBtnSingleStep_click(this);">
+
+      <input type="button"
+             id = "btnNextStep"
+             name = "btnNextStep"
+             class = "normal_button"
+             disabled = "disabled"
+             value = "Next Step"
+             tabindex="2"
+             onclick="TSOS.Control.hostBtnNextStep_click(this);">
+
    </div>
 
    <div id = "statusBar">

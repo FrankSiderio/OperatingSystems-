@@ -7,19 +7,18 @@ module TSOS
   export class Memory
   {
     public memoryArray:string [];
-    public totalMemory:number;
+    public totalMemory:number = 256;
 
     constructor(size: number)
     {
       this.totalMemory = size;
-      //this.init(this.totalMemory);
-      alert("fdsa");
+      this.init(this.totalMemory);
     }
     //initializes memory
     public init(memorySize)
     {
       this.memoryArray = [memorySize];
-      var z = "00"
+      var z:string = "00";
 
       for(var x = 0; x < memorySize; x++)
       {
@@ -39,16 +38,18 @@ module TSOS
     //clears and resets memory
     public clearMemory()
     {
-      //Control
-      this.init(256);
+      //Control resets table
+      Control.clearMemoryTable();
       this.memoryArray = null;
-
+      this.init(256);
     }
 
-    public pleaseWork()
+    public addToMemory(location, opCode)
     {
-      alert("Hello");
+      this.memoryArray[location] = opCode;
     }
+
+
 
 
 

@@ -29,7 +29,8 @@ module TSOS {
                     public Xreg: number = 0,
                     public Yreg: number = 0,
                     public Zflag: number = 0,
-                    public isExecuting: boolean = false) {
+                    public isExecuting: boolean = false,
+                    public instruction: string = "") {
 
         }
 
@@ -48,16 +49,19 @@ module TSOS {
             _Kernel.krnTrace('CPU cycle');
             // TODO: Accumulate CPU usage and profiling statistics here.
             // Do the real work here. Be sure to set this.isExecuting appropriately.
+            console.log("code being loaded: " + _MemoryManager.getMemoryAtLocation(this.PC));
+            console.log("PC: " + this.PC);
 
-            if(this.isExecuting == true)
+            this.runOpCode(_MemoryManager.getMemoryAtLocation(this.PC));
+
+            //this.updateCPU();
+            _Memory.clearMemory();
+
+            if(_SingleStep == true)
             {
-              for(var i = 0; i < _MemoryArray.length; i++)
-              {
-                this.runOpCode(_MemoryArray[i]);
-              }
               this.isExecuting = false;
             }
-            //this.updateCPU();
+
 
         }
 
@@ -92,30 +96,26 @@ module TSOS {
         //console.log("x: " + x);
       }
 
-      public test()
-      {
-        alert("hi");
-      }
-
       public runOpCode(code)
       {
-
+        this.instruction = code.toUpperCase();
         var x = 0;
         //while(x < _MemoryArray.length)
         //{
           //console.log("running: " + _MemoryArray[x]);
-          switch (code)
-          {
-            case "A9":
-              //load the accumulator with a constant
-              this.PC = this.PC + 1;
-              var nextByte; //get the next byte and convert it to hex
-              this.Acc = nextByte
-
-
-              console.log("Acc: " + this.Acc);
-              console.log("PC: " + this.PC);
-            break;
+        console.log("Op code: " + code);
+        switch (this.instruction)
+        {
+          case "A9":
+            //load the accumulator with a constant
+            this.PC = this.PC + 1; //update PC
+            var nextByte = _MemoryManager.getMemoryAtLocation(this.PC + 1); //get the next byte and convert it to hex
+            nextByte = this.conversionToHex(nextByte); //set the next byte to it's hex value
+            this.Acc = nextByte; //update the Acc
+            //this.loadAccumulatorWithConstant();
+            //console.log("Acc: " + this.Acc);
+            //console.log("PC: " + this.PC);
+          break;
 
             case "AD":
               //load the accumulator from memory
@@ -173,6 +173,11 @@ module TSOS {
           //x++;
         //}
         //his.isExecuting = false;
+      }
+
+      public loadAccumulatorWithConstant()
+      {
+        //alert("hey");
       }
 
       public conversionToHex(value)

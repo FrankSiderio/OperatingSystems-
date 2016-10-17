@@ -300,12 +300,9 @@ var TSOS;
             }
             else {
                 var newInput = input.replace(/\n/g, " ").split(" ");
+                _CurrentPCB = new TSOS.PCB();
                 _StdOut.putText("Valid code. Congrats!");
-                _StdOut.advanceLine();
-                //_StdOut.putText("PID " + _PID);
-                //_PID++; //so next time a program input is loaded it is the correct pid
                 _StdOut.putText(_MemoryManager.loadProgram(newInput));
-                _StdOut.advanceLine();
             }
             _ExecutedCommands.push("load");
             Shell.clearCounts();
@@ -314,12 +311,20 @@ var TSOS;
             _Kernel.krnTrapError("Oh no");
         };
         Shell.prototype.shellRun = function (args) {
-            if (args.length > 0) {
-                //_CPU.runOpCode();
-                _CPU.isExecuting = true;
+            if (args.length <= 0) {
+                _StdOut.putText("Please enter in a PID.");
             }
             else {
-                _StdOut.putText("Please enter the PID");
+                if (_CurrentPCB.pid == args[0]) {
+                    //console.log("Program length: " + _ProgramLength);
+                    //console.log("Code it's loading: " + _MemoryManager.getMemoryAtLocation(_CPU.PC));
+                    //for(var i = 0; i < _ProgramLength; i++)
+                    //{
+                    //_CPU.runOpCode(_MemoryManager.getMemoryAtLocation(_CPU.PC));
+                    //}
+                    //_Memory.clearMemory();
+                    _CPU.isExecuting = true;
+                }
             }
             _ExecutedCommands.push("run");
             Shell.clearCounts();

@@ -19,19 +19,21 @@ var TSOS;
     var row = 0;
     var x = 0;
     var Cpu = (function () {
-        function Cpu(PC, Acc, Xreg, Yreg, Zflag, isExecuting) {
+        function Cpu(PC, Acc, Xreg, Yreg, Zflag, isExecuting, instruction) {
             if (PC === void 0) { PC = 0; }
             if (Acc === void 0) { Acc = 0; }
             if (Xreg === void 0) { Xreg = 0; }
             if (Yreg === void 0) { Yreg = 0; }
             if (Zflag === void 0) { Zflag = 0; }
             if (isExecuting === void 0) { isExecuting = false; }
+            if (instruction === void 0) { instruction = ""; }
             this.PC = PC;
             this.Acc = Acc;
             this.Xreg = Xreg;
             this.Yreg = Yreg;
             this.Zflag = Zflag;
             this.isExecuting = isExecuting;
+            this.instruction = instruction;
         }
         Cpu.prototype.init = function () {
             this.PC = 0;
@@ -46,13 +48,14 @@ var TSOS;
             _Kernel.krnTrace('CPU cycle');
             // TODO: Accumulate CPU usage and profiling statistics here.
             // Do the real work here. Be sure to set this.isExecuting appropriately.
-            if (this.isExecuting == true) {
-                for (var i = 0; i < _MemoryArray.length; i++) {
-                    this.runOpCode(_MemoryArray[i]);
-                }
+            console.log("code being loaded: " + _MemoryManager.getMemoryAtLocation(this.PC));
+            console.log("PC: " + this.PC);
+            this.runOpCode(_MemoryManager.getMemoryAtLocation(this.PC));
+            //this.updateCPU();
+            _Memory.clearMemory();
+            if (_SingleStep == true) {
                 this.isExecuting = false;
             }
-            //this.updateCPU();
         };
         //load op codes
         Cpu.prototype.loadOpCode = function (opCode) {
@@ -78,22 +81,23 @@ var TSOS;
             //_memory.addToMemory();
             //console.log("x: " + x);
         };
-        Cpu.prototype.test = function () {
-            alert("hi");
-        };
         Cpu.prototype.runOpCode = function (code) {
+            this.instruction = code.toUpperCase();
             var x = 0;
             //while(x < _MemoryArray.length)
             //{
             //console.log("running: " + _MemoryArray[x]);
-            switch (code) {
+            console.log("Op code: " + code);
+            switch (this.instruction) {
                 case "A9":
                     //load the accumulator with a constant
-                    this.PC = this.PC + 1;
-                    var tempAcc = parseInt(_MemoryArray[x + 1], 16);
-                    this.Acc = tempAcc;
-                    console.log("Acc: " + this.Acc);
-                    console.log("PC: " + this.PC);
+                    this.PC = this.PC + 1; //update PC
+                    var nextByte = _MemoryManager.getMemoryAtLocation(this.PC + 1); //get the next byte and convert it to hex
+                    nextByte = this.conversionToHex(nextByte); //set the next byte to it's hex value
+                    this.Acc = nextByte; //update the Acc
+                    //this.loadAccumulatorWithConstant();
+                    //console.log("Acc: " + this.Acc);
+                    //console.log("PC: " + this.PC);
                     break;
                 case "AD":
                     //load the accumulator from memory
@@ -137,6 +141,13 @@ var TSOS;
             //x++;
             //}
             //his.isExecuting = false;
+        };
+        Cpu.prototype.loadAccumulatorWithConstant = function () {
+            //alert("hey");
+        };
+        Cpu.prototype.conversionToHex = function (value) {
+            var hexValue = parseInt(value, 16);
+            return value;
         };
         Cpu.prototype.updateCPU = function () {
             document.getElementById("cpuPC").innerHTML = this.PC.toString();

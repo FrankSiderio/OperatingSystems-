@@ -1,6 +1,7 @@
 ///<reference path="../globals.ts" />
 ///<reference path="../os/canvastext.ts" />
 ///<reference path="memory.ts" />
+///<reference path="../os/memoryManager.ts" />
 
 /* ------------
      Control.ts
@@ -86,6 +87,9 @@ module TSOS {
             // .. enable the Halt and Reset buttons ...
             (<HTMLButtonElement>document.getElementById("btnHaltOS")).disabled = false;
             (<HTMLButtonElement>document.getElementById("btnReset")).disabled = false;
+            (<HTMLButtonElement>document.getElementById("btnSingleStep")).disabled = false;
+            (<HTMLButtonElement>document.getElementById("btnNextStep")).disabled = false;
+
 
             // .. set focus on the OS console display ...
             document.getElementById("display").focus();
@@ -102,7 +106,8 @@ module TSOS {
 
             //initializing memory stuff
             _Memory = new Memory(256);
-            //_MemoryManager = new MemoryManager();
+            //console.log(_Memory.getMemory());
+            _MemoryManager = new MemoryManager();
 
             //draw memory table
             this.drawMemory();
@@ -124,6 +129,23 @@ module TSOS {
             // That boolean parameter is the 'forceget' flag. When it is true it causes the page to always
             // be reloaded from the server. If it is false or not specified the browser may reload the
             // page from its cache, which is not what we want.
+        }
+
+        public static hostBtnSingleStep_click(btn): void
+        {
+          if(_SingleStep == true)
+          {
+            _SingleStep == false;
+          }
+          else
+          {
+            _SingleStep == true;
+          }
+        }
+
+        public static hostBtnNextStep_click(btn): void
+        {
+          _CPU.isExecuting = true;
         }
 
         public static updateMemoryTable(row, cell, newCode)
@@ -170,6 +192,20 @@ module TSOS {
             //s.innerHTML = "<br>";
             //_MemoryTable.appendChild(s);
 
+          }
+        }
+
+        public static clearMemoryTable()
+        {
+          for(var row = 0; row < 32; row++)
+          {
+            for(var cell = 1; cell < 9; cell++)
+            {
+              if(_MemoryTable.rows[row].cells[cell].innerHTML != "00")
+              {
+                _MemoryTable.rows[row].cells[cell].innerHTML = "00";
+              }
+            }
           }
         }
 

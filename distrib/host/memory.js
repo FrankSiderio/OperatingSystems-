@@ -5,9 +5,9 @@ var TSOS;
 (function (TSOS) {
     var Memory = (function () {
         function Memory(size) {
+            this.totalMemory = 256;
             this.totalMemory = size;
-            //this.init(this.totalMemory);
-            alert("fdsa");
+            this.init(this.totalMemory);
         }
         //initializes memory
         Memory.prototype.init = function (memorySize) {
@@ -27,12 +27,13 @@ var TSOS;
         };
         //clears and resets memory
         Memory.prototype.clearMemory = function () {
-            //Control
-            this.init(256);
+            //Control resets table
+            TSOS.Control.clearMemoryTable();
             this.memoryArray = null;
+            this.init(256);
         };
-        Memory.prototype.pleaseWork = function () {
-            alert("Hello");
+        Memory.prototype.addToMemory = function (location, opCode) {
+            this.memoryArray[location] = opCode;
         };
         return Memory;
     }());

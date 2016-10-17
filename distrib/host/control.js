@@ -1,6 +1,7 @@
 ///<reference path="../globals.ts" />
 ///<reference path="../os/canvastext.ts" />
 ///<reference path="memory.ts" />
+///<reference path="../os/memoryManager.ts" />
 /* ------------
      Control.ts
 
@@ -72,6 +73,8 @@ var TSOS;
             // .. enable the Halt and Reset buttons ...
             document.getElementById("btnHaltOS").disabled = false;
             document.getElementById("btnReset").disabled = false;
+            document.getElementById("btnSingleStep").disabled = false;
+            document.getElementById("btnNextStep").disabled = false;
             // .. set focus on the OS console display ...
             document.getElementById("display").focus();
             // ... Create and initialize the CPU (because it's part of the hardware)  ...
@@ -85,7 +88,8 @@ var TSOS;
             _Kernel.krnBootstrap(); // _GLaDOS.afterStartup() will get called in there, if configured.
             //initializing memory stuff
             _Memory = new TSOS.Memory(256);
-            //_MemoryManager = new MemoryManager();
+            //console.log(_Memory.getMemory());
+            _MemoryManager = new TSOS.MemoryManager();
             //draw memory table
             this.drawMemory();
         };
@@ -104,6 +108,17 @@ var TSOS;
             // That boolean parameter is the 'forceget' flag. When it is true it causes the page to always
             // be reloaded from the server. If it is false or not specified the browser may reload the
             // page from its cache, which is not what we want.
+        };
+        Control.hostBtnSingleStep_click = function (btn) {
+            if (_SingleStep == true) {
+                _SingleStep == false;
+            }
+            else {
+                _SingleStep == true;
+            }
+        };
+        Control.hostBtnNextStep_click = function (btn) {
+            _CPU.isExecuting = true;
         };
         Control.updateMemoryTable = function (row, cell, newCode) {
             _MemoryTable.rows[row].cells[cell + 1].innerHTML = newCode;
@@ -132,6 +147,15 @@ var TSOS;
                         td.innerHTML = "00";
                     }
                     tr.appendChild(td);
+                }
+            }
+        };
+        Control.clearMemoryTable = function () {
+            for (var row = 0; row < 32; row++) {
+                for (var cell = 1; cell < 9; cell++) {
+                    if (_MemoryTable.rows[row].cells[cell].innerHTML != "00") {
+                        _MemoryTable.rows[row].cells[cell].innerHTML = "00";
+                    }
                 }
             }
         };

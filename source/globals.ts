@@ -71,13 +71,17 @@ var _MemoryTable: any = null; // Memory table
 var _MemoryManager: any = null;
 var _Memory: any = null;
 var _MemoryArray = new Array<string>();
+var _ProgramLength: any = null;
 
+
+var _SingleStep: boolean = false;
+var _CurrentPCB: any = null;
 
 var _ExecutedCommands = new Array<string>();  // Keeps track of all the commands enter
 var _CountUp: number = 0; // Keeps count of up key presses
 var _CountDown: number = 0; // Keeps count of down key presses
 var _ExecutedCommandsPointer: number = null; // This points to where we are in the executedCommands list where scrolling through with the arrow keys
-var _PID: number = 0; // pid
+var _PID: number = -1; // pid
 
 var onDocumentLoad = function() {
 	TSOS.Control.hostInit();
