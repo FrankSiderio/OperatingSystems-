@@ -99,6 +99,10 @@ module TSOS {
             _Kernel = new Kernel();
             _Kernel.krnBootstrap();  // _GLaDOS.afterStartup() will get called in there, if configured.
 
+            //initializing memory stuff
+            _Memory = new Memory(256);
+            _MemoryManager = new MemoryManager();
+
             //draw memory table
             this.drawMemory();
         }
@@ -123,7 +127,7 @@ module TSOS {
 
         public static updateMemoryTable(row, cell, newCode)
         {
-          _MemoryTable.rows[row].cells[cell].innerHTML = newCode;
+          _MemoryTable.rows[row].cells[cell + 1].innerHTML = newCode;
         }
 
         //draws memory table

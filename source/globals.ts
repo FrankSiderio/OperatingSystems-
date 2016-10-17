@@ -67,7 +67,10 @@ var _GLaDOS: any = null; // If the above is linked in, this is the instantiated 
 
 //Memory stuff
 var _MemoryTable: any = null; // Memory table
-var _MemoryManager: any = null;
+var _MemoryManager: TSOS.MemoryManager;
+var _Memory: TSOS.Memory;
+var _MemoryArray = new Array<string>();
+
 
 var _ExecutedCommands = new Array<string>();  // Keeps track of all the commands enter
 var _CountUp: number = 0; // Keeps count of up key presses

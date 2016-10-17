@@ -4,6 +4,7 @@
    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
    <meta name="author"             content="Alan G. Labouseur" />
    <link rel="stylesheet" href="tsos.css" type="text/css" media="screen" />
+   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
    <title>
       TSOS - a browser-based virtual Operating System in TypeScript
    </title>
@@ -83,7 +84,6 @@
    </textarea>
   </div>
 
-
    <div id="divConsole" style="margin:4px; width:500px; height:500px; float:left;">
       <canvas id="display"
               width="500px"
@@ -102,25 +102,52 @@
                    cols="48"
          ></textarea>
       </label>
-    </div>
-   <!-- Memory -->
-   <label class = "table" id="cpuMemory"> Memory </label>
-           <div style = "overflow-y: scroll; background: white; height: 250px; width: 400px">
-               <table class = "table" id = "memoryTable" style="font-family: Arial; font-size: larger">
-               </table>
-           </div>
 
-   <div id="divUserProgramInput" style="margin-left:520px;">
-      <label>
-         User Program Input
-         <br>
-         <textarea name="taProgramInput"
-                   id  ="taProgramInput"
-                   rows="8"
-                   cols="48"
-         ></textarea>
-      </label>
-   </div>
+    </div>
+
+    <div id="divCPU">
+      <table style="margin-left:1000px; margin-top:0px; font-size: larger; background: blue">
+        <thead>
+          <tr>
+            <td> PC </td>
+            <td> ACC </td>
+            <td> X Reg </td>
+            <td> Y Reg </td>
+            <td> Z Flag </td>
+          </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td id="cpuPC">0</td>
+          <td id="cpuACC">0</td>
+          <td id="cpuXReg">0</td>
+          <td id="cpuYReg">0</td>
+          <td id="cpuZFlage">0</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div id="divUserProgramInput" style="margin-left:520px;">
+       <label>
+          User Program Input
+          <br>
+          <textarea name="taProgramInput"
+                    id  ="taProgramInput"
+                    rows="8"
+                    cols="48"
+          ></textarea>
+       </label>
+    </div>
+
+    <div style = "overflow-y: scroll; background: white; height: 250px; width: 400px; margin-left:100px; margin-top:-200px;">
+      <label class = "table" id = "cpuMemory"> Memory </label>
+      <table class = "table" id = "memoryTable" style="font-family: Arial; font-size: larger"></table>
+    </div>
+
+
+
+
 
 </div>
 

@@ -105,7 +105,7 @@ module TSOS {
             this.commandList[this.commandList.length] = sc;
 
             //run
-            sc = new ShellCommand(this.shellRun, "run", "run <pid> runs the specified program");
+            sc = new ShellCommand(this.shellRun, "run", "<pid> runs the specified program");
             this.commandList[this.commandList.length] = sc;
 
             // ps  - list the running processes and their IDs
@@ -352,21 +352,18 @@ module TSOS {
           }
           else
           {
-            if(input != "")
-            {
-              _StdOut.putText("Valid code. Congrats!");
-              _StdOut.putText("PID " + _PID);
-              _PID++; //so next time a program input is loaded it is the correct pid
-              var newInput = input.replace(/\n/g, " " ).split( " " );
-              //alert(newInput);
-              _CPU.loadOpCode(newInput);
+            var newInput = input.replace(/\n/g, " " ).split( " " );
+
+            _StdOut.putText("Valid code. Congrats!");
+            _StdOut.advanceLine();
+              //_StdOut.putText("PID " + _PID);
+              //_PID++; //so next time a program input is loaded it is the correct pid
+            _StdOut.putText(_MemoryManager.loadProgram(newInput));
+            _StdOut.advanceLine();
+              //_CPU.loadOpCode(newInput);
+              //_MemoryManager.loadProgram(newInput);
               //_StdOut.putText(_MemoryManager.loadProgram(newInput));
               //_StdOut.advanceLine();
-            }
-            else
-            {
-              _StdOut.putText("Hmm...seems like you have nothing there");
-            }
           }
 
           _ExecutedCommands.push("load");
@@ -380,6 +377,16 @@ module TSOS {
 
         public shellRun(args)
         {
+          if(args.length > 0)
+          {
+            //_CPU.runOpCode();
+            _CPU.isExecuting = true;
+          }
+
+          else
+          {
+            _StdOut.putText("Please enter the PID");
+          }
           _ExecutedCommands.push("run");
           Shell.clearCounts();
         }

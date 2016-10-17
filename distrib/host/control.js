@@ -81,6 +81,9 @@ var TSOS;
             // .. and call the OS Kernel Bootstrap routine.
             _Kernel = new TSOS.Kernel();
             _Kernel.krnBootstrap(); // _GLaDOS.afterStartup() will get called in there, if configured.
+            //initializing memory stuff
+            //_Memory = new Memory(256);
+            _MemoryManager = new TSOS.MemoryManager();
             //draw memory table
             this.drawMemory();
         };
@@ -101,7 +104,7 @@ var TSOS;
             // page from its cache, which is not what we want.
         };
         Control.updateMemoryTable = function (row, cell, newCode) {
-            _MemoryTable.rows[row].cells[cell].innerHTML = newCode;
+            _MemoryTable.rows[row].cells[cell + 1].innerHTML = newCode;
         };
         //draws memory table
         Control.drawMemory = function () {
