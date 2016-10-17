@@ -2,7 +2,8 @@
 ///<reference path="../utils.ts" />
 ///<reference path="shellCommand.ts" />
 ///<reference path="userCommand.ts" />
-
+///<reference path="memoryManager.ts"/>
+///<reference path="../host/memory.ts"/>
 
 /* ------------
    Shell.ts

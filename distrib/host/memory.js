@@ -1,11 +1,13 @@
+///<reference path="../globals.ts" />
+///<reference path="control.ts" />
 //this class is like something to do with memory
 var TSOS;
 (function (TSOS) {
     var Memory = (function () {
         function Memory(size) {
-            this.totalMemory = 256;
             this.totalMemory = size;
-            this.init(this.totalMemory);
+            //this.init(this.totalMemory);
+            alert("fdsa");
         }
         //initializes memory
         Memory.prototype.init = function (memorySize) {
@@ -28,6 +30,9 @@ var TSOS;
             //Control
             this.init(256);
             this.memoryArray = null;
+        };
+        Memory.prototype.pleaseWork = function () {
+            alert("Hello");
         };
         return Memory;
     }());

@@ -92,6 +92,11 @@ module TSOS {
         //console.log("x: " + x);
       }
 
+      public test()
+      {
+        alert("hi");
+      }
+
       public runOpCode(code)
       {
 
@@ -104,8 +109,8 @@ module TSOS {
             case "A9":
               //load the accumulator with a constant
               this.PC = this.PC + 1;
-              var tempAcc = parseInt(_MemoryArray[x + 1], 16);
-              this.Acc = tempAcc;
+              var nextByte; //get the next byte and convert it to hex
+              this.Acc = nextByte
 
 
               console.log("Acc: " + this.Acc);
@@ -170,6 +175,11 @@ module TSOS {
         //his.isExecuting = false;
       }
 
+      public conversionToHex(value)
+      {
+        var hexValue = parseInt(value, 16);
+        return value;
+      }
       public updateCPU()
       {
         document.getElementById("cpuPC").innerHTML = this.PC.toString();

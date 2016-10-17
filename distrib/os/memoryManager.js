@@ -6,7 +6,8 @@ var TSOS;
             this.base = 0;
             this.limit = 255;
         }
-        MemoryManager.prototype.init = function () { };
+        //constructor(){}
+        //public init(){}
         //loading the program into memory
         MemoryManager.prototype.loadProgram = function (opCode) {
             _Memory.clearMemory();

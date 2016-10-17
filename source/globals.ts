@@ -1,3 +1,4 @@
+
 /* ------------
    Globals.ts
 
@@ -67,8 +68,8 @@ var _GLaDOS: any = null; // If the above is linked in, this is the instantiated 
 
 //Memory stuff
 var _MemoryTable: any = null; // Memory table
-var _MemoryManager: TSOS.MemoryManager;
-var _Memory: TSOS.Memory;
+var _MemoryManager: any = null;
+var _Memory: any = null;
 var _MemoryArray = new Array<string>();
 
 

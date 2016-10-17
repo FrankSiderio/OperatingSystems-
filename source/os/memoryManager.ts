@@ -7,8 +7,8 @@ module TSOS
     base: number = 0;
     limit: number = 255;
 
-    constructor(){}
-    public init(){}
+    //constructor(){}
+    //public init(){}
     //loading the program into memory
     public loadProgram(opCode)
     {

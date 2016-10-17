@@ -36,6 +36,57 @@
 </head>
 
 <body onload="onDocumentLoad()">
+<!--
+  <div id="nav" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <span id="name" class="navbar-brand">Frank's OS</span>
+      </div>
+
+      <div id="divButtonBar" class="btn-group nav navbar-form navbar-right">
+        <input type="button"
+               id = "btnStartOS"
+               name="brnStartOS"
+               class="normal_button"
+               value="Start"
+               tabindex="0"
+               onclick="TSOS.Control.hostBtnStartOS_click(this);">
+        <input type="button"
+              id = "btnHaltOS"
+              name="brnHaltOS"
+              class="normal_button"
+              disabled="disabled"
+              value="Halt"
+              tabindex="1"
+              onclick="TSOS.Control.hostBtnHaltOS_click(this);">
+
+        <input type="button"
+              id = "btnReset"
+              name="brnReset"
+              class="normal_button"
+              disabled="disabled"
+              value="Reset"
+              tabindex="2"
+              onclick="TSOS.Control.hostBtnReset_click(this);">
+      </div>
+
+      <div id="statusBar" class="btn-group nav navbar-form navbar-right">
+        <button id="statusBox" class="btn btn-default" disabled="disabled"></button>
+        <button id="statusBox2" class="btn btn-default" disabled="disabled"><span>Unavailable</span></button>
+       </textarea>
+      </div>
+
+    </div>
+  </div>
+
+  <div id="content" class="container">
+    <div class="row">
+      <div id="divConsole" class="col-md-7">
+        <canvas id="display" tabindex="1" width="515" height="435"></canvas>
+
+      </div>
+  </div>
+-->
 
 <div id="divMain" style="width:100%;">
 
@@ -67,7 +118,6 @@
              onclick="TSOS.Control.hostBtnReset_click(this);">
    </div>
 
-   <!-- status bars -->
    <div id = "statusBar">
      <textarea id = "statusBox"
                col  = "30"
@@ -106,7 +156,7 @@
     </div>
 
     <div id="divCPU">
-      <table style="margin-left:1000px; margin-top:0px; font-size: larger; background: blue">
+      <table style="font-size: larger; background: blue">
         <thead>
           <tr>
             <td> PC </td>

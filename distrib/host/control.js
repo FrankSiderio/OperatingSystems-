@@ -1,5 +1,6 @@
 ///<reference path="../globals.ts" />
 ///<reference path="../os/canvastext.ts" />
+///<reference path="memory.ts" />
 /* ------------
      Control.ts
 
@@ -76,14 +77,15 @@ var TSOS;
             // ... Create and initialize the CPU (because it's part of the hardware)  ...
             _CPU = new TSOS.Cpu(); // Note: We could simulate multi-core systems by instantiating more than one instance of the CPU here.
             _CPU.init(); //       There's more to do, like dealing with scheduling and such, but this would be a start. Pretty cool.
+            //_CPU.test();
             // ... then set the host clock pulse ...
             _hardwareClockID = setInterval(TSOS.Devices.hostClockPulse, CPU_CLOCK_INTERVAL);
             // .. and call the OS Kernel Bootstrap routine.
             _Kernel = new TSOS.Kernel();
             _Kernel.krnBootstrap(); // _GLaDOS.afterStartup() will get called in there, if configured.
             //initializing memory stuff
-            //_Memory = new Memory(256);
-            _MemoryManager = new TSOS.MemoryManager();
+            _Memory = new TSOS.Memory(256);
+            //_MemoryManager = new MemoryManager();
             //draw memory table
             this.drawMemory();
         };
@@ -131,10 +133,6 @@ var TSOS;
                     }
                     tr.appendChild(td);
                 }
-                //add the line
-                var s = document.createElement("s");
-                s.innerHTML = "<br>";
-                _MemoryTable.appendChild(s);
             }
         };
         return Control;

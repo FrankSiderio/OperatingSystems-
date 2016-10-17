@@ -1,5 +1,6 @@
 ///<reference path="../globals.ts" />
 ///<reference path="../os/canvastext.ts" />
+///<reference path="memory.ts" />
 
 /* ------------
      Control.ts
@@ -92,7 +93,7 @@ module TSOS {
             // ... Create and initialize the CPU (because it's part of the hardware)  ...
             _CPU = new Cpu();  // Note: We could simulate multi-core systems by instantiating more than one instance of the CPU here.
             _CPU.init();       //       There's more to do, like dealing with scheduling and such, but this would be a start. Pretty cool.
-
+            //_CPU.test();
             // ... then set the host clock pulse ...
             _hardwareClockID = setInterval(Devices.hostClockPulse, CPU_CLOCK_INTERVAL);
             // .. and call the OS Kernel Bootstrap routine.
@@ -101,7 +102,7 @@ module TSOS {
 
             //initializing memory stuff
             _Memory = new Memory(256);
-            _MemoryManager = new MemoryManager();
+            //_MemoryManager = new MemoryManager();
 
             //draw memory table
             this.drawMemory();
@@ -165,9 +166,9 @@ module TSOS {
             }
 
             //add the line
-            var s = document.createElement("s");
-            s.innerHTML = "<br>";
-            _MemoryTable.appendChild(s);
+            //var s = document.createElement("s");
+            //s.innerHTML = "<br>";
+            //_MemoryTable.appendChild(s);
 
           }
         }

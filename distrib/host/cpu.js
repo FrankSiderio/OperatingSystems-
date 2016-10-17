@@ -78,6 +78,9 @@ var TSOS;
             //_memory.addToMemory();
             //console.log("x: " + x);
         };
+        Cpu.prototype.test = function () {
+            alert("hi");
+        };
         Cpu.prototype.runOpCode = function (code) {
             var x = 0;
             //while(x < _MemoryArray.length)

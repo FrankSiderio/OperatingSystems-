@@ -1,15 +1,19 @@
+///<reference path="../globals.ts" />
+///<reference path="control.ts" />
+
 //this class is like something to do with memory
 module TSOS
 {
   export class Memory
   {
     public memoryArray:string [];
-    public totalMemory:number = 256;
+    public totalMemory:number;
 
-    constructor(size:number)
+    constructor(size: number)
     {
       this.totalMemory = size;
-      this.init(this.totalMemory);
+      //this.init(this.totalMemory);
+      alert("fdsa");
     }
     //initializes memory
     public init(memorySize)
@@ -41,6 +45,10 @@ module TSOS
 
     }
 
+    public pleaseWork()
+    {
+      alert("Hello");
+    }
 
 
 
