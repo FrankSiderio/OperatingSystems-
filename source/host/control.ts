@@ -1,5 +1,7 @@
 ///<reference path="../globals.ts" />
 ///<reference path="../os/canvastext.ts" />
+///<reference path="memory.ts" />
+///<reference path="../os/memoryManager.ts" />
 
 /* ------------
      Control.ts
@@ -85,6 +87,8 @@ module TSOS {
             // .. enable the Halt and Reset buttons ...
             (<HTMLButtonElement>document.getElementById("btnHaltOS")).disabled = false;
             (<HTMLButtonElement>document.getElementById("btnReset")).disabled = false;
+            (<HTMLButtonElement>document.getElementById("btnSingleStep")).disabled = false;
+            (<HTMLButtonElement>document.getElementById("btnNextStep")).disabled = false;
 
             // .. set focus on the OS console display ...
             document.getElementById("display").focus();
@@ -92,12 +96,20 @@ module TSOS {
             // ... Create and initialize the CPU (because it's part of the hardware)  ...
             _CPU = new Cpu();  // Note: We could simulate multi-core systems by instantiating more than one instance of the CPU here.
             _CPU.init();       //       There's more to do, like dealing with scheduling and such, but this would be a start. Pretty cool.
-
+            //_CPU.test();
             // ... then set the host clock pulse ...
             _hardwareClockID = setInterval(Devices.hostClockPulse, CPU_CLOCK_INTERVAL);
             // .. and call the OS Kernel Bootstrap routine.
             _Kernel = new Kernel();
             _Kernel.krnBootstrap();  // _GLaDOS.afterStartup() will get called in there, if configured.
+
+            //initializing memory stuff
+            _Memory = new Memory(256);
+            //console.log(_Memory.getMemory());
+            _MemoryManager = new MemoryManager();
+
+            //draw memory table
+            this.drawMemory();
         }
 
         public static hostBtnHaltOS_click(btn): void {
@@ -117,5 +129,84 @@ module TSOS {
             // be reloaded from the server. If it is false or not specified the browser may reload the
             // page from its cache, which is not what we want.
         }
+
+        public static hostBtnSingleStep_click(btn): void
+        {
+          if(_SingleStep == true)
+          {
+            _SingleStep = false;
+            (<HTMLButtonElement>document.getElementById("btnSingleStep")).style.background = "white";
+          }
+          else
+          {
+            _SingleStep = true;
+            (<HTMLButtonElement>document.getElementById("btnSingleStep")).style.background = "blue";
+          }
+        }
+
+        public static hostBtnNextStep_click(btn): void
+        {
+          _CPU.isExecuting = true;
+        }
+
+        public static updateMemoryTable(row, cell, newCode)
+        {
+          _MemoryTable.rows[row].cells[cell + 1].innerHTML = newCode;
+        }
+
+        //draws memory table
+        public static drawMemory(): void
+        {
+          _MemoryTable = <HTMLTableElement>document.getElementById("memoryTable");
+
+          for(var i = 0; i < 32; i++)
+          {
+            if(i == 32)
+            {
+              var tr = document.createElement("tr");
+              tr.id = "bottomRow";
+              _MemoryTable.appendChild(tr);
+            }
+            else
+            {
+                var tr = document.createElement("tr");
+                _MemoryTable.appendChild(tr);
+            }
+            for(var j = 0; j < 9; j++)
+            {
+              if(j == 0)
+              {
+                var td = document.createElement("td");
+                //td.innerHTML = "0x";
+                td.innerHTML += "00" + i.toString();
+              }
+              else
+              {
+                var td = document.createElement("td");
+                td.innerHTML = "00";
+              }
+                tr.appendChild(td);
+            }
+
+            //add the line
+            //var s = document.createElement("s");
+            //s.innerHTML = "<br>";
+            //_MemoryTable.appendChild(s);
+
+          }
+        }
+
+        public static clearMemoryTable()
+        {
+          for(var row = 0; row < 32; row++)
+          {
+            for(var cell = 1; cell < 9; cell++)
+            {
+              _MemoryTable.rows[row].cells[cell].innerHTML = "00";
+            }
+          }
+        }
+
+
     }
 }

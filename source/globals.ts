@@ -1,3 +1,4 @@
+
 /* ------------
    Globals.ts
 
@@ -65,10 +66,25 @@ var _hardwareClockID: number = null;
 var Glados: any = null;  // This is the function Glados() in glados.js on Labouseur.com.
 var _GLaDOS: any = null; // If the above is linked in, this is the instantiated instance of Glados.
 
+//Memory stuff
+var _MemoryTable: any = null; // Memory table
+var _MemoryManager: any = null;
+var _Memory: any = null;
+var _MemoryArray = new Array<string>();
+var _ProgramLength: any = null;
+var _ProgramSize = 256; //size of our biggest program (for now)
+
+var _SingleStep: boolean = false;
+var _CurrentPCB: any = null;
+var _State = "Not Running"; //to update the PCB with
+
+var _ConsoleBuffers = new Array<string>(); //this is for line wrap keeps track of the buffer previous when the next line is advanced
+
 var _ExecutedCommands = new Array<string>();  // Keeps track of all the commands enter
 var _CountUp: number = 0; // Keeps count of up key presses
 var _CountDown: number = 0; // Keeps count of down key presses
 var _ExecutedCommandsPointer: number = null; // This points to where we are in the executedCommands list where scrolling through with the arrow keys
+var _PID: number = -1; // pid
 
 var onDocumentLoad = function() {
 	TSOS.Control.hostInit();
