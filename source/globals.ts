@@ -72,7 +72,7 @@ var _MemoryManager: any = null;
 var _Memory: any = null;
 var _MemoryArray = new Array<string>();
 var _ProgramLength: any = null;
-
+var _ProgramSize = 256; //size of our biggest program (for now)
 
 var _SingleStep: boolean = false;
 var _CurrentPCB: any = null;

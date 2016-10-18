@@ -54,6 +54,7 @@ var _MemoryManager = null;
 var _Memory = null;
 var _MemoryArray = new Array();
 var _ProgramLength = null;
+var _ProgramSize = 256; //size of our biggest program (for now)
 var _SingleStep = false;
 var _CurrentPCB = null;
 var _ExecutedCommands = new Array(); // Keeps track of all the commands enter

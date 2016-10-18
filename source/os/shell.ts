@@ -390,6 +390,7 @@ module TSOS {
                 //_CPU.runOpCode(_MemoryManager.getMemoryAtLocation(_CPU.PC));
               //}
               //_Memory.clearMemory();
+              console.log(_Memory.getMemory());
               _CPU.isExecuting = true;
             }
           }

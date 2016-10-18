@@ -17,7 +17,7 @@ var TSOS;
             this.limit = 255;
             //calls updateMemoryLocation to update the physical address
             for (var i = 0; i < opCode.length; i++) {
-                this.updateMemoryLocation(i, opCode[i]);
+                this.updateMemoryAtLocation(i, opCode[i]);
             }
             return "PID: " + _PID;
         };
@@ -25,8 +25,8 @@ var TSOS;
         MemoryManager.prototype.getMemoryAtLocation = function (location) {
             return _Memory.getMemoryLocation(location);
         };
-        //updating the table
-        MemoryManager.prototype.updateMemoryLocation = function (memoryLocation, opCode) {
+        //updates the table, given a specific location and opCode
+        MemoryManager.prototype.updateMemoryAtLocation = function (memoryLocation, opCode) {
             var hexCode = opCode.toString(16); //setting the hexCode equal to the passed in opCode
             var currentBlock = _Memory.getMemory(); //setting the current block from Memory
             //console.log("Mem loc: " + memoryLocation);

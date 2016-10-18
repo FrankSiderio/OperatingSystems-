@@ -21,7 +21,7 @@ module TSOS
       //calls updateMemoryLocation to update the physical address
       for(var i = 0; i < opCode.length; i++)
       {
-        this.updateMemoryLocation(i, opCode[i]);
+        this.updateMemoryAtLocation(i, opCode[i]);
       }
       return "PID: " + _PID;
     }
@@ -31,8 +31,8 @@ module TSOS
       return _Memory.getMemoryLocation(location);
     }
 
-    //updating the table
-    public updateMemoryLocation(memoryLocation, opCode): void
+    //updates the table, given a specific location and opCode
+    public updateMemoryAtLocation(memoryLocation, opCode): void
     {
       var hexCode = opCode.toString(16); //setting the hexCode equal to the passed in opCode
       var currentBlock = _Memory.getMemory(); //setting the current block from Memory

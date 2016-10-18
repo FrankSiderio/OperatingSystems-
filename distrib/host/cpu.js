@@ -50,9 +50,8 @@ var TSOS;
             // Do the real work here. Be sure to set this.isExecuting appropriately.
             //console.log("code being loaded: " + _MemoryManager.getMemoryAtLocation(this.PC));
             //console.log("PC: " + this.PC);
-            if (this.isExecuting) {
-                this.runOpCode(_MemoryManager.getMemoryAtLocation(this.PC));
-            }
+            this.runOpCode(_MemoryManager.getMemoryAtLocation(this.PC));
+            this.updateCPU();
             this.updateCPU();
             //_Memory.clearMemory();
             if (_SingleStep == true) {
@@ -83,68 +82,44 @@ var TSOS;
             //_memory.addToMemory();
             //console.log("x: " + x);
         };
+        //this function runs the op codes by using a switch statement
+        //the switch statement calls different functions depending on which opCode is executed in memory
         Cpu.prototype.runOpCode = function (code) {
             this.instruction = code.toUpperCase();
-            var x = 0;
-            //while(x < _MemoryArray.length)
-            //{
-            //console.log("running: " + _MemoryArray[x]);
-            //console.log("Op code: " + code);
+            //var x = 0;
+            console.log("instruction: " + this.instruction);
             switch (this.instruction) {
                 case "A9":
                     //load the accumulator with a constant
-                    var nextByte = this.getNextByte(); //get the next byte and convert it to hex
-                    this.Acc = nextByte; //update the Acc
-                    this.PC++; //update PC
-                    //this.loadAccumulatorWithConstant();
-                    //console.log("Acc: " + this.Acc);
-                    //console.log("PC: " + this.PC);
+                    this.loadAccWithConstant();
                     break;
                 case "AD":
                     //load the accumulator from memory
-                    var nxtTwoBytes = this.getNextTwoBytes();
-                    var decimal = this.conversionToDecimal(_MemoryManager.getMemoryAtLocation(nxtTwoBytes));
-                    this.Acc = decimal;
-                    this.PC += 2;
+                    this.loadAccFromMemory();
                     break;
                 case "8D":
                     //store the accumulator in memory
-                    var nextTwoBytes = this.getNextTwoBytes();
-                    var hexNum = this.Acc;
-                    _MemoryManager.updateMemoryAtLocation(nextTwoBytes, hexNum); //updates memory
-                    this.PC += 2;
+                    this.storeAccInMemory();
                     break;
                 case "6D":
                     //add with carry
-                    this.Acc += this.conversionToDecimal(_MemoryManager.getMemoryAtLocation(this.getNextTwoBytes()));
-                    console.log("Memory: " + _MemoryManager.getMemoryAtLocation(this.getNextTwoBytes()));
-                    console.log("adding to acc: " + this.conversionToDecimal(_MemoryManager.getMemoryAtLocation(this.getNextTwoBytes())));
-                    console.log("Acc: " + this.Acc);
-                    this.PC += 2;
+                    this.addWithCarry();
                     break;
                 case "A2":
                     //Load the X register with a constant
-                    var nextByte = this.getNextByte();
-                    this.Xreg = nextByte;
-                    this.PC++; //update pc
+                    this.loadXregisterWithConstant();
                     break;
                 case "AE":
                     //Load the X register from memory
-                    var memoryLocation = this.getNextByte();
-                    this.Xreg = this.conversionToDecimal(_MemoryManager.getMemoryAtLocation(memoryLocation));
-                    this.PC += 2; //update pc
+                    this.loadXregisterFromMemory();
                     break;
                 case "A0":
                     //Load the Y register with a constant
-                    var nextByte = this.getNextByte();
-                    this.Yreg = nextByte;
-                    this.PC++; //update pc
+                    this.loadYregisterWithConstant();
                     break;
                 case "AC":
                     //Load the Y register from memory
-                    var memoryLocation = this.getNextByte();
-                    this.Yreg = this.conversionToDecimal(_MemoryManager.getMemoryAtLocation(memoryLocation));
-                    this.PC += 2; //update pc
+                    this.loadYregisterFromMemory();
                     break;
                 case "EA":
                     //No operation
@@ -158,31 +133,16 @@ var TSOS;
                     break;
                 case "EC":
                     //Compare a byte in memory to the X reg. Sets the Z (zero) flag if equal
-                    var byte = this.getNextByte(); //getting the location of the byte to get
+                    this.compareToXregister();
                     break;
                 case "D0":
                     //Branch n bytes if Z flag = 0
-                    if (this.Zflag == 0) {
-                        var value = this.getNextByte();
-                        this.PC++;
-                        this.PC += value;
-                        if (this.PC >= _ProgramLength) {
-                            this.PC = this.PC - _ProgramLength;
-                        }
-                        else {
-                            this.PC++;
-                        }
-                    }
+                    this.branchNbytes();
                     break;
                 case "EE":
                     //Increment the value of a byte
-                    var memoryLocation = this.conversionToDecimal(_MemoryManager.getMemoryAtLocation(this.PC + 1));
-                    var hexAtLocation = _MemoryManager.getMemoryAtLocation(memoryLocation);
-                    var decimalNum = this.conversionToDecimal(hexAtLocation);
-                    decimalNum++;
-                    _MemoryManager.updateMemoryAtLocation(memoryLocation, decimalNum);
-                    this.PC++;
-                    this.PC++;
+                    this.incrementValueOfByte();
+                    //this.PC++;
                     break;
                 case "FF":
                     //System call
@@ -193,6 +153,85 @@ var TSOS;
             //x++;
             //}
             //his.isExecuting = false;
+        };
+        //loads the Accumulator with a constant
+        Cpu.prototype.loadAccWithConstant = function () {
+            this.Acc = this.getNextByte(); //get the next byte and convert it to hex, set it equal to the Acc
+            console.log("Acc: " + this.Acc);
+            this.PC++; //update PC
+        };
+        //loads the Accumulator from memory
+        Cpu.prototype.loadAccFromMemory = function () {
+            var nxtTwoBytes = this.getNextTwoBytes();
+            var decimal = this.conversionToDecimal(_MemoryManager.getMemoryAtLocation(nxtTwoBytes));
+            this.Acc = decimal;
+            this.PC += 2;
+        };
+        //Stores the Accumulator in memory
+        Cpu.prototype.storeAccInMemory = function () {
+            var nextTwoBytes = this.getNextTwoBytes();
+            var hexNum = this.Acc;
+            _MemoryManager.updateMemoryAtLocation(nextTwoBytes, hexNum); //updates memory
+            this.PC += 2;
+            console.log("PC: " + this.PC);
+        };
+        //adds with a carry
+        Cpu.prototype.addWithCarry = function () {
+            this.Acc += this.conversionToDecimal(_MemoryManager.getMemoryAtLocation(this.getNextTwoBytes()));
+            this.PC += 2;
+        };
+        //loads the x register with a constant
+        Cpu.prototype.loadXregisterWithConstant = function () {
+            this.Xreg = this.getNextByte();
+            this.PC++; //update pc
+        };
+        //loads the x register from memory
+        Cpu.prototype.loadXregisterFromMemory = function () {
+            var memoryLocation = this.conversionToDecimal(_MemoryManager.getMemoryAtLocation(this.PC + 1));
+            this.Xreg = this.conversionToDecimal(_MemoryManager.getMemoryAtLocation(memoryLocation));
+            this.PC += 2; //update pc
+        };
+        //loads the y register with a constant
+        Cpu.prototype.loadYregisterWithConstant = function () {
+            this.Yreg = this.getNextByte();
+            this.PC++; //update pc
+        };
+        Cpu.prototype.loadYregisterFromMemory = function () {
+            var memoryLocation = this.conversionToDecimal(_MemoryManager.getMemoryAtLocation(this.PC + 1));
+            this.Yreg = this.conversionToDecimal(_MemoryManager.getMemoryAtLocation(memoryLocation));
+            this.PC += 2; //update pc
+        };
+        Cpu.prototype.compareToXregister = function () {
+            var memoryLocation = this.getNextByte(); //getting the location of the byte to get
+            var hexNum = this.conversionToDecimal(_MemoryManager.getMemoryAtLocation(memoryLocation));
+            if (hexNum == this.Xreg) {
+                this.Zflag = 1;
+            }
+            else {
+                this.Zflag = 0;
+            }
+            this.PC += 2;
+        };
+        Cpu.prototype.branchNbytes = function () {
+            if (this.Zflag == 0) {
+                var value = this.getNextByte();
+                this.PC++;
+                this.PC += value;
+                if (this.PC >= _ProgramSize) {
+                    this.PC = this.PC - _ProgramSize;
+                }
+            }
+            else {
+                this.PC++;
+            }
+        };
+        Cpu.prototype.incrementValueOfByte = function () {
+            var memoryLocation = this.conversionToDecimal(_MemoryManager.getMemoryAtLocation(this.PC + 1));
+            var hexAtLocation = _MemoryManager.getMemoryAtLocation(memoryLocation);
+            var decimalNum = this.conversionToDecimal(hexAtLocation);
+            decimalNum++;
+            _MemoryManager.updateMemoryAtLocation(memoryLocation, decimalNum);
+            this.PC += 2;
         };
         //gets the next byte location in memory
         Cpu.prototype.getNextByte = function () {
@@ -221,10 +260,13 @@ var TSOS;
                 var characterString = "";
                 var char = "";
                 var character = _MemoryManager.getMemoryAtLocation(this.Yreg);
+                console.log("Hex character: " + character);
                 var characterCode = 0;
                 while (character != "00") {
                     var decimalNum = this.conversionToDecimal(character);
+                    console.log("character: " + character);
                     char = String.fromCharCode(decimalNum);
+                    console.log(char);
                     characterString += char;
                     this.Yreg++;
                     character = _MemoryManager.getMemoryAtLocation(this.Yreg);
