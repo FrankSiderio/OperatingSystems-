@@ -40,9 +40,22 @@ var TSOS;
                 // Check to see if it's "special" (enter or ctrl-c) or "normal" (anything else that the keyboard device driver gave us).
                 if (chr === String.fromCharCode(13)) {
                     //console.log(_Console.buffer);
-                    // The enter key marks the end of a console command, so ...
-                    // ... tell the shell ...
-                    _OsShell.handleInput(this.buffer);
+                    var totalBuffer = "";
+                    //if we went to the next line
+                    if (_ConsoleBuffers.length > 0) {
+                        for (var x = 0; x < _ConsoleBuffers.length; x++) {
+                            totalBuffer += _ConsoleBuffers[x]; //add the previous buffer
+                        }
+                        totalBuffer += this.buffer; //don't forget our current one
+                        //console.log(totalBuffer);
+                        _OsShell.handleInput(totalBuffer); //send her off
+                        totalBuffer = ""; //reset the buffer
+                        //reset the array
+                        _ConsoleBuffers = [];
+                    }
+                    else {
+                        _OsShell.handleInput(this.buffer);
+                    }
                     // ... and reset our buffer.
                     this.buffer = "";
                 }
@@ -58,12 +71,13 @@ var TSOS;
                     var currentLength = TSOS.CanvasTextFunctions.measure(_DefaultFontFamily, _DefaultFontSize, _Console.buffer);
                     //console.log(currentLength);
                     //console.log(canvas.width);
-                    //if the buffer is as long as the canvas width 
+                    //if the buffer is as long as the canvas width
                     if (currentLength >= canvas.width - 20) {
                         //advancing the line, setting the length back to 0 and resetting the buffer
                         this.advanceLine();
                         currentLength = 0;
-                        console.log(currentLength);
+                        //console.log(currentLength);
+                        _ConsoleBuffers.push(_Console.buffer); //so when we have to execute the command we have the previous buffers
                         _Console.buffer = "";
                     }
                 }

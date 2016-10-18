@@ -112,9 +112,11 @@ var TSOS;
         Control.hostBtnSingleStep_click = function (btn) {
             if (_SingleStep == true) {
                 _SingleStep = false;
+                document.getElementById("btnSingleStep").style.background = "white";
             }
             else {
                 _SingleStep = true;
+                document.getElementById("btnSingleStep").style.background = "blue";
             }
         };
         Control.hostBtnNextStep_click = function (btn) {
@@ -153,9 +155,7 @@ var TSOS;
         Control.clearMemoryTable = function () {
             for (var row = 0; row < 32; row++) {
                 for (var cell = 1; cell < 9; cell++) {
-                    if (_MemoryTable.rows[row].cells[cell].innerHTML != "00") {
-                        _MemoryTable.rows[row].cells[cell].innerHTML = "00";
-                    }
+                    _MemoryTable.rows[row].cells[cell].innerHTML = "00";
                 }
             }
         };

@@ -76,6 +76,9 @@ var _ProgramSize = 256; //size of our biggest program (for now)
 
 var _SingleStep: boolean = false;
 var _CurrentPCB: any = null;
+var _State = "Not Running"; //to update the PCB with
+
+var _ConsoleBuffers = new Array<string>(); //this is for line wrap keeps track of the buffer previous when the next line is advanced
 
 var _ExecutedCommands = new Array<string>();  // Keeps track of all the commands enter
 var _CountUp: number = 0; // Keeps count of up key presses

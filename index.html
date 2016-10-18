@@ -37,7 +37,7 @@
    <script type="text/javascript" src="distrib/utils.js"></script>
    <!-- Uncomment this line below to enable GLaDOS testing -->
   <!--<script type="text/javascript" src="http://www.labouseur.com/courses/os/projects/glados.js"></script> -->
-  <!--<script type="text/javascript" src="http://alanclasses.github.io/TSOS/test/glados-ip2.js"></script> -->
+  <!-- <script type="text/javascript" src="http://alanclasses.github.io/TSOS/test/glados-ip2.js"></script> -->
 </head>
 
 <body onload="onDocumentLoad()">
@@ -167,25 +167,8 @@
 
    </div>
  -->
-   <div id = "statusBar">
-     <textarea id = "statusBox"
-               tabindex="0"
-               style="resize: none"
-               col  = "30"
-               rows = "2"
-               readonly  = "true"
-               draggable = "false">
-    </textarea>
+  <!-- TODO: Make this look prettier -->
 
-    <textarea id = "statusBox2"
-              tabindex="0"
-              style="resize: none"
-              col  = "30"
-              rows = "2"
-              readonly  = "true"
-              draggable = "false">
-   </textarea>
-  </div>
 
    <div id="divConsole" style="margin:4px; width:500px; height:500px; float:left;">
       <canvas id="display"
@@ -193,6 +176,30 @@
               height="500px"
               tabindex="3">
       </canvas>
+      <div id = "statusBar">
+        <textarea id = "statusBox"
+                  tabindex="0"
+                  style="resize: none"
+                  col  = "30"
+                  rows = "2"
+                  readonly  = "true"
+                  draggable = "false">
+       </textarea>
+
+       <textarea id = "statusBox2"
+                 tabindex="0"
+                 style="resize: none"
+                 col  = "30"
+                 rows = "2"
+                 readonly  = "true"
+                 draggable = "false">
+      </textarea>
+     </div>
+     <br><br><br><br><br><br><br><br><br><br>
+     <div style = "overflow-y: scroll; background: white; height: 250px; width: 400px; margin-left:100px; margin-top:-200px;">
+       <label class = "table" id = "cpuMemory"> Memory </label>
+       <table class = "table" id = "memoryTable" style="font-family: Arial; font-size: larger"></table>
+     </div>
    </div>
 
    <div id="divLog" style="margin-left:520px;">
@@ -206,7 +213,7 @@
          ></textarea>
       </label>
       <div id="divCPU">
-        <table style="font-size: larger; background: blue">
+        <table style="font-size: larger; background: white; width: 400px">
           <thead>
             <tr>
               <td> PC </td>
@@ -226,8 +233,37 @@
           </tr>
           </tbody>
         </table>
+      </div
+      <br><br>
+      <div id="pcb">
+        <div>
+          <table id="pcb" style="font-size: larger; background: white; width: 400px">
+            <thead>
+              <td>PID</td>
+              <td>IR</td>
+              <td>PC</td>
+              <td>Acc</td>
+              <td>X</td>
+              <td>Y</td>
+              <td>Z<td>
+              <td>State</td>
+            </thead>
+            <tbody>
+              <td id="pcbPID"></td>
+              <td id="ir"></td>
+              <td id="pcbPC"></td>
+              <td id="pcbAcc"></td>
+              <td id="pcbX"><td>
+              <td id="pcbY"></td>
+              <td id="pcbZ"><td>
+              <td id="state"></td>
+            </tbody>
+
+          </table>
+        </div>
       </div>
   </div>
+
 
     <div id="divUserProgramInput" style="margin-left:520px;">
        <label>
@@ -241,10 +277,8 @@
        </label>
     </div>
 
-    <div style = "overflow-y: scroll; background: white; height: 250px; width: 400px; margin-left:100px; margin-top:-200px;">
-      <label class = "table" id = "cpuMemory"> Memory </label>
-      <table class = "table" id = "memoryTable" style="font-family: Arial; font-size: larger"></table>
-    </div>
+
+
 
 
 

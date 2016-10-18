@@ -135,10 +135,12 @@ module TSOS {
           if(_SingleStep == true)
           {
             _SingleStep = false;
+            (<HTMLButtonElement>document.getElementById("btnSingleStep")).style.background = "white";
           }
           else
           {
             _SingleStep = true;
+            (<HTMLButtonElement>document.getElementById("btnSingleStep")).style.background = "blue";
           }
         }
 
@@ -200,10 +202,7 @@ module TSOS {
           {
             for(var cell = 1; cell < 9; cell++)
             {
-              if(_MemoryTable.rows[row].cells[cell].innerHTML != "00")
-              {
-                _MemoryTable.rows[row].cells[cell].innerHTML = "00";
-              }
+              _MemoryTable.rows[row].cells[cell].innerHTML = "00";
             }
           }
         }

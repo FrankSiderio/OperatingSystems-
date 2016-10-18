@@ -18,7 +18,7 @@
 module TSOS {
     //for updating memory table
     var row = 0;
-    var x = 0;
+    var counter = 0;
 
     export class Cpu {
 
@@ -56,8 +56,9 @@ module TSOS {
             this.runOpCode(_MemoryManager.getMemoryAtLocation(this.PC));
 
 
+            this.updateCPUDisplay();
             this.updateCPU();
-            this.updateCPU();
+            this.updatePCB();
             //_Memory.clearMemory();
 
             if(_SingleStep == true)
@@ -65,92 +66,82 @@ module TSOS {
               this.isExecuting = false;
             }
 
+            //console.log("PC: " + this.PC);
+            //console.log("Program Length " + _ProgramLength);
 
         }
 
-        //load op codes
-        public loadOpCode(opCode): void
-        {
-          var i = 0;
-          while(i != opCode.length) //iterates through each different hex code
-          {
-            this.updateMemoryTable(opCode[i]);
-            /*
-
-          */
-          i++;
-          }
-        }
-
-      //updates the memory table with the opCodes
-      public updateMemoryTable(opCode)
-      {
-        //go to the next row
-        if(x == 8)
-        {
-          row++;
-          x = 0;
-          //console.log("row: " + row);
-        }
-        _MemoryTable.rows[row].cells[x + 1].innerHTML = opCode;
-        x++;
-        _MemoryArray.push(opCode);
-        //_memory.addToMemory();
-        //console.log("x: " + x);
-      }
 
       //this function runs the op codes by using a switch statement
       //the switch statement calls different functions depending on which opCode is executed in memory
       public runOpCode(code)
       {
         this.instruction = code.toUpperCase();
-        //var x = 0;
-        console.log("instruction: " + this.instruction);
+        //console.log("PC: " + this.PC);
+        //console.log("Counter: " + counter);
+        //don't really need the counter in there. I'll take it out later
         switch (this.instruction)
         {
           case "A9":
             //load the accumulator with a constant
             this.loadAccWithConstant();
+            counter++;
           break;
 
           case "AD":
             //load the accumulator from memory
             this.loadAccFromMemory();
+            counter++;
+
           break;
 
           case "8D":
             //store the accumulator in memory
             this.storeAccInMemory();
+            counter++;
+
           break;
 
           case "6D":
             //add with carry
             this.addWithCarry();
+            counter++;
+
           break;
 
           case "A2":
             //Load the X register with a constant
             this.loadXregisterWithConstant();
+            counter++;
+
           break;
 
           case "AE":
             //Load the X register from memory
             this.loadXregisterFromMemory();
+            counter++;
+
           break;
 
           case "A0":
             //Load the Y register with a constant
             this.loadYregisterWithConstant();
+            counter++;
+
           break;
 
           case "AC":
             //Load the Y register from memory
             this.loadYregisterFromMemory();
+            counter++;
+
           break;
 
           case "EA":
               //No operation
               //doing nothing (this is how you do it)
+              counter++;
+
           break;
 
           case "00":
@@ -158,33 +149,42 @@ module TSOS {
             this.isExecuting = false;
             _Console.advanceLine();
             _Console.putText(">");
+            counter++;
+
           break;
 
           case "EC":
             //Compare a byte in memory to the X reg. Sets the Z (zero) flag if equal
             this.compareToXregister();
+            counter++;
+
           break;
 
           case "D0":
             //Branch n bytes if Z flag = 0
             this.branchNbytes();
+            counter++;
+
           break;
 
           case "EE":
             //Increment the value of a byte
             this.incrementValueOfByte();
+            counter++;
+
             //this.PC++;
           break;
 
           case "FF":
             //System call
             this.systemCall();
+            counter++;
+
           break;
           //default: alert("default");
         }
         this.PC++;
 
-          //x++;
         //}
         //his.isExecuting = false;
       }
@@ -193,7 +193,6 @@ module TSOS {
       public loadAccWithConstant()
       {
         this.Acc = this.getNextByte(); //get the next byte and convert it to hex, set it equal to the Acc
-        console.log("Acc: " + this.Acc);
 
         this.PC++; //update PC
       }
@@ -217,7 +216,6 @@ module TSOS {
         _MemoryManager.updateMemoryAtLocation(nextTwoBytes, hexNum); //updates memory
         this.PC+=2;
 
-        console.log("PC: " + this.PC);
       }
 
       //adds with a carry
@@ -342,7 +340,6 @@ module TSOS {
             var characterString = "";
             var char = "";
             var character = _MemoryManager.getMemoryAtLocation(this.Yreg);
-            console.log("Hex character: " + character);
             var characterCode = 0;
 
             while(character != "00")
@@ -363,13 +360,47 @@ module TSOS {
           }
       }
 
-      public updateCPU()
+      public updateCPUDisplay()
       {
         document.getElementById("cpuPC").innerHTML = this.PC.toString();
         document.getElementById("cpuACC").innerHTML = this.Acc.toString();
         document.getElementById("cpuXReg").innerHTML = this.Xreg.toString();
         document.getElementById("cpuYReg").innerHTML = this.Yreg.toString();
         document.getElementById("cpuZFlag").innerHTML = this.Zflag.toString();
+      }
+
+      public updateCPU()
+      {
+        //if the program is done executing
+        if(this.PC == _ProgramLength)
+        {
+
+          _ProgramLength = 0;
+          _State = "Not Running";
+          //reset CPU and clear memory
+          this.init();
+          _Memory.clearMemory();
+          this.updateCPUDisplay();
+          Control.drawMemory();
+          this.updatePCB();
+        }
+        else
+        {
+          _State = "Running";
+        }
+      }
+
+      public updatePCB()
+      {
+        document.getElementById("pcbPID").innerHTML = _PID.toString();
+        document.getElementById("ir").innerHTML = this.instruction;
+        document.getElementById("pcbPC").innerHTML = this.PC.toString();
+        document.getElementById("pcbAcc").innerHTML = this.Acc.toString();
+        document.getElementById("pcbX").innerHTML = this.Xreg.toString();
+        document.getElementById("pcbY").innerHTML = this.Yreg.toString();
+        document.getElementById("pcbZ").innerHTML = this.Zflag.toString();
+        document.getElementById("state").innerHTML = _State;
+
       }
 
 

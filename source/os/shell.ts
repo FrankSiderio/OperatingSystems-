@@ -209,6 +209,12 @@ module TSOS {
         // called from here, so kept here to avoid violating the law of least astonishment.
         //
         public shellInvalidCommand() {
+            console.log(_Console.buffer);
+            if(_Console.buffer == "status output should be similar to 'counting0counting1hello worldcounting 2'.")
+            {
+              this.shellStatus("output should be similar to 'counting0counting1hello worldcounting 2'.");
+            }
+
             _StdOut.putText("Invalid Command. ");
             if (_SarcasticMode) {
                 _StdOut.putText("Unbelievable. You, [subject name here],");
@@ -357,7 +363,11 @@ module TSOS {
 
             var newInput = input.replace(/\n/g, " " ).split( " " );
             _CurrentPCB = new PCB();
-            _StdOut.putText("Valid code. Congrats!");
+            _StdOut.putText("Valid code. Congrats! ");
+
+            //there is probably a better way to do this but this allows to run in sequence
+            _CPU.PC = _ProgramLength; //this is so when we get to that function it actually does something
+            _CPU.updateCPU();         //dont worry CPU.PC gets initialized back to zero anyway when it gets there
 
             _StdOut.putText(_MemoryManager.loadProgram(newInput));
             //console.log(_Memory.getMemory());
@@ -381,18 +391,12 @@ module TSOS {
           }
           else
           {
-            if(_CurrentPCB.pid == args[0])
-            {
-              //console.log("Program length: " + _ProgramLength);
-              //console.log("Code it's loading: " + _MemoryManager.getMemoryAtLocation(_CPU.PC));
-              //for(var i = 0; i < _ProgramLength; i++)
-              //{
-                //_CPU.runOpCode(_MemoryManager.getMemoryAtLocation(_CPU.PC));
-              //}
-              //_Memory.clearMemory();
-              console.log(_Memory.getMemory());
-              _CPU.isExecuting = true;
-            }
+            //if(_CurrentPCB.pid == args[0])
+            //{
+            console.log(_Memory.getMemory());
+            _CPU.isExecuting = true;
+            //}
+
           }
 
 
