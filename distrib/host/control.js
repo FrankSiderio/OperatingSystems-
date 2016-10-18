@@ -111,10 +111,10 @@ var TSOS;
         };
         Control.hostBtnSingleStep_click = function (btn) {
             if (_SingleStep == true) {
-                _SingleStep == false;
+                _SingleStep = false;
             }
             else {
-                _SingleStep == true;
+                _SingleStep = true;
             }
         };
         Control.hostBtnNextStep_click = function (btn) {

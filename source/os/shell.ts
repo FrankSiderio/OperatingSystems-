@@ -394,7 +394,7 @@ module TSOS {
             }
           }
 
-      
+
           _ExecutedCommands.push("run");
           Shell.clearCounts();
         }
@@ -464,6 +464,9 @@ module TSOS {
                     case "bsod":
                       _StdOut.putText("Blue screen of death yay!");
                       break;
+
+                    case "run":
+                      _StdOut.putText("Runs the loaded program from memory. Run <pid>.");
 
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");

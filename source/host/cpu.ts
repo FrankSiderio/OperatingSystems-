@@ -49,13 +49,16 @@ module TSOS {
             _Kernel.krnTrace('CPU cycle');
             // TODO: Accumulate CPU usage and profiling statistics here.
             // Do the real work here. Be sure to set this.isExecuting appropriately.
-            console.log("code being loaded: " + _MemoryManager.getMemoryAtLocation(this.PC));
-            console.log("PC: " + this.PC);
+            //console.log("code being loaded: " + _MemoryManager.getMemoryAtLocation(this.PC));
+            //console.log("PC: " + this.PC);
 
-            this.runOpCode(_MemoryManager.getMemoryAtLocation(this.PC));
+            if(this.isExecuting)
+            {
+              this.runOpCode(_MemoryManager.getMemoryAtLocation(this.PC));
+            }
 
-            //this.updateCPU();
-            _Memory.clearMemory();
+            this.updateCPU();
+            //_Memory.clearMemory();
 
             if(_SingleStep == true)
             {
@@ -103,88 +106,195 @@ module TSOS {
         //while(x < _MemoryArray.length)
         //{
           //console.log("running: " + _MemoryArray[x]);
-        console.log("Op code: " + code);
+        //console.log("Op code: " + code);
         switch (this.instruction)
         {
           case "A9":
             //load the accumulator with a constant
-            this.PC = this.PC + 1; //update PC
-            var nextByte = _MemoryManager.getMemoryAtLocation(this.PC + 1); //get the next byte and convert it to hex
-            nextByte = this.conversionToHex(nextByte); //set the next byte to it's hex value
+
+            var nextByte = this.getNextByte(); //get the next byte and convert it to hex
             this.Acc = nextByte; //update the Acc
+            this.PC++; //update PC
             //this.loadAccumulatorWithConstant();
             //console.log("Acc: " + this.Acc);
             //console.log("PC: " + this.PC);
           break;
 
-            case "AD":
-              //load the accumulator from memory
-            break;
+          case "AD":
+            //load the accumulator from memory
+            var nxtTwoBytes = this.getNextTwoBytes();
+            var decimal = this.conversionToDecimal(_MemoryManager.getMemoryAtLocation(nxtTwoBytes));
 
-            case "8D":
-              //store the accumulator in memory
-            case "6D":
-              //add with carry
-            break;
+            this.Acc = decimal;
+            this.PC+=2;
+          break;
 
-            case "A2":
-              //Load the X register with a constant
-            break;
+          case "8D":
+            //store the accumulator in memory
+            var nextTwoBytes = this.getNextTwoBytes();
+            var hexNum = this.Acc;
 
-            case "AE":
-              //Load the X register from memory
-            break;
+            _MemoryManager.updateMemoryAtLocation(nextTwoBytes, hexNum); //updates memory
+            this.PC+=2;
+          break;
 
-            case "A0":
-              //Load the Y register with a constant
-            break;
+          case "6D":
+            //add with carry
+            this.Acc += this.conversionToDecimal(_MemoryManager.getMemoryAtLocation(this.getNextTwoBytes()));
+            console.log("Memory: " + _MemoryManager.getMemoryAtLocation(this.getNextTwoBytes()));
+            console.log("adding to acc: " + this.conversionToDecimal(_MemoryManager.getMemoryAtLocation(this.getNextTwoBytes())));
+            console.log("Acc: " + this.Acc);
+            this.PC+=2;
+          break;
 
-            case "AC":
-              //Load the Y register from memory
-            break;
+          case "A2":
+            //Load the X register with a constant
+            var nextByte = this.getNextByte();
+            this.Xreg = nextByte;
+            this.PC++; //update pc
+          break;
 
-            case "EA":
+          case "AE":
+            //Load the X register from memory
+            var memoryLocation = this.getNextByte();
+            this.Xreg = this.conversionToDecimal(_MemoryManager.getMemoryAtLocation(memoryLocation));
+
+            this.PC+=2; //update pc
+          break;
+
+          case "A0":
+            //Load the Y register with a constant
+            var nextByte = this.getNextByte();
+            this.Yreg = nextByte;
+
+            this.PC++; //update pc
+          break;
+
+          case "AC":
+            //Load the Y register from memory
+            var memoryLocation = this.getNextByte();
+            this.Yreg = this.conversionToDecimal(_MemoryManager.getMemoryAtLocation(memoryLocation));
+
+            this.PC+=2; //update pc
+          break;
+
+          case "EA":
               //No operation
-            break;
+              //doing nothing (this is how you do it)
+          break;
 
-            case "00":
-              //Break (which is really a system call)
-            break;
+          case "00":
+            //Break (which is really a system call)
+            this.isExecuting = false;
+            _Console.advanceLine();
+            _Console.putText(">");
+          break;
 
-            case "EC":
-              //Compare a byte in memory to the X reg. Sets the Z (zero) flag if equal
-            break;
+          case "EC":
+            //Compare a byte in memory to the X reg. Sets the Z (zero) flag if equal
+            var byte = this.getNextByte(); //getting the location of the byte to get
+          break;
 
-            case "D0":
-              //Branch n bytes if Z flag = 0
-            break;
+          case "D0":
+            //Branch n bytes if Z flag = 0
+            if(this.Zflag == 0)
+            {
+              var value = this.getNextByte();
+              this.PC++;
+              this.PC+=value;
 
-            case "EE":
-              //Increment the value of a byte
-            break;
+              if(this.PC >= _ProgramLength)
+              {
+                this.PC = this.PC - _ProgramLength;
+              }
+              else
+              {
+                this.PC++;
+              }
+            }
+          break;
 
-            case "FF":
-              //System call
-            break;
-            //default: alert("default");
+          case "EE":
+            //Increment the value of a byte
+            var memoryLocation = this.conversionToDecimal(_MemoryManager.getMemoryAtLocation(this.PC + 1));
+            var hexAtLocation = _MemoryManager.getMemoryAtLocation(memoryLocation);
+            var decimalNum = this.conversionToDecimal(hexAtLocation);
 
+            decimalNum++;
+            _MemoryManager.updateMemoryAtLocation(memoryLocation, decimalNum);
+            this.PC++;
+            this.PC++;
+          break;
+
+          case "FF":
+            //System call
+            this.systemCall();
+          break;
+          //default: alert("default");
         }
+        this.PC++;
 
           //x++;
         //}
         //his.isExecuting = false;
       }
 
-      public loadAccumulatorWithConstant()
+      //gets the next byte location in memory
+      public getNextByte()
       {
-        //alert("hey");
+        var nextByte = _MemoryManager.getMemoryAtLocation(this.PC + 1);
+
+        return this.conversionToDecimal(nextByte);
+      }
+      //gets the next two byte location from memory
+      public getNextTwoBytes()
+      {
+        var next = _MemoryManager.getMemoryAtLocation(this.PC + 1); //get the next byte and convert it to hex
+        var next2 = _MemoryManager.getMemoryAtLocation(this.PC + 2); //get the next next byte and convert it to hex
+        var combine = (next2 + next); //once we've got them lets combine them and return
+
+        return this.conversionToDecimal(combine);
       }
 
-      public conversionToHex(value)
+      public conversionToDecimal(value)
       {
-        var hexValue = parseInt(value, 16);
-        return value;
+        //value = value.toString(16);
+        var decValue = parseInt(value, 16);
+
+        //alert(hexValue);
+        return decValue;
       }
+
+      //handles the sytem call
+      public systemCall()
+      {
+          if(this.Xreg == 1)
+          {
+            _StdOut.putText(this.conversionToDecimal(this.Yreg).toString());
+          }
+          else if(this.Xreg == 2)
+          {
+            var characterString = "";
+            var char = "";
+            var character = _MemoryManager.getMemoryAtLocation(this.Yreg);
+
+            var characterCode = 0;
+
+            while(character != "00")
+            {
+              var decimalNum = this.conversionToDecimal(character);
+
+              char = String.fromCharCode(decimalNum);
+              characterString+=char;
+
+              this.Yreg++;
+              character = _MemoryManager.getMemoryAtLocation(this.Yreg);
+            }
+            _StdOut.putText(characterString);
+
+          }
+      }
+
       public updateCPU()
       {
         document.getElementById("cpuPC").innerHTML = this.PC.toString();

@@ -40,49 +40,73 @@
 </head>
 
 <body onload="onDocumentLoad()">
-<!--
+
   <div id="nav" class="navbar navbar-default navbar-fixed-top">
     <div class="container">
       <div class="navbar-header">
         <span id="name" class="navbar-brand">Frank's OS</span>
       </div>
+      <div id="divButtonBar" style="margin:4px;">
+         <input type="button"
+                id = "btnStartOS"
+                name="brnStartOS"
+                class="normal_button"
+                value="Start"
+                tabindex="0"
+                onclick="TSOS.Control.hostBtnStartOS_click(this);">
 
-      <div id="divButtonBar" class="btn-group nav navbar-form navbar-right">
-        <input type="button"
-               id = "btnStartOS"
-               name="brnStartOS"
-               class="normal_button"
-               value="Start"
-               tabindex="0"
-               onclick="TSOS.Control.hostBtnStartOS_click(this);">
-        <input type="button"
-              id = "btnHaltOS"
-              name="brnHaltOS"
-              class="normal_button"
-              disabled="disabled"
-              value="Halt"
-              tabindex="1"
-              onclick="TSOS.Control.hostBtnHaltOS_click(this);">
+         <input type="button"
+                id = "btnHaltOS"
+                name="brnHaltOS"
+                class="normal_button"
+                disabled="disabled"
+                value="Halt"
+                tabindex="1"
+                onclick="TSOS.Control.hostBtnHaltOS_click(this);">
 
-        <input type="button"
-              id = "btnReset"
-              name="brnReset"
-              class="normal_button"
-              disabled="disabled"
-              value="Reset"
-              tabindex="2"
-              onclick="TSOS.Control.hostBtnReset_click(this);">
+         <input type="button"
+                id = "btnReset"
+                name="brnReset"
+                class="normal_button"
+                disabled="disabled"
+                value="Reset"
+                tabindex="2"
+                onclick="TSOS.Control.hostBtnReset_click(this);">
+
+         <input type="button"
+                id = "btnSingleStep"
+                name = "btnSingleStep"
+                class = "normal_button"
+                disabled = "disabled"
+                value = "Single Step"
+                tabindex="2"
+                onclick="TSOS.Control.hostBtnSingleStep_click(this);">
+
+         <input type="button"
+                id = "btnNextStep"
+                name = "btnNextStep"
+                class = "normal_button"
+                disabled = "disabled"
+                value = "Next Step"
+                tabindex="2"
+                onclick="TSOS.Control.hostBtnNextStep_click(this);">
+
       </div>
 
-      <div id="statusBar" class="btn-group nav navbar-form navbar-right">
-        <button id="statusBox" class="btn btn-default" disabled="disabled"></button>
-        <button id="statusBox2" class="btn btn-default" disabled="disabled"><span>Unavailable</span></button>
-       </textarea>
-      </div>
 
     </div>
   </div>
+  <br><br><br>
 
+
+<!--
+<div id="statusBar" class="btn-group nav navbar-form navbar-right">
+  <button id="statusBox" class="btn btn-default" disabled="disabled"></button>
+  <button id="statusBox2" class="btn btn-default" disabled="disabled"><span>Unavailable</span></button>
+ </textarea>
+</div>
+-->
+  <!--
   <div id="content" class="container">
     <div class="row">
       <div id="divConsole" class="col-md-7">
@@ -92,6 +116,7 @@
   </div>
 -->
 
+<!--
 <div id="divMain" style="width:100%;">
 
    <div id="divButtonBar" style="margin:4px;">
@@ -140,9 +165,11 @@
              onclick="TSOS.Control.hostBtnNextStep_click(this);">
 
    </div>
-
+ -->
    <div id = "statusBar">
      <textarea id = "statusBox"
+               tabindex="0"
+               style="resize: none"
                col  = "30"
                rows = "2"
                readonly  = "true"
@@ -150,6 +177,8 @@
     </textarea>
 
     <textarea id = "statusBox2"
+              tabindex="0"
+              style="resize: none"
               col  = "30"
               rows = "2"
               readonly  = "true"
@@ -175,31 +204,29 @@
                    cols="48"
          ></textarea>
       </label>
-
-    </div>
-
-    <div id="divCPU">
-      <table style="font-size: larger; background: blue">
-        <thead>
+      <div id="divCPU">
+        <table style="font-size: larger; background: blue">
+          <thead>
+            <tr>
+              <td> PC </td>
+              <td> ACC </td>
+              <td> X Reg </td>
+              <td> Y Reg </td>
+              <td> Z Flag </td>
+            </tr>
+          </thead>
+          <tbody>
           <tr>
-            <td> PC </td>
-            <td> ACC </td>
-            <td> X Reg </td>
-            <td> Y Reg </td>
-            <td> Z Flag </td>
+            <td id="cpuPC">0</td>
+            <td id="cpuACC">0</td>
+            <td id="cpuXReg">0</td>
+            <td id="cpuYReg">0</td>
+            <td id="cpuZFlag">0</td>
           </tr>
-        </thead>
-        <tbody>
-        <tr>
-          <td id="cpuPC">0</td>
-          <td id="cpuACC">0</td>
-          <td id="cpuXReg">0</td>
-          <td id="cpuYReg">0</td>
-          <td id="cpuZFlage">0</td>
-        </tr>
-        </tbody>
-      </table>
-    </div>
+          </tbody>
+        </table>
+      </div>
+  </div>
 
     <div id="divUserProgramInput" style="margin-left:520px;">
        <label>

@@ -90,7 +90,6 @@ module TSOS {
             (<HTMLButtonElement>document.getElementById("btnSingleStep")).disabled = false;
             (<HTMLButtonElement>document.getElementById("btnNextStep")).disabled = false;
 
-
             // .. set focus on the OS console display ...
             document.getElementById("display").focus();
 
@@ -135,11 +134,11 @@ module TSOS {
         {
           if(_SingleStep == true)
           {
-            _SingleStep == false;
+            _SingleStep = false;
           }
           else
           {
-            _SingleStep == true;
+            _SingleStep = true;
           }
         }
 
