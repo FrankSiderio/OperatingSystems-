@@ -30,7 +30,7 @@ var TSOS;
             //Control resets table
             TSOS.Control.clearMemoryTable();
             this.memoryArray = null;
-            this.init(256);
+            this.init(768);
         };
         Memory.prototype.addToMemory = function (location, opCode) {
             this.memoryArray[location] = opCode;

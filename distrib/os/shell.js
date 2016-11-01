@@ -344,6 +344,7 @@ var TSOS;
             Shell.clearCounts();
         };
         Shell.prototype.shellClearMem = function () {
+            _Memory.clearMemory();
         };
         Shell.prototype.shellRunAll = function () {
         };
@@ -351,7 +352,15 @@ var TSOS;
         };
         Shell.prototype.shellPs = function () {
         };
-        Shell.prototype.shellKill = function () {
+        Shell.prototype.shellKill = function (args) {
+            if (args.length <= 0) {
+                _StdOut.putText("Please enter in a PID.");
+            }
+            else {
+                //kill process
+                _CPU.isExecuting = false;
+                _Memory.clearMemory();
+            }
         };
         Shell.prototype.shellMan = function (args) {
             if (args.length > 0) {

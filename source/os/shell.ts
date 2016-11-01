@@ -423,7 +423,7 @@ module TSOS {
 
         public shellClearMem()
         {
-
+          _Memory.clearMemory();
         }
 
         public shellRunAll()
@@ -441,9 +441,18 @@ module TSOS {
 
         }
 
-        public shellKill()
+        public shellKill(args)
         {
-          
+          if(args.length <= 0)
+          {
+            _StdOut.putText("Please enter in a PID.");
+          }
+          else
+          {
+            //kill process
+            _CPU.isExecuting = false;
+            _Memory.clearMemory();
+          }
         }
 
         public shellMan(args)

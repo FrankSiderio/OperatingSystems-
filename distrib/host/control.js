@@ -87,7 +87,7 @@ var TSOS;
             _Kernel = new TSOS.Kernel();
             _Kernel.krnBootstrap(); // _GLaDOS.afterStartup() will get called in there, if configured.
             //initializing memory stuff
-            _Memory = new TSOS.Memory(256);
+            _Memory = new TSOS.Memory(768);
             //console.log(_Memory.getMemory());
             _MemoryManager = new TSOS.MemoryManager();
             //draw memory table
@@ -128,8 +128,8 @@ var TSOS;
         //draws memory table
         Control.drawMemory = function () {
             _MemoryTable = document.getElementById("memoryTable");
-            for (var i = 0; i < 32; i++) {
-                if (i == 32) {
+            for (var i = 0; i < 96; i++) {
+                if (i == 96) {
                     var tr = document.createElement("tr");
                     tr.id = "bottomRow";
                     _MemoryTable.appendChild(tr);

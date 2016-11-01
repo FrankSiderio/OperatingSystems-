@@ -41,7 +41,7 @@ module TSOS
       //Control resets table
       Control.clearMemoryTable();
       this.memoryArray = null;
-      this.init(256);
+      this.init(768);
     }
 
     public addToMemory(location, opCode)
