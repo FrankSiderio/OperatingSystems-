@@ -12,7 +12,14 @@ module TSOS
     //loading the program into memory
     public loadProgram(opCode)
     {
-      _ProgramLength = opCode.length;
+      //gets the length of the program
+      for(var i = 0; i < opCode.length; i++)
+      {
+        if(opCode[i] != "00") //if there isn't a break
+        {
+          _ProgramLength++;
+        }
+      }
 
       _Memory.clearMemory();
       this.base = 0;

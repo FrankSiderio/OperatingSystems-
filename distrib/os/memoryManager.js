@@ -11,7 +11,12 @@ var TSOS;
         //public init(){}
         //loading the program into memory
         MemoryManager.prototype.loadProgram = function (opCode) {
-            _ProgramLength = opCode.length;
+            //gets the length of the program
+            for (var i = 0; i < opCode.length; i++) {
+                if (opCode[i] != "00") {
+                    _ProgramLength++;
+                }
+            }
             _Memory.clearMemory();
             this.base = 0;
             this.limit = 255;
