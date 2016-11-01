@@ -110,8 +110,25 @@ module TSOS {
             sc = new ShellCommand(this.shellRun, "run", "<pid> runs the specified program");
             this.commandList[this.commandList.length] = sc;
 
+            //clearmem
+            sc = new ShellCommand(this.shellClearMem, "clearmem", "clears memory");
+            this.commandList[this.commandList.length] = sc;
+
+            //runall
+            sc = new ShellCommand(this.shellRunAll, "runall", "runs all programs at once");
+            this.commandList[this.commandList.length] = sc;
+
+            //quantum
+            sc = new ShellCommand(this.shellQuantum, "quantum", "quantum <int> sets round robin");
+            this.commandList[this.commandList.length] = sc;
+
             // ps  - list the running processes and their IDs
+            sc = new ShellCommand(this.shellPs, "ps", "display the PIDs of all active processes");
+            this.commandList[this.commandList.length] = sc;
+
             // kill <id> - kills the specified process id.
+            sc = new ShellCommand(this.shellKill, "kill", "kill <pid> to kill an active process");
+            this.commandList[this.commandList.length] = sc;
 
             //
             // Display the initial prompt.
@@ -404,6 +421,30 @@ module TSOS {
           Shell.clearCounts();
         }
 
+        public shellClearMem()
+        {
+
+        }
+
+        public shellRunAll()
+        {
+
+        }
+
+        public shellQuantum()
+        {
+
+        }
+
+        public shellPs()
+        {
+
+        }
+
+        public shellKill()
+        {
+          
+        }
 
         public shellMan(args)
         {

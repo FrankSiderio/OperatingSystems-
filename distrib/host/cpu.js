@@ -67,6 +67,7 @@ var TSOS;
             this.instruction = code.toUpperCase();
             //console.log("PC: " + this.PC);
             //console.log("Counter: " + counter);
+            //don't really need the counter in there. I'll take it out later
             switch (this.instruction) {
                 case "A9":
                     //load the accumulator with a constant
@@ -250,7 +251,6 @@ var TSOS;
                 var characterString = "";
                 var char = "";
                 var character = _MemoryManager.getMemoryAtLocation(this.Yreg);
-                console.log("Hex character: " + character);
                 var characterCode = 0;
                 while (character != "00") {
                     var decimalNum = this.conversionToDecimal(character);

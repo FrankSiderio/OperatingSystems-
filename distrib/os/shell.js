@@ -73,8 +73,21 @@ var TSOS;
             //run
             sc = new TSOS.ShellCommand(this.shellRun, "run", "<pid> runs the specified program");
             this.commandList[this.commandList.length] = sc;
+            //clearmem
+            sc = new TSOS.ShellCommand(this.shellClearMem, "clearmem", "clears memory");
+            this.commandList[this.commandList.length] = sc;
+            //runall
+            sc = new TSOS.ShellCommand(this.shellRunAll, "runall", "runs all programs at once");
+            this.commandList[this.commandList.length] = sc;
+            //quantum
+            sc = new TSOS.ShellCommand(this.shellQuantum, "quantum", "quantum <int> sets round robin");
+            this.commandList[this.commandList.length] = sc;
             // ps  - list the running processes and their IDs
+            sc = new TSOS.ShellCommand(this.shellPs, "ps", "display the PIDs of all active processes");
+            this.commandList[this.commandList.length] = sc;
             // kill <id> - kills the specified process id.
+            sc = new TSOS.ShellCommand(this.shellKill, "kill", "kill <pid> to kill an active process");
+            this.commandList[this.commandList.length] = sc;
             //
             // Display the initial prompt.
             this.putPrompt();
@@ -329,6 +342,16 @@ var TSOS;
             }
             _ExecutedCommands.push("run");
             Shell.clearCounts();
+        };
+        Shell.prototype.shellClearMem = function () {
+        };
+        Shell.prototype.shellRunAll = function () {
+        };
+        Shell.prototype.shellQuantum = function () {
+        };
+        Shell.prototype.shellPs = function () {
+        };
+        Shell.prototype.shellKill = function () {
         };
         Shell.prototype.shellMan = function (args) {
             if (args.length > 0) {
