@@ -90,6 +90,10 @@ var TSOS;
             _Memory = new TSOS.Memory(768);
             //console.log(_Memory.getMemory());
             _MemoryManager = new TSOS.MemoryManager();
+            _CpuScheduler = new TSOS.CpuScheduler();
+            _MemoryAllocation[0] = "0";
+            _MemoryAllocation[1] = "0";
+            _MemoryAllocation[2] = "0";
             //draw memory table
             this.drawMemory();
         };

@@ -34,6 +34,7 @@ var _Kernel;
 var _KernelInterruptQueue; // Initializing this to null (which I would normally do) would then require us to specify the 'any' type, as below.
 var _KernelInputQueue = null; // Is this better? I don't like uninitialized variables. But I also don't like using the type specifier 'any'
 var _KernelBuffers = null; // when clearly 'any' is not what we want. There is likely a better way, but what is it?
+var _CpuScheduler = null;
 // Standard input and output
 var _StdIn; // Same "to null or not to null" issue as above.
 var _StdOut;
@@ -54,7 +55,8 @@ var _MemoryManager = null;
 var _Memory = null;
 var _MemoryArray = new Array();
 var _ProgramLength = null;
-var _ProgramSize = 256; //size of our biggest program (for now)
+var _ProgramSize = 256; //size of our biggest program
+var _MemoryAllocation = new Array();
 var _SingleStep = false;
 var _CurrentPCB = null;
 var _State = "Not Running"; //to update the PCB with

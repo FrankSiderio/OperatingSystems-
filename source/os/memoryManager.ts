@@ -21,9 +21,26 @@ module TSOS
         }
       }
 
-      _Memory.clearMemory();
-      this.base = 0;
-      this.limit = 255;
+      //_Memory.clearMemory();
+      if(_MemoryAllocation[0] == "0")
+      {
+        this.base = 0;
+        this.limit = 255;
+        _MemoryAllocation[0] = "1";
+      }
+      else if(_MemoryAllocation[1] == "0")
+      {
+        this.base = 256;
+        this.limit = 511;
+        _MemoryAllocation[1] = "1";
+      }
+      else if(_MemoryAllocation[2] == "0")
+      {
+        this.base = 512;
+        this.limit = 768;
+        _MemoryAllocation[2] = "1";
+      }
+
 
       //calls updateMemoryLocation to update the physical address
       for(var i = 0; i < opCode.length; i++)
@@ -41,6 +58,21 @@ module TSOS
     //updates the table, given a specific location and opCode
     public updateMemoryAtLocation(memoryLocation, opCode): void
     {
+      var startingRow = 0;
+
+      if(this.base == 0)
+      {
+        startingRow = 0;
+      }
+      else if(this.base == 256)
+      {
+        startingRow = 32;
+      }
+      else if(this.base == 512)
+      {
+        startingRow = 64;
+      }
+
       var hexCode = opCode.toString(16); //setting the hexCode equal to the passed in opCode
       var currentBlock = _Memory.getMemory(); //setting the current block from Memory
 
@@ -53,7 +85,7 @@ module TSOS
       }
 
       currentBlock[memoryLocation] = hexCode;
-      var currentTableRow = Math.floor(memoryLocation / 8);
+      var currentTableRow = ((Math.floor(memoryLocation / 8)) + startingRow);
       //_Memory.addToMemory(memoryLocation, opCode);
       Control.updateMemoryTable(currentTableRow, memoryLocation % 8, hexCode);
     }

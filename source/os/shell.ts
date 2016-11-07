@@ -383,8 +383,8 @@ module TSOS {
             _StdOut.putText("Valid code. Congrats! ");
 
             //there is probably a better way to do this but this allows to run in sequence
-            _CPU.PC = _ProgramLength; //this is so when we get to that function it actually does something
-            _CPU.updateCPU();         //dont worry CPU.PC gets initialized back to zero anyway when it gets there
+            //_CPU.PC = _ProgramLength; //this is so when we get to that function it actually does something
+            //_CPU.updateCPU();         //dont worry CPU.PC gets initialized back to zero anyway when it gets there
 
             _StdOut.putText(_MemoryManager.loadProgram(newInput));
             //console.log(_Memory.getMemory());
