@@ -16,6 +16,7 @@ var CPU_CLOCK_INTERVAL = 100; // This is in ms (milliseconds) so 1000 = 1 second
 var TIMER_IRQ = 0; // Pages 23 (timer), 9 (interrupts), and 561 (interrupt priority).
 // NOTE: The timer is different from hardware/host clock pulses. Don't confuse these.
 var KEYBOARD_IRQ = 1;
+var CONTEXT_SWITCH_IRQ = 7;
 //
 // Global Variables
 // TODO: Make a global object and use that instead of the "_" naming convention in the global namespace.
@@ -56,16 +57,22 @@ var _Memory = null;
 var _MemoryArray = new Array();
 var _ProgramLength = null;
 var _ProgramSize = 256; //size of our biggest program
-var _MemoryAllocation = new Array();
+var _MemoryAllocation = new Array(); // Array that contains the pids that are loaded into memory
 var _SingleStep = false;
 var _CurrentPCB = null;
 var _State = "Not Running"; //to update the PCB with
+var _Quantum = 6;
+var _QuantumCounter = 0;
+var _RunAll = false;
 var _ConsoleBuffers = new Array(); //this is for line wrap keeps track of the buffer previous when the next line is advanced
 var _ExecutedCommands = new Array(); // Keeps track of all the commands enter
 var _CountUp = 0; // Keeps count of up key presses
 var _CountDown = 0; // Keeps count of down key presses
 var _ExecutedCommandsPointer = null; // This points to where we are in the executedCommands list where scrolling through with the arrow keys
 var _PID = -1; // pid
+var _LineCount = 0;
+var _LastCharOnLine = "";
+var _LastCursorPosition = 0;
 var onDocumentLoad = function () {
     TSOS.Control.hostInit();
 };

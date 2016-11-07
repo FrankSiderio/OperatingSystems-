@@ -35,7 +35,7 @@ var TSOS;
             sc = new TSOS.ShellCommand(this.shellHelp, "help", "- This is the help command. Seek help.");
             this.commandList[this.commandList.length] = sc;
             // shutdown
-            sc = new TSOS.ShellCommand(this.shellShutdown, "shutdown", "- Shuts down the virtual OS but leaves the underlying host / hardware simulation running.");
+            sc = new TSOS.ShellCommand(this.shellShutdown, "shutdown", "- Shuts down the virtual OS");
             this.commandList[this.commandList.length] = sc;
             // cls
             sc = new TSOS.ShellCommand(this.shellCls, "cls", "- Clears the screen and resets the cursor position.");
@@ -338,6 +338,7 @@ var TSOS;
                 //if(_CurrentPCB.pid == args[0])
                 //{
                 //console.log("pid: " + args);
+                //Runs the pid associated with the memory location 0-2
                 if (args == _MemoryAllocation[0]) {
                     _CPU.PC = 0;
                 }
@@ -357,8 +358,16 @@ var TSOS;
             _Memory.clearMemory();
         };
         Shell.prototype.shellRunAll = function () {
+            _RunAll = true;
+            _CpuScheduler.roundRobin();
         };
-        Shell.prototype.shellQuantum = function () {
+        Shell.prototype.shellQuantum = function (args) {
+            if (args.length <= 0) {
+                _StdOut.putText("Please provide a quantum.");
+            }
+            else {
+                _Quantum = args;
+            }
         };
         Shell.prototype.shellPs = function () {
         };

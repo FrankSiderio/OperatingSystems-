@@ -22,6 +22,7 @@ module TSOS
       }
 
       //_Memory.clearMemory();
+      //Chooses with memory block to allocate
       if(_MemoryAllocation[0] == "-1")
       {
         this.base = 0;

@@ -49,7 +49,7 @@ module TSOS {
             // shutdown
             sc = new ShellCommand(this.shellShutdown,
                                   "shutdown",
-                                  "- Shuts down the virtual OS but leaves the underlying host / hardware simulation running.");
+                                  "- Shuts down the virtual OS");
             this.commandList[this.commandList.length] = sc;
 
             // cls
@@ -411,6 +411,8 @@ module TSOS {
             //if(_CurrentPCB.pid == args[0])
             //{
             //console.log("pid: " + args);
+
+            //Runs the pid associated with the memory location 0-2
             if(args == _MemoryAllocation[0])
             {
               _CPU.PC = 0;
@@ -441,12 +443,20 @@ module TSOS {
 
         public shellRunAll()
         {
-
+          _RunAll = true;
+          _CpuScheduler.roundRobin();
         }
 
-        public shellQuantum()
+        public shellQuantum(args)
         {
-
+          if(args.length <= 0)
+          {
+            _StdOut.putText("Please provide a quantum.");
+          }
+          else
+          {
+            _Quantum = args;
+          }
         }
 
         public shellPs()

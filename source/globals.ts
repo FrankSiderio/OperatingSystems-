@@ -20,6 +20,7 @@ const CPU_CLOCK_INTERVAL: number = 100;   // This is in ms (milliseconds) so 100
 const TIMER_IRQ: number = 0;  // Pages 23 (timer), 9 (interrupts), and 561 (interrupt priority).
                               // NOTE: The timer is different from hardware/host clock pulses. Don't confuse these.
 const KEYBOARD_IRQ: number = 1;
+const CONTEXT_SWITCH_IRQ: number = 7;
 
 
 //
@@ -75,11 +76,15 @@ var _Memory: any = null;
 var _MemoryArray = new Array<string>();
 var _ProgramLength: any = null;
 var _ProgramSize = 256; //size of our biggest program
-var _MemoryAllocation = new Array<string>();
+var _MemoryAllocation = new Array<string>(); // Array that contains the pids that are loaded into memory
 
 var _SingleStep: boolean = false;
 var _CurrentPCB: any = null;
 var _State = "Not Running"; //to update the PCB with
+
+var _Quantum: number = 6;
+var _QuantumCounter: number = 0;
+var _RunAll: boolean = false;
 
 var _ConsoleBuffers = new Array<string>(); //this is for line wrap keeps track of the buffer previous when the next line is advanced
 
@@ -88,6 +93,10 @@ var _CountUp: number = 0; // Keeps count of up key presses
 var _CountDown: number = 0; // Keeps count of down key presses
 var _ExecutedCommandsPointer: number = null; // This points to where we are in the executedCommands list where scrolling through with the arrow keys
 var _PID: number = -1; // pid
+
+var _LineCount: number = 0;
+var _LastCharOnLine = "";
+var _LastCursorPosition: number = 0;
 
 var onDocumentLoad = function() {
 	TSOS.Control.hostInit();

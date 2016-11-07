@@ -55,14 +55,19 @@ module TSOS {
             //console.log("Memory at location" + _MemoryManager.getMemoryAtLocation(32));
 
             this.runOpCode(_MemoryManager.getMemoryAtLocation(this.PC));
+            if(_RunAll == true)
+            {
+              _QuantumCounter++;
+              _CpuScheduler.roundRobin();
+            }
             //console.log("Mem at this loc: " + _MemoryManager.getMemoryAtLocation(this.PC));
 
             //console.log("PC: " + this.PC);
             //console.log(_Memory.getMemory());
 
-            this.updateCPUDisplay();
+            //this.updateCPUDisplay();
             //this.updateCPU();
-            this.updatePCB();
+            //this.updatePCB();
             //_Memory.clearMemory();
 
             if(_SingleStep == true)
@@ -84,8 +89,8 @@ module TSOS {
         //console.log("PC: " + this.PC);
         //console.log("Counter: " + counter);
         //don't really need the counter in there. I'll take it out later
-        console.log("Instruction: " + this.instruction);
-        console.log("PC: " + this.PC);
+        //console.log("Instruction: " + this.instruction);
+        //console.log("PC: " + this.PC);
 
         switch (this.instruction)
         {
