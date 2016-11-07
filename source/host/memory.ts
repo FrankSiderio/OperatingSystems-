@@ -7,7 +7,7 @@ module TSOS
   export class Memory
   {
     public memoryArray:string [];
-    public totalMemory:number = 256;
+    public totalMemory:number = 768;
 
     constructor(size: number)
     {

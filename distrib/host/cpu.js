@@ -50,9 +50,13 @@ var TSOS;
             // Do the real work here. Be sure to set this.isExecuting appropriately.
             //console.log("code being loaded: " + _MemoryManager.getMemoryAtLocation(this.PC));
             //console.log("PC: " + this.PC);
+            //console.log("Memory at location" + _MemoryManager.getMemoryAtLocation(32));
             this.runOpCode(_MemoryManager.getMemoryAtLocation(this.PC));
+            //console.log("Mem at this loc: " + _MemoryManager.getMemoryAtLocation(this.PC));
+            //console.log("PC: " + this.PC);
+            //console.log(_Memory.getMemory());
             this.updateCPUDisplay();
-            this.updateCPU();
+            //this.updateCPU();
             this.updatePCB();
             //_Memory.clearMemory();
             if (_SingleStep == true) {
@@ -68,6 +72,8 @@ var TSOS;
             //console.log("PC: " + this.PC);
             //console.log("Counter: " + counter);
             //don't really need the counter in there. I'll take it out later
+            console.log("Instruction: " + this.instruction);
+            console.log("PC: " + this.PC);
             switch (this.instruction) {
                 case "A9":
                     //load the accumulator with a constant
@@ -155,6 +161,9 @@ var TSOS;
         //loads the Accumulator from memory
         Cpu.prototype.loadAccFromMemory = function () {
             var nxtTwoBytes = this.getNextTwoBytes();
+            if (_MemoryManager.base > 0) {
+                nxtTwoBytes += _MemoryManager.base;
+            }
             var decimal = this.conversionToDecimal(_MemoryManager.getMemoryAtLocation(nxtTwoBytes));
             this.Acc = decimal;
             this.PC += 2;
@@ -168,7 +177,11 @@ var TSOS;
         };
         //adds with a carry
         Cpu.prototype.addWithCarry = function () {
-            this.Acc += this.conversionToDecimal(_MemoryManager.getMemoryAtLocation(this.getNextTwoBytes()));
+            var memoryLocation = this.getNextTwoBytes();
+            if (_MemoryManager.base > 0) {
+                memoryLocation += _MemoryManager.base;
+            }
+            this.Acc += this.conversionToDecimal(_MemoryManager.getMemoryAtLocation(memoryLocation));
             this.PC += 2;
         };
         //loads the x register with a constant
@@ -179,6 +192,9 @@ var TSOS;
         //loads the x register from memory
         Cpu.prototype.loadXregisterFromMemory = function () {
             var memoryLocation = this.conversionToDecimal(_MemoryManager.getMemoryAtLocation(this.PC + 1));
+            if (_MemoryManager.base > 0) {
+                memoryLocation += _MemoryManager.base;
+            }
             this.Xreg = this.conversionToDecimal(_MemoryManager.getMemoryAtLocation(memoryLocation));
             this.PC += 2; //update pc
         };
@@ -189,11 +205,17 @@ var TSOS;
         };
         Cpu.prototype.loadYregisterFromMemory = function () {
             var memoryLocation = this.conversionToDecimal(_MemoryManager.getMemoryAtLocation(this.PC + 1));
+            if (_MemoryManager.base > 0) {
+                memoryLocation += _MemoryManager.base;
+            }
             this.Yreg = this.conversionToDecimal(_MemoryManager.getMemoryAtLocation(memoryLocation));
             this.PC += 2; //update pc
         };
         Cpu.prototype.compareToXregister = function () {
             var memoryLocation = this.getNextByte(); //getting the location of the byte to get
+            if (_MemoryManager.base > 0) {
+                memoryLocation += _MemoryManager.base;
+            }
             var hexNum = this.conversionToDecimal(_MemoryManager.getMemoryAtLocation(memoryLocation));
             if (hexNum == this.Xreg) {
                 this.Zflag = 1;
@@ -206,9 +228,11 @@ var TSOS;
         Cpu.prototype.branchNbytes = function () {
             if (this.Zflag == 0) {
                 var value = this.getNextByte();
-                this.PC++;
                 this.PC += value;
-                if (this.PC >= _ProgramSize) {
+                this.PC++;
+                var combined = (_ProgramSize + _MemoryManager.base);
+                //console.log("Combined: " + combined);
+                if (this.PC >= combined) {
                     this.PC = this.PC - _ProgramSize;
                 }
             }
@@ -218,6 +242,9 @@ var TSOS;
         };
         Cpu.prototype.incrementValueOfByte = function () {
             var memoryLocation = this.conversionToDecimal(_MemoryManager.getMemoryAtLocation(this.PC + 1));
+            if (_MemoryManager.base > 0) {
+                memoryLocation += _MemoryManager.base;
+            }
             var hexAtLocation = _MemoryManager.getMemoryAtLocation(memoryLocation);
             var decimalNum = this.conversionToDecimal(hexAtLocation);
             decimalNum++;
@@ -244,22 +271,31 @@ var TSOS;
         };
         //handles the sytem call
         Cpu.prototype.systemCall = function () {
+            //console.log("Base: " + _MemoryManager.base);
             if (this.Xreg == 1) {
                 _StdOut.putText(this.conversionToDecimal(this.Yreg).toString());
             }
             else if (this.Xreg == 2) {
                 var characterString = "";
                 var char = "";
-                var character = _MemoryManager.getMemoryAtLocation(this.Yreg);
+                var location = this.Yreg;
+                if (_MemoryManager.base > 0) {
+                    location += _MemoryManager.base;
+                }
+                var character = _MemoryManager.getMemoryAtLocation(location);
                 var characterCode = 0;
                 while (character != "00") {
                     var decimalNum = this.conversionToDecimal(character);
-                    console.log("character: " + character);
+                    //console.log("character: " + character);
                     char = String.fromCharCode(decimalNum);
-                    console.log(char);
+                    //console.log(char);
                     characterString += char;
                     this.Yreg++;
-                    character = _MemoryManager.getMemoryAtLocation(this.Yreg);
+                    var location2 = this.Yreg;
+                    if (_MemoryManager.base > 0) {
+                        location2 += _MemoryManager.base;
+                    }
+                    character = _MemoryManager.getMemoryAtLocation(location2);
                 }
                 _StdOut.putText(characterString);
             }

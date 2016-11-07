@@ -91,9 +91,9 @@ var TSOS;
             //console.log(_Memory.getMemory());
             _MemoryManager = new TSOS.MemoryManager();
             _CpuScheduler = new TSOS.CpuScheduler();
-            _MemoryAllocation[0] = "0";
-            _MemoryAllocation[1] = "0";
-            _MemoryAllocation[2] = "0";
+            _MemoryAllocation[0] = "-1";
+            _MemoryAllocation[1] = "-1";
+            _MemoryAllocation[2] = "-1";
             //draw memory table
             this.drawMemory();
         };

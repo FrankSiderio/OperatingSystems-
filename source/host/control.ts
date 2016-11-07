@@ -108,9 +108,9 @@ module TSOS {
             //console.log(_Memory.getMemory());
             _MemoryManager = new MemoryManager();
             _CpuScheduler = new CpuScheduler();
-            _MemoryAllocation[0] = "0";
-            _MemoryAllocation[1] = "0";
-            _MemoryAllocation[2] = "0";
+            _MemoryAllocation[0] = "-1";
+            _MemoryAllocation[1] = "-1";
+            _MemoryAllocation[2] = "-1";
 
             //draw memory table
             this.drawMemory();

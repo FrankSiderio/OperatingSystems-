@@ -5,7 +5,7 @@ var TSOS;
 (function (TSOS) {
     var Memory = (function () {
         function Memory(size) {
-            this.totalMemory = 256;
+            this.totalMemory = 768;
             this.totalMemory = size;
             this.init(this.totalMemory);
         }

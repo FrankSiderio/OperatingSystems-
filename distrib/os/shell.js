@@ -337,7 +337,17 @@ var TSOS;
             else {
                 //if(_CurrentPCB.pid == args[0])
                 //{
-                console.log(_Memory.getMemory());
+                //console.log("pid: " + args);
+                if (args == _MemoryAllocation[0]) {
+                    _CPU.PC = 0;
+                }
+                else if (args == _MemoryAllocation[1]) {
+                    _CPU.PC = 256;
+                }
+                else if (args == _MemoryAllocation[2]) {
+                    _CPU.PC = 512;
+                }
+                //console.log("PC at shell run: " + _CPU.PC);
                 _CPU.isExecuting = true;
             }
             _ExecutedCommands.push("run");
