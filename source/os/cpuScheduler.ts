@@ -57,39 +57,64 @@ module TSOS
         //figure out where to switch to
         if(_MemoryManager.base == 0) //if its running program in location[0]
         {
-          _MemoryManager.base = 256;
-          _MemoryManager.limit = 511;
+          if(_MemoryAllocation[1] != "-1")
+          {
+            _MemoryManager.base = 256;
+            _MemoryManager.limit = 511;
+            _Kernel.krnTrace("Context Switch");
 
-          this.setValues(0);
+            this.setValues(0);
+          }
         }
         else if(_MemoryManager.base == 256) //if its running program in location[1]
         {
-          _MemoryManager.base = 512;
-          _MemoryManager.limit = 768;
+          if(_MemoryAllocation[2] != "-1")//lets make sure there is something there
+          {
+            _MemoryManager.base = 512;
+            _MemoryManager.limit = 768;
+            _Kernel.krnTrace("Context Switch");
 
-          this.setValues(1);
+            this.setValues(1);
+          }
+
+          //this allows us to do round robin with just 2 programs
+          //probably a better way to do this than all these ifs
+          else if(_MemoryAllocation[0] != "-1")//check to see if theres something in the previous spot
+          {
+            _MemoryManager.base = 0;
+            _MemoryManager.limit = 255;
+
+            this.setValues(7);
+          }
+
         }
         else if(_MemoryManager.base == 512) //if its running program in location[2]
         {
-          _MemoryManager.base = 0;
-          _MemoryManager.limit = 255;
+          if(_MemoryAllocation[0] != "-1")
+          {
+            _MemoryManager.base = 0;
+            _MemoryManager.limit = 255;
+            _Kernel.krnTrace("Context Switch");
 
-          this.setValues(2);
+            this.setValues(2);
+          }
+          else if(_MemoryAllocation[1] != "-1")
+          {
+            _MemoryManager.base = 256;
+            _MemoryManager.limit = 511;
+            _Kernel.krnTrace("Context Switch");
+
+            this.setValues(4);
+          }
         }
 
         console.log("Base: " + _MemoryManager.base);
         console.log("Limit: " + _MemoryManager.limit);
-        /*
-        pc = _CPU.PC;
-        acc = _CPU.Acc;
-        xreg = _CPU.Xreg;
-        yreg = _CPU.Yreg;
-        zflag = _CPU.Zflag;
 
-        _CPU.PC = 256;
-        */
         //console.log("Memory base after: " + _MemoryManager.base);
-        _Kernel.krnTrace("Context Switch");
+        //var interrupt = _KernelInterruptQueue.queue();
+        //_Kernel.krnInterruptHandler(interrupt.irq, interrupt.params);
+
       }
 
       //_Kernel.krnInterruptHandler(CONTEXT_SWITCH_IRQ, "fdsafdsa");
@@ -102,21 +127,6 @@ module TSOS
       //num tells us which block we are saving the values from
       if(num == 0)
       {
-        /*
-        pc0 = _CPU.PC;
-        acc0 = _CPU.Acc;
-        xreg0 = _CPU.Xreg;
-        yreg0 = _CPU.Yreg;
-        zflag0 = _CPU.Zflag;
-
-        _CPU.PC = pc1;
-        _CPU.Acc = acc1;
-        _CPU.Xreg = xreg1;
-        _CPU.Yreg = yreg1;
-        _CPU.Zflag = zflag1;
-        */
-
-
         _Pcb0.PC = _CPU.PC;
         _Pcb0.Acc = _CPU.Acc;
         _Pcb0.XReg = _CPU.Xreg;
@@ -133,21 +143,6 @@ module TSOS
       }
       else if(num == 1)
       {
-        /*
-        pc1 = _CPU.PC;
-        acc1 = _CPU.Acc;
-        xreg1 = _CPU.Xreg;
-        yreg1 = _CPU.Yreg;
-        zflag1 = _CPU.Zflag;
-
-        _CPU.PC = pc2;
-        _CPU.Acc = acc2;
-        _CPU.Xreg = xreg2;
-        _CPU.Yreg = yreg2;
-        _CPU.Zflag = zflag2;
-        */
-
-
         _Pcb1.PC = _CPU.PC;
         _Pcb1.Acc = _CPU.Acc;
         _Pcb1.XReg = _CPU.Xreg;
@@ -164,20 +159,6 @@ module TSOS
       }
       else if(num == 2)
       {
-        /*
-        pc2 = _CPU.PC;
-        acc2 = _CPU.Acc;
-        xreg2 = _CPU.Xreg;
-        yreg2 = _CPU.Yreg;
-        zflag2 = _CPU.Zflag;
-
-        _CPU.PC = pc0;
-        _CPU.Acc = acc0;
-        _CPU.Xreg = xreg0;
-        _CPU.Yreg = yreg0;
-        _CPU.Zflag = zflag0;
-        */
-
 
         _Pcb2.PC = _CPU.PC;
         _Pcb2.Acc = _CPU.Acc;
@@ -193,12 +174,36 @@ module TSOS
         _CPU.Zflag = _Pcb0.ZFlag;
 
       }
+      else if(num == 4)
+      {
+        _Pcb2.PC = _CPU.PC;
+        _Pcb2.Acc = _CPU.Acc;
+        _Pcb2.XReg = _CPU.Xreg;
+        _Pcb2.YReg = _CPU.Yreg;
+        _Pcb2.ZFlag = _CPU.Zflag;
+        _Pcb2.instruction = _CPU.instruction;
+
+        _CPU.PC = _Pcb1.PC;
+        _CPU.Acc = _Pcb1.Acc;
+        _CPU.Xreg = _Pcb1.XReg;
+        _CPU.Yreg = _Pcb1.YReg;
+        _CPU.Zflag = _Pcb1.ZFlag;
+      }
+      else if(num == 7) //if we want to see the values back to the previous pcb
+      {
+        _Pcb1.PC = _CPU.PC;
+        _Pcb1.Acc = _CPU.Acc;
+        _Pcb1.XReg = _CPU.Xreg;
+        _Pcb1.YReg = _CPU.Yreg;
+        _Pcb1.ZFlag = _CPU.Zflag;
+        _Pcb1.instruction = _CPU.instruction;
+
+        _CPU.PC = _Pcb0.PC;
+        _CPU.Acc = _Pcb0.Acc;
+        _CPU.Xreg = _Pcb0.XReg;
+        _CPU.Yreg = _Pcb0.YReg;
+        _CPU.Zflag = _Pcb0.ZFlag;
+      }
     }
-
-    public updateQueue()
-    {
-
-    }
-
   }
 }
