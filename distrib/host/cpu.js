@@ -126,9 +126,47 @@ var TSOS;
                     break;
                 case "00":
                     //Break (which is really a system call)
-                    this.isExecuting = false;
-                    _Console.advanceLine();
-                    _Console.putText(">");
+                    /*
+                    if(_RunAll == true)
+                    {
+                      if(_CPU.PC < _ProgramLength[0])
+                      {
+                        _QuantumCounter = Quantum;
+                        _CpuScheduler.roundRobin();
+                      }
+        
+                    }
+                    else
+                    { */
+                    if (_MemoryManager.base == 0) {
+                        _Pcb0.running = false;
+                        _MemoryManager.clearMemorySegment(0);
+                    }
+                    else if (_MemoryManager.base == 256) {
+                        _Pcb1.running = false;
+                        _MemoryManager.clearMemorySegment(255);
+                    }
+                    else if (_MemoryManager.base = 512) {
+                        _Pcb2.running = false;
+                        _MemoryManager.clearMemorySegment(512);
+                    }
+                    if (_Pcb0.running == true || _Pcb1.running == true || _Pcb2.running == true) {
+                        if (_RunAll == true) {
+                            //_QuantumCounter = _Quantum;
+                            //this.cycle();
+                            _CPU.isExecuting = true;
+                        }
+                    }
+                    else if (_Pcb0.running == false && _Pcb1.running == false && _Pcb2.running == false) {
+                        this.isExecuting = false;
+                        _Console.advanceLine();
+                        _Console.putText(">");
+                    }
+                    //}
+                    //console.log("PC: " + this.PC);
+                    //console.log("Pcb 0: " + _Pcb0.running);
+                    //console.log("Pcb 1: " + _Pcb1.running);
+                    //console.log("Pcb 2: " + _Pcb2.running);
                     counter++;
                     break;
                 case "EC":
@@ -313,19 +351,24 @@ var TSOS;
         };
         Cpu.prototype.updateCPU = function () {
             //if the program is done executing
-            if (this.PC == _ProgramLength) {
-                _ProgramLength = 0;
-                _State = "Not Running";
-                //reset CPU and clear memory
-                this.init();
-                _Memory.clearMemory();
-                this.updateCPUDisplay();
-                TSOS.Control.drawMemory();
-                this.updatePCB();
+            /*
+            if(this.PC == _ProgramLength)
+            {
+    
+              _ProgramLength = 0;
+              _State = "Not Running";
+              //reset CPU and clear memory
+              this.init();
+              _Memory.clearMemory();
+              this.updateCPUDisplay();
+              Control.drawMemory();
+              this.updatePCB();
             }
-            else {
-                _State = "Running";
+            else
+            {
+              _State = "Running";
             }
+            */
         };
         Cpu.prototype.updatePCB = function () {
             document.getElementById("pcbPID").innerHTML = _PID.toString();

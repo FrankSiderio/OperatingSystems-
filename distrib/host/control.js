@@ -94,6 +94,9 @@ var TSOS;
             _MemoryAllocation[0] = "-1";
             _MemoryAllocation[1] = "-1";
             _MemoryAllocation[2] = "-1";
+            _Pcb0 = new TSOS.PCB();
+            _Pcb1 = new TSOS.PCB();
+            _Pcb2 = new TSOS.PCB();
             //draw memory table
             this.drawMemory();
         };

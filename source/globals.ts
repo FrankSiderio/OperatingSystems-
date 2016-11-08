@@ -15,7 +15,7 @@
 const APP_NAME: string    = "Frank's Awesome OS";   // 'cause Bob and I were at a loss for a better name.
 const APP_VERSION: string = "0.7";   // What did you expect?...I wanted to keep 007 though
 
-const CPU_CLOCK_INTERVAL: number = 100;   // This is in ms (milliseconds) so 1000 = 1 second.
+const CPU_CLOCK_INTERVAL: number = 50;   // This is in ms (milliseconds) so 1000 = 1 second.
 
 const TIMER_IRQ: number = 0;  // Pages 23 (timer), 9 (interrupts), and 561 (interrupt priority).
                               // NOTE: The timer is different from hardware/host clock pulses. Don't confuse these.
@@ -74,13 +74,17 @@ var _MemoryTable: any = null; // Memory table
 var _MemoryManager: any = null;
 var _Memory: any = null;
 var _MemoryArray = new Array<string>();
-var _ProgramLength: any = null;
+var _ProgramLength = new Array<number>(); //contains program lengths for each program
 var _ProgramSize = 256; //size of our biggest program
 var _MemoryAllocation = new Array<string>(); // Array that contains the pids that are loaded into memory
 
 var _SingleStep: boolean = false;
 var _CurrentPCB: any = null;
 var _State = "Not Running"; //to update the PCB with
+
+var _Pcb0: any = null;
+var _Pcb1: any = null;
+var _Pcb2: any = null;
 
 var _Quantum: number = 6;
 var _QuantumCounter: number = 0;
@@ -92,7 +96,7 @@ var _ExecutedCommands = new Array<string>();  // Keeps track of all the commands
 var _CountUp: number = 0; // Keeps count of up key presses
 var _CountDown: number = 0; // Keeps count of down key presses
 var _ExecutedCommandsPointer: number = null; // This points to where we are in the executedCommands list where scrolling through with the arrow keys
-var _PID: number = -1; // pid
+var _PID: number = 0; // pid
 
 var _LineCount: number = 0;
 var _LastCharOnLine = "";

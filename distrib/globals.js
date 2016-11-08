@@ -12,7 +12,7 @@
 //																									//This one is better I think
 var APP_NAME = "Frank's Awesome OS"; // 'cause Bob and I were at a loss for a better name.
 var APP_VERSION = "0.7"; // What did you expect?...I wanted to keep 007 though
-var CPU_CLOCK_INTERVAL = 100; // This is in ms (milliseconds) so 1000 = 1 second.
+var CPU_CLOCK_INTERVAL = 50; // This is in ms (milliseconds) so 1000 = 1 second.
 var TIMER_IRQ = 0; // Pages 23 (timer), 9 (interrupts), and 561 (interrupt priority).
 // NOTE: The timer is different from hardware/host clock pulses. Don't confuse these.
 var KEYBOARD_IRQ = 1;
@@ -55,12 +55,15 @@ var _MemoryTable = null; // Memory table
 var _MemoryManager = null;
 var _Memory = null;
 var _MemoryArray = new Array();
-var _ProgramLength = null;
+var _ProgramLength = new Array(); //contains program lengths for each program
 var _ProgramSize = 256; //size of our biggest program
 var _MemoryAllocation = new Array(); // Array that contains the pids that are loaded into memory
 var _SingleStep = false;
 var _CurrentPCB = null;
 var _State = "Not Running"; //to update the PCB with
+var _Pcb0 = null;
+var _Pcb1 = null;
+var _Pcb2 = null;
 var _Quantum = 6;
 var _QuantumCounter = 0;
 var _RunAll = false;
@@ -69,7 +72,7 @@ var _ExecutedCommands = new Array(); // Keeps track of all the commands enter
 var _CountUp = 0; // Keeps count of up key presses
 var _CountDown = 0; // Keeps count of down key presses
 var _ExecutedCommandsPointer = null; // This points to where we are in the executedCommands list where scrolling through with the arrow keys
-var _PID = -1; // pid
+var _PID = 0; // pid
 var _LineCount = 0;
 var _LastCharOnLine = "";
 var _LastCursorPosition = 0;

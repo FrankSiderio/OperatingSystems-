@@ -5,6 +5,8 @@
 
 module TSOS
 {
+  var pcb0 = new PCB();
+
   var pc0;
   var acc0;
   var xreg0;
@@ -97,6 +99,8 @@ module TSOS
         yreg0 = _CPU.Yreg;
         zflag0 = _CPU.Zflag;
 
+        _Pcb0.PC = _CPU.PC;
+
         _CPU.PC = pc1;
         _CPU.Acc = acc1;
         _CPU.Xreg = xreg1;
@@ -111,6 +115,8 @@ module TSOS
         yreg1 = _CPU.Yreg;
         zflag1 = _CPU.Zflag;
 
+        _Pcb1.PC = _CPU.PC;
+
         _CPU.PC = pc2;
         _CPU.Acc = acc2;
         _CPU.Xreg = xreg2;
@@ -124,6 +130,8 @@ module TSOS
         xreg2 = _CPU.Xreg;
         yreg2 = _CPU.Yreg;
         zflag2 = _CPU.Zflag;
+
+        _Pcb2.PC = _CPU.PC;
 
         _CPU.PC = pc0;
         _CPU.Acc = acc0;

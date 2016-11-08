@@ -11,28 +11,25 @@ var TSOS;
         //public init(){}
         //loading the program into memory
         MemoryManager.prototype.loadProgram = function (opCode) {
-            //gets the length of the program
-            for (var i = 0; i < opCode.length; i++) {
-                if (opCode[i] != "00") {
-                    _ProgramLength++;
-                }
-            }
             //_Memory.clearMemory();
             //Chooses with memory block to allocate
             if (_MemoryAllocation[0] == "-1") {
                 this.base = 0;
                 this.limit = 255;
                 _MemoryAllocation[0] = _PID.toString();
+                this.setProgramLength(0, opCode);
             }
             else if (_MemoryAllocation[1] == "-1") {
                 this.base = 256;
                 this.limit = 511;
                 _MemoryAllocation[1] = _PID.toString();
+                this.setProgramLength(1, opCode);
             }
             else if (_MemoryAllocation[2] == "-1") {
                 this.base = 512;
                 this.limit = 768;
                 _MemoryAllocation[2] = _PID.toString();
+                this.setProgramLength(1, opCode);
             }
             //console.log("base: " + this.base);
             //console.log("limit: " + this.limit);
@@ -42,9 +39,27 @@ var TSOS;
             }
             return "PID: " + _PID;
         };
+        MemoryManager.prototype.setProgramLength = function (loc, code) {
+            var length = 0;
+            //gets the length of the program
+            for (var i = 0; i < code.length; i++) {
+                if (code[i] != "00") {
+                    length++;
+                }
+            }
+            _ProgramLength[loc] = length;
+            //console.log("Program length for location: " + loc + " is: " + _ProgramLength[loc]);
+        };
         //gets the memory at a specified location
         MemoryManager.prototype.getMemoryAtLocation = function (location) {
             return _Memory.getMemoryLocation(location);
+        };
+        MemoryManager.prototype.clearMemorySegment = function (base) {
+            var zero = "00";
+            //console.log("Base: " + base);
+            for (var i = 0; i < 256; i++) {
+                _Memory.memoryArray[i + base] = "0";
+            }
         };
         //updates the table, given a specific location and opCode
         MemoryManager.prototype.updateMemoryAtLocation = function (memoryLocation, opCode) {

@@ -387,6 +387,7 @@ module TSOS {
             //_CPU.updateCPU();         //dont worry CPU.PC gets initialized back to zero anyway when it gets there
 
             _StdOut.putText(_MemoryManager.loadProgram(newInput));
+            _PID++;
             //console.log(_Memory.getMemory());
 
           }
@@ -416,14 +417,17 @@ module TSOS {
             if(args == _MemoryAllocation[0])
             {
               _CPU.PC = 0;
+              _Pcb0.running = true;
             }
             else if(args == _MemoryAllocation[1])
             {
               _CPU.PC = 256;
+              _Pcb1.running = true;
             }
             else if(args == _MemoryAllocation[2])
             {
               _CPU.PC = 512;
+              _Pcb2.running = true;
             }
             //console.log("PC at shell run: " + _CPU.PC);
             _CPU.isExecuting = true;
@@ -444,6 +448,11 @@ module TSOS {
         public shellRunAll()
         {
           _RunAll = true;
+
+          
+          _Pcb0.running = true;
+          _Pcb1.running = true;
+          _Pcb2.running = true;
           _CpuScheduler.roundRobin();
         }
 

@@ -12,14 +12,6 @@ module TSOS
     //loading the program into memory
     public loadProgram(opCode)
     {
-      //gets the length of the program
-      for(var i = 0; i < opCode.length; i++)
-      {
-        if(opCode[i] != "00") //if there isn't a break
-        {
-          _ProgramLength++;
-        }
-      }
 
       //_Memory.clearMemory();
       //Chooses with memory block to allocate
@@ -28,6 +20,7 @@ module TSOS
         this.base = 0;
         this.limit = 255;
         _MemoryAllocation[0] = _PID.toString();
+        this.setProgramLength(0, opCode);
         //console.log("mem alloc 0: " + _MemoryAllocation[0]);
       }
       else if(_MemoryAllocation[1] == "-1")
@@ -35,6 +28,7 @@ module TSOS
         this.base = 256;
         this.limit = 511;
         _MemoryAllocation[1] = _PID.toString();
+        this.setProgramLength(1, opCode);
         //console.log("mem alloc 1: " + _MemoryAllocation[1]);
       }
       else if(_MemoryAllocation[2] == "-1")
@@ -42,6 +36,7 @@ module TSOS
         this.base = 512;
         this.limit = 768;
         _MemoryAllocation[2] = _PID.toString();
+        this.setProgramLength(1, opCode);
       }
 
       //console.log("base: " + this.base);
@@ -54,10 +49,37 @@ module TSOS
       }
       return "PID: " + _PID;
     }
+
+    private setProgramLength(loc, code)
+    {
+      var length = 0;
+      //gets the length of the program
+      for(var i = 0; i < code.length; i++)
+      {
+        if(code[i] != "00") //if there isn't a break
+        {
+          length++;
+        }
+      }
+      _ProgramLength[loc] = length;
+
+      //console.log("Program length for location: " + loc + " is: " + _ProgramLength[loc]);
+    }
     //gets the memory at a specified location
     public getMemoryAtLocation(location)
     {
       return _Memory.getMemoryLocation(location);
+    }
+
+    public clearMemorySegment(base)
+    {
+      var zero = "00";
+      //console.log("Base: " + base);
+      for(var i = 0; i < 256; i++)
+      {
+        _Memory.memoryArray[i + base] = "0";
+        //_Control.clearMemoryTable();
+      }
     }
 
     //updates the table, given a specific location and opCode

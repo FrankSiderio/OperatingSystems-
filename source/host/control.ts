@@ -112,6 +112,10 @@ module TSOS {
             _MemoryAllocation[1] = "-1";
             _MemoryAllocation[2] = "-1";
 
+            _Pcb0 = new PCB();
+            _Pcb1 = new PCB();
+            _Pcb2 = new PCB();
+
             //draw memory table
             this.drawMemory();
         }

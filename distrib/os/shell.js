@@ -323,6 +323,7 @@ var TSOS;
                 //_CPU.PC = _ProgramLength; //this is so when we get to that function it actually does something
                 //_CPU.updateCPU();         //dont worry CPU.PC gets initialized back to zero anyway when it gets there
                 _StdOut.putText(_MemoryManager.loadProgram(newInput));
+                _PID++;
             }
             _ExecutedCommands.push("load");
             Shell.clearCounts();
@@ -341,12 +342,15 @@ var TSOS;
                 //Runs the pid associated with the memory location 0-2
                 if (args == _MemoryAllocation[0]) {
                     _CPU.PC = 0;
+                    _Pcb0.running = true;
                 }
                 else if (args == _MemoryAllocation[1]) {
                     _CPU.PC = 256;
+                    _Pcb1.running = true;
                 }
                 else if (args == _MemoryAllocation[2]) {
                     _CPU.PC = 512;
+                    _Pcb2.running = true;
                 }
                 //console.log("PC at shell run: " + _CPU.PC);
                 _CPU.isExecuting = true;
@@ -359,6 +363,9 @@ var TSOS;
         };
         Shell.prototype.shellRunAll = function () {
             _RunAll = true;
+            _Pcb0.running = true;
+            _Pcb1.running = true;
+            _Pcb2.running = true;
             _CpuScheduler.roundRobin();
         };
         Shell.prototype.shellQuantum = function (args) {

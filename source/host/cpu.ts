@@ -158,9 +158,55 @@ module TSOS {
 
           case "00":
             //Break (which is really a system call)
-            this.isExecuting = false;
-            _Console.advanceLine();
-            _Console.putText(">");
+            /*
+            if(_RunAll == true)
+            {
+              if(_CPU.PC < _ProgramLength[0])
+              {
+                _QuantumCounter = Quantum;
+                _CpuScheduler.roundRobin();
+              }
+
+            }
+            else
+            { */
+            if(_MemoryManager.base == 0)
+            {
+              _Pcb0.running = false;
+              _MemoryManager.clearMemorySegment(0);
+            }
+            else if(_MemoryManager.base == 256)
+            {
+              _Pcb1.running = false;
+              _MemoryManager.clearMemorySegment(255);
+            }
+            else if(_MemoryManager.base = 512)
+            {
+              _Pcb2.running = false;
+              _MemoryManager.clearMemorySegment(512);
+            }
+
+            if(_Pcb0.running == true || _Pcb1.running == true || _Pcb2.running == true)
+            {
+              if(_RunAll == true)
+              {
+                //_QuantumCounter = _Quantum;
+                //this.cycle();
+                _CPU.isExecuting = true;
+              }
+            }
+            else if(_Pcb0.running == false && _Pcb1.running == false && _Pcb2.running == false)
+            {
+              this.isExecuting = false;
+              _Console.advanceLine();
+              _Console.putText(">");
+            }
+            //}
+            //console.log("PC: " + this.PC);
+            //console.log("Pcb 0: " + _Pcb0.running);
+            //console.log("Pcb 1: " + _Pcb1.running);
+            //console.log("Pcb 2: " + _Pcb2.running);
+
             counter++;
 
           break;
@@ -428,7 +474,9 @@ module TSOS {
 
       public updateCPU()
       {
+
         //if the program is done executing
+        /*
         if(this.PC == _ProgramLength)
         {
 
@@ -445,6 +493,7 @@ module TSOS {
         {
           _State = "Running";
         }
+        */
       }
 
       public updatePCB()
