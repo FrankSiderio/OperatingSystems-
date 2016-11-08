@@ -169,6 +169,14 @@ var TSOS;
                 }
             }
         };
+        Control.clearMemoryTableSegment = function (base) {
+            var x = base + 32;
+            for (var row = base; row < x; row++) {
+                for (var cell = 1; cell < 9; cell++) {
+                    _MemoryTable.rows[row].cells[cell].innerHTML = "00";
+                }
+            }
+        };
         return Control;
     }());
     TSOS.Control = Control;

@@ -18,5 +18,51 @@ module TSOS
       public running: boolean = false,
       public location: any = null
     ){}
+
+    public updateDisplay()
+    {
+      var runningDisplay: Array<string> = ["waiting", "waiting", "waiting"];
+      var b = _MemoryManager.getBase();
+      var l = _MemoryManager.getLimit();
+
+      document.getElementById("pcbPID0").innerHTML = _MemoryAllocation[0].toString();
+      document.getElementById("ir0").innerHTML = _Pcb0.instruction;
+      document.getElementById("pcbPC0").innerHTML = _Pcb0.PC.toString();
+      document.getElementById("pcbAcc0").innerHTML = _Pcb0.Acc.toString();
+      document.getElementById("pcbX0").innerHTML = _Pcb0.XReg.toString();
+      document.getElementById("pcbY0").innerHTML = _Pcb0.YReg.toString();
+      document.getElementById("pcbZ0").innerHTML = _Pcb0.ZFlag.toString();
+      if(b == 0)
+      {
+        runningDisplay[0] = "running";
+      }
+      document.getElementById("state0").innerHTML = runningDisplay[0];
+      
+      document.getElementById("pcbPID1").innerHTML = _MemoryAllocation[1].toString();
+      document.getElementById("ir1").innerHTML = _Pcb1.instruction;
+      document.getElementById("pcbPC1").innerHTML = _Pcb1.PC.toString();
+      document.getElementById("pcbAcc1").innerHTML = _Pcb1.Acc.toString();
+      document.getElementById("pcbX1").innerHTML = _Pcb1.XReg.toString();
+      document.getElementById("pcbY1").innerHTML = _Pcb1.YReg.toString();
+      document.getElementById("pcbZ1").innerHTML = _Pcb1.ZFlag.toString();
+      if(b == 256)
+      {
+        runningDisplay[1] = "running";
+      }
+      document.getElementById("state1").innerHTML = runningDisplay[1];
+
+      document.getElementById("pcbPID2").innerHTML = _MemoryAllocation[2].toString();
+      document.getElementById("ir2").innerHTML = _Pcb2.instruction;
+      document.getElementById("pcbPC2").innerHTML = _Pcb2.PC.toString();
+      document.getElementById("pcbAcc2").innerHTML = _Pcb2.Acc.toString();
+      document.getElementById("pcbX2").innerHTML = _Pcb2.XReg.toString();
+      document.getElementById("pcbY2").innerHTML = _Pcb2.YReg.toString();
+      document.getElementById("pcbZ2").innerHTML = _Pcb2.ZFlag.toString();
+      if(b == 512)
+      {
+        runningDisplay[2] = "running";
+      }
+      document.getElementById("state2").innerHTML = runningDisplay[2];
+    }
   }
 }

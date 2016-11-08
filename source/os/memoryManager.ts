@@ -78,7 +78,7 @@ module TSOS
       for(var i = 0; i < 256; i++)
       {
         _Memory.memoryArray[i + base] = "0";
-        //_Control.clearMemoryTable();
+        Control.clearMemoryTableSegment(base / 8);
       }
     }
 
@@ -117,8 +117,50 @@ module TSOS
       var currentTableRow = ((Math.floor(memoryLocation / 8)) + startingRow);
       //console.log("Current table row: " + currentTableRow);
       //_Memory.addToMemory(memoryLocation, opCode);
-      Control.updateMemoryTable(currentTableRow, memoryLocation % 8, hexCode);
+      //console.log("Limit: " + this.limit);
+      //console.log("Row: " + currentTableRow);
+
+      if(this.base == 0)
+      {
+        if(currentTableRow < 32)
+        {
+          Control.updateMemoryTable(currentTableRow, memoryLocation % 8, hexCode);
+        }
+      }
+      else if(this.base == 256)
+      {
+        if(currentTableRow < 64)
+        {
+          Control.updateMemoryTable(currentTableRow, memoryLocation % 8, hexCode);
+        }
+      }
+      else if(this.base == 512)
+      {
+        if(currentTableRow < 96)
+        {
+          Control.updateMemoryTable(currentTableRow, memoryLocation % 8, hexCode);
+        }
+      }
+      else
+      {
+        //alert("Memory exceeded!");
+        _Kernel.krnTrapError("MemoryExceeded!");
+        _CPU.isExecuting = false;
+      }
+
+      //Control.updateMemoryTable(currentTableRow, memoryLocation % 8, hexCode);
+
       //console.log(_Memory.getMemory());
+    }
+
+    public getBase()
+    {
+      return this.base;
+    }
+
+    public getLimit()
+    {
+      return this.limit;
     }
 
 

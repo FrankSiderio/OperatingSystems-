@@ -352,7 +352,7 @@ var TSOS;
                     _CPU.PC = 512;
                     _Pcb2.running = true;
                 }
-                //console.log("PC at shell run: " + _CPU.PC);
+                console.log("PC at shell run: " + _CPU.PC);
                 _CPU.isExecuting = true;
             }
             _ExecutedCommands.push("run");
@@ -406,9 +406,21 @@ var TSOS;
                 _StdOut.putText("Please enter in a PID.");
             }
             else {
+                //find which process we want to kill
+                for (var i = 0; i < 3; i++) {
+                    if (args = _MemoryAllocation[i]) {
+                        var base = 0;
+                        if (i == 1) {
+                            base = 256;
+                        }
+                        else if (i == 2) {
+                            base = 512;
+                        }
+                        _MemoryManager.clearMemorySegment(base);
+                    }
+                }
                 //kill process
                 _CPU.isExecuting = false;
-                _Memory.clearMemory();
             }
             _ExecutedCommands.push("kill");
             Shell.clearCounts();

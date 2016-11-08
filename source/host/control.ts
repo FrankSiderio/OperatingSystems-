@@ -217,6 +217,16 @@ module TSOS {
           }
         }
 
-
+        public static clearMemoryTableSegment(base)
+        {
+          var x = base + 32;
+          for(var row = base; row < x; row++)
+          {
+            for(var cell = 1; cell < 9; cell++)
+            {
+              _MemoryTable.rows[row].cells[cell].innerHTML = "00";
+            }
+          }
+        }
     }
 }

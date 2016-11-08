@@ -50,18 +50,20 @@ var TSOS;
             // Do the real work here. Be sure to set this.isExecuting appropriately.
             //console.log("code being loaded: " + _MemoryManager.getMemoryAtLocation(this.PC));
             //console.log("PC: " + this.PC);
-            //console.log("Memory at location" + _MemoryManager.getMemoryAtLocation(32));
+            console.log("Memory at location" + _MemoryManager.getMemoryAtLocation(this.PC));
+            console.log("PC: " + this.PC);
             this.runOpCode(_MemoryManager.getMemoryAtLocation(this.PC));
             if (_RunAll == true) {
                 _QuantumCounter++;
                 _CpuScheduler.roundRobin();
             }
-            console.log("Mem at this loc: " + _MemoryManager.getMemoryAtLocation(this.PC));
-            console.log("PC: " + this.PC);
+            //console.log("Mem at this loc: " + _MemoryManager.getMemoryAtLocation(this.PC));
+            //console.log("PC: " + this.PC);
             //console.log(_Memory.getMemory());
             this.updateCPUDisplay();
+            //this.updatePCB();
             //this.updateCPU();
-            this.updatePCB();
+            _Pcb0.updateDisplay();
             //_Memory.clearMemory();
             if (_SingleStep == true) {
                 this.isExecuting = false;
@@ -366,53 +368,6 @@ var TSOS;
             document.getElementById("cpuXReg").innerHTML = this.Xreg.toString();
             document.getElementById("cpuYReg").innerHTML = this.Yreg.toString();
             document.getElementById("cpuZFlag").innerHTML = this.Zflag.toString();
-        };
-        Cpu.prototype.updateCPU = function () {
-            //if the program is done executing
-            /*
-            if(this.PC == _ProgramLength)
-            {
-    
-              _ProgramLength = 0;
-              _State = "Not Running";
-              //reset CPU and clear memory
-              this.init();
-              _Memory.clearMemory();
-              this.updateCPUDisplay();
-              Control.drawMemory();
-              this.updatePCB();
-            }
-            else
-            {
-              _State = "Running";
-            }
-            */
-        };
-        Cpu.prototype.updatePCB = function () {
-            document.getElementById("pcbPID0").innerHTML = _MemoryAllocation[0].toString();
-            document.getElementById("ir0").innerHTML = _Pcb0.instruction;
-            document.getElementById("pcbPC0").innerHTML = _Pcb0.PC.toString();
-            document.getElementById("pcbAcc0").innerHTML = _Pcb0.Acc.toString();
-            document.getElementById("pcbX0").innerHTML = _Pcb0.XReg.toString();
-            document.getElementById("pcbY0").innerHTML = _Pcb0.YReg.toString();
-            document.getElementById("pcbZ0").innerHTML = _Pcb0.ZFlag.toString();
-            document.getElementById("state0").innerHTML = _Pcb0.running;
-            document.getElementById("pcbPID1").innerHTML = _MemoryAllocation[1].toString();
-            document.getElementById("ir1").innerHTML = _Pcb1.instruction;
-            document.getElementById("pcbPC1").innerHTML = _Pcb1.PC.toString();
-            document.getElementById("pcbAcc1").innerHTML = _Pcb1.Acc.toString();
-            document.getElementById("pcbX1").innerHTML = _Pcb1.XReg.toString();
-            document.getElementById("pcbY1").innerHTML = _Pcb1.YReg.toString();
-            document.getElementById("pcbZ1").innerHTML = _Pcb1.ZFlag.toString();
-            document.getElementById("state1").innerHTML = _Pcb1.running;
-            document.getElementById("pcbPID2").innerHTML = _MemoryAllocation[2].toString();
-            document.getElementById("ir2").innerHTML = _Pcb2.instruction;
-            document.getElementById("pcbPC2").innerHTML = _Pcb2.PC.toString();
-            document.getElementById("pcbAcc2").innerHTML = _Pcb2.Acc.toString();
-            document.getElementById("pcbX2").innerHTML = _Pcb2.XReg.toString();
-            document.getElementById("pcbY2").innerHTML = _Pcb2.YReg.toString();
-            document.getElementById("pcbZ2").innerHTML = _Pcb2.ZFlag.toString();
-            document.getElementById("state2").innerHTML = _Pcb2.running;
         };
         return Cpu;
     }());
