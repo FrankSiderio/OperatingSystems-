@@ -50,8 +50,8 @@ var TSOS;
             // Do the real work here. Be sure to set this.isExecuting appropriately.
             //console.log("code being loaded: " + _MemoryManager.getMemoryAtLocation(this.PC));
             //console.log("PC: " + this.PC);
-            console.log("Memory at location" + _MemoryManager.getMemoryAtLocation(this.PC));
-            console.log("PC: " + this.PC);
+            //console.log("Memory at location" + _MemoryManager.getMemoryAtLocation(this.PC));
+            //console.log("PC: " + this.PC);
             this.runOpCode(_MemoryManager.getMemoryAtLocation(this.PC));
             if (_RunAll == true) {
                 _QuantumCounter++;
@@ -235,7 +235,6 @@ var TSOS;
                 this.PC += value;
                 this.PC++;
                 var combined = (_ProgramSize + _MemoryManager.base);
-                //console.log("Combined: " + combined);
                 if (this.PC >= combined) {
                     this.PC = this.PC - _ProgramSize;
                 }
@@ -334,7 +333,7 @@ var TSOS;
             }
             else if (_Pcb0.running == false && _Pcb1.running == false && _Pcb2.running == false) {
                 //alert("Done");
-                _Memory.clearMemory();
+                //_Memory.clearMemory();
                 _RunAll = false;
                 this.isExecuting = false;
                 _Console.advanceLine();

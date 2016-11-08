@@ -170,7 +170,10 @@ var TSOS;
             }
         };
         Control.clearMemoryTableSegment = function (base) {
-            var x = base + 32;
+            var x = Math.floor((base + 32));
+            console.log("X: " + x);
+            console.log("Base: " + base);
+            base = Math.floor(base);
             for (var row = base; row < x; row++) {
                 for (var cell = 1; cell < 9; cell++) {
                     _MemoryTable.rows[row].cells[cell].innerHTML = "00";

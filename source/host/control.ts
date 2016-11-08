@@ -219,8 +219,10 @@ module TSOS {
 
         public static clearMemoryTableSegment(base)
         {
-          var x = base + 32;
-          for(var row = base; row < x; row++)
+          var limit = Math.floor((base + 32));
+          base = Math.floor(base);
+
+          for(var row = base; row < limit; row++)
           {
             for(var cell = 1; cell < 9; cell++)
             {

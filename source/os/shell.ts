@@ -409,29 +409,35 @@ module TSOS {
           }
           else
           {
-            //if(_CurrentPCB.pid == args[0])
-            //{
-            //console.log("pid: " + args);
-
             //Runs the pid associated with the memory location 0-2
             if(args == _MemoryAllocation[0])
             {
+              //make sure the base and limit are correct
+              _MemoryManager.setBase(0);
+              _MemoryManager.setLimit(255);
+
               _CPU.PC = 0;
               _Pcb0.running = true;
             }
             else if(args == _MemoryAllocation[1])
             {
+              //make sure the base and limit are correct
+              _MemoryManager.setBase(256);
+              _MemoryManager.setLimit(511);
+
               _CPU.PC = 256;
               _Pcb1.running = true;
             }
             else if(args == _MemoryAllocation[2])
             {
+              //make sure the base and limit are correct
+              _MemoryManager.setBase(512);
+              _MemoryManager.setLimit(768);
+
               _CPU.PC = 512;
               _Pcb2.running = true;
             }
-            console.log("PC at shell run: " + _CPU.PC);
             _CPU.isExecuting = true;
-            //}
 
           }
 
@@ -668,7 +674,6 @@ module TSOS {
             Shell.clearCounts();
         }
         //clears the counts (this is better than executing these two lines every time a command is completed plus I am lazy)
-        //this screwed everything up so I'll try to use it later
         public static clearCounts(): void
         {
           _CountUp = 0;

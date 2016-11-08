@@ -112,11 +112,18 @@ var TSOS;
             //Control.updateMemoryTable(currentTableRow, memoryLocation % 8, hexCode);
             //console.log(_Memory.getMemory());
         };
+        //getters and setters
         MemoryManager.prototype.getBase = function () {
             return this.base;
         };
         MemoryManager.prototype.getLimit = function () {
             return this.limit;
+        };
+        MemoryManager.prototype.setBase = function (base) {
+            this.base = base;
+        };
+        MemoryManager.prototype.setLimit = function (limit) {
+            this.limit = limit;
         };
         return MemoryManager;
     }());

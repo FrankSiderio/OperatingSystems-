@@ -153,6 +153,7 @@ module TSOS
       //console.log(_Memory.getMemory());
     }
 
+    //getters and setters
     public getBase()
     {
       return this.base;
@@ -163,6 +164,15 @@ module TSOS
       return this.limit;
     }
 
+    public setBase(base)
+    {
+      this.base = base;
+    }
+
+    public setLimit(limit)
+    {
+      this.limit = limit;
+    }
 
 
 

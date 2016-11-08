@@ -341,18 +341,27 @@ var TSOS;
                 //console.log("pid: " + args);
                 //Runs the pid associated with the memory location 0-2
                 if (args == _MemoryAllocation[0]) {
+                    //make sure the base and limit are correct
+                    _MemoryManager.setBase(0);
+                    _MemoryManager.setLimit(255);
                     _CPU.PC = 0;
                     _Pcb0.running = true;
                 }
                 else if (args == _MemoryAllocation[1]) {
+                    //make sure the base and limit are correct
+                    _MemoryManager.setBase(256);
+                    _MemoryManager.setLimit(511);
                     _CPU.PC = 256;
                     _Pcb1.running = true;
                 }
                 else if (args == _MemoryAllocation[2]) {
+                    //make sure the base and limit are correct
+                    _MemoryManager.setBase(512);
+                    _MemoryManager.setLimit(768);
                     _CPU.PC = 512;
                     _Pcb2.running = true;
                 }
-                console.log("PC at shell run: " + _CPU.PC);
+                //console.log("PC at shell run: " + _CPU.PC);
                 _CPU.isExecuting = true;
             }
             _ExecutedCommands.push("run");
