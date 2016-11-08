@@ -12,7 +12,7 @@ module TSOS
       public YReg: number = 0,
       public ZFlag: number = 0,
       //public pid:number = ++ _PID,
-      public instructionRegister:string = "",
+      public instruction:string = "",
       public base: number = 0,
       public max: number = 0,
       public running: boolean = false,

@@ -60,14 +60,15 @@ module TSOS {
               _QuantumCounter++;
               _CpuScheduler.roundRobin();
             }
-            //console.log("Mem at this loc: " + _MemoryManager.getMemoryAtLocation(this.PC));
 
-            //console.log("PC: " + this.PC);
+            console.log("Mem at this loc: " + _MemoryManager.getMemoryAtLocation(this.PC));
+
+            console.log("PC: " + this.PC);
             //console.log(_Memory.getMemory());
 
-            //this.updateCPUDisplay();
+            this.updateCPUDisplay();
             //this.updateCPU();
-            //this.updatePCB();
+            this.updatePCB();
             //_Memory.clearMemory();
 
             if(_SingleStep == true)
@@ -158,55 +159,7 @@ module TSOS {
 
           case "00":
             //Break (which is really a system call)
-            /*
-            if(_RunAll == true)
-            {
-              if(_CPU.PC < _ProgramLength[0])
-              {
-                _QuantumCounter = Quantum;
-                _CpuScheduler.roundRobin();
-              }
-
-            }
-            else
-            { */
-            if(_MemoryManager.base == 0)
-            {
-              _Pcb0.running = false;
-              _MemoryManager.clearMemorySegment(0);
-            }
-            else if(_MemoryManager.base == 256)
-            {
-              _Pcb1.running = false;
-              _MemoryManager.clearMemorySegment(255);
-            }
-            else if(_MemoryManager.base = 512)
-            {
-              _Pcb2.running = false;
-              _MemoryManager.clearMemorySegment(512);
-            }
-
-            if(_Pcb0.running == true || _Pcb1.running == true || _Pcb2.running == true)
-            {
-              if(_RunAll == true)
-              {
-                //_QuantumCounter = _Quantum;
-                //this.cycle();
-                _CPU.isExecuting = true;
-              }
-            }
-            else if(_Pcb0.running == false && _Pcb1.running == false && _Pcb2.running == false)
-            {
-              this.isExecuting = false;
-              _Console.advanceLine();
-              _Console.putText(">");
-            }
-            //}
-            //console.log("PC: " + this.PC);
-            //console.log("Pcb 0: " + _Pcb0.running);
-            //console.log("Pcb 1: " + _Pcb1.running);
-            //console.log("Pcb 2: " + _Pcb2.running);
-
+            this.break();
             counter++;
 
           break;
@@ -463,6 +416,82 @@ module TSOS {
           }
       }
 
+      public break()
+      {
+        //figure out which program is ending
+        if(_MemoryManager.base == 0 && _Pcb0.running == true)
+        {
+          //alert("First one finished");
+          _Pcb0.running = false;
+          _MemoryManager.clearMemorySegment(0);
+          _MemoryAllocation[0] = "-1";
+          //this.check();
+        }
+        else if(_MemoryManager.base == 256 && _Pcb1.running == true)
+        {
+          //alert("Second one finished");
+          _Pcb1.running = false;
+          _MemoryManager.clearMemorySegment(255);
+          _MemoryAllocation[1] = "-1";
+          //this.check();
+        }
+        else if(_MemoryManager.base = 512 && _Pcb2.running == true)
+        {
+          //alert("Third one finished");
+          _Pcb2.running = false;
+          _MemoryManager.clearMemorySegment(512);
+          _MemoryAllocation[2] = "-1";
+          //this.check();
+        }
+
+        //if one of them is running
+        if(_Pcb0.running == true || _Pcb1.running == true || _Pcb2.running == true)
+        {
+          if(_RunAll == true) //if the run all command was used to run them
+          {
+            //_QuantumCounter = _Quantum;
+            //this.cycle();
+            _CPU.isExecuting = true; //continue on
+          }
+        }
+        //if they are all finished
+        else if(_Pcb0.running == false && _Pcb1.running == false && _Pcb2.running == false)
+        {
+          //alert("Done");
+          _Memory.clearMemory();
+          _RunAll = false;
+          this.isExecuting = false;
+          _Console.advanceLine();
+          _Console.putText(">");
+        }
+      }
+
+      //check if other programs are finished...so processes eventually get finished
+      public check()
+      {
+
+        if(_MemoryAllocation[0] != "-1")
+        {
+          //alert("0 is not finished");
+          _MemoryManager.base = 0;
+          _MemoryManager.limit = 255;
+          this.PC = 0;
+        }
+        else if(_MemoryAllocation[1] != "-1")
+        {
+          //alert("1 is not finished");
+          _MemoryManager.base = 256;
+          _MemoryManager.limit = 511;
+          this.PC = 255;
+        }
+        else if(_MemoryAllocation[2] != "-1")
+        {
+          //alert("2 is not finished");
+          _MemoryManager.base = 512;
+          _MemoryManager.limit = 768;
+          this.PC = 511;
+        }
+      }
       public updateCPUDisplay()
       {
         document.getElementById("cpuPC").innerHTML = this.PC.toString();
@@ -498,14 +527,32 @@ module TSOS {
 
       public updatePCB()
       {
-        document.getElementById("pcbPID").innerHTML = _PID.toString();
-        document.getElementById("ir").innerHTML = this.instruction;
-        document.getElementById("pcbPC").innerHTML = this.PC.toString();
-        document.getElementById("pcbAcc").innerHTML = this.Acc.toString();
-        document.getElementById("pcbX").innerHTML = this.Xreg.toString();
-        document.getElementById("pcbY").innerHTML = this.Yreg.toString();
-        document.getElementById("pcbZ").innerHTML = this.Zflag.toString();
-        document.getElementById("state").innerHTML = _State;
+        document.getElementById("pcbPID0").innerHTML = _MemoryAllocation[0].toString();
+        document.getElementById("ir0").innerHTML = _Pcb0.instruction;
+        document.getElementById("pcbPC0").innerHTML = _Pcb0.PC.toString();
+        document.getElementById("pcbAcc0").innerHTML = _Pcb0.Acc.toString();
+        document.getElementById("pcbX0").innerHTML = _Pcb0.XReg.toString();
+        document.getElementById("pcbY0").innerHTML = _Pcb0.YReg.toString();
+        document.getElementById("pcbZ0").innerHTML = _Pcb0.ZFlag.toString();
+        document.getElementById("state0").innerHTML = _Pcb0.running;
+
+        document.getElementById("pcbPID1").innerHTML = _MemoryAllocation[1].toString();
+        document.getElementById("ir1").innerHTML = _Pcb1.instruction;
+        document.getElementById("pcbPC1").innerHTML = _Pcb1.PC.toString();
+        document.getElementById("pcbAcc1").innerHTML = _Pcb1.Acc.toString();
+        document.getElementById("pcbX1").innerHTML = _Pcb1.XReg.toString();
+        document.getElementById("pcbY1").innerHTML = _Pcb1.YReg.toString();
+        document.getElementById("pcbZ1").innerHTML = _Pcb1.ZFlag.toString();
+        document.getElementById("state1").innerHTML = _Pcb1.running;
+
+        document.getElementById("pcbPID2").innerHTML = _MemoryAllocation[2].toString();
+        document.getElementById("ir2").innerHTML = _Pcb2.instruction;
+        document.getElementById("pcbPC2").innerHTML = _Pcb2.PC.toString();
+        document.getElementById("pcbAcc2").innerHTML = _Pcb2.Acc.toString();
+        document.getElementById("pcbX2").innerHTML = _Pcb2.XReg.toString();
+        document.getElementById("pcbY2").innerHTML = _Pcb2.YReg.toString();
+        document.getElementById("pcbZ2").innerHTML = _Pcb2.ZFlag.toString();
+        document.getElementById("state2").innerHTML = _Pcb2.running;
 
       }
 

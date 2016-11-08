@@ -449,11 +449,26 @@ module TSOS {
         {
           _RunAll = true;
 
-          
-          _Pcb0.running = true;
-          _Pcb1.running = true;
-          _Pcb2.running = true;
-          _CpuScheduler.roundRobin();
+          _CPU.isExecuting = true;
+          //checking to see if there is something in each block
+          if(_MemoryAllocation[0] != "-1")
+          {
+            _Pcb0.running = true;
+          }
+          if(_MemoryAllocation[1] != "-1")
+          {
+            _Pcb1.running = true;
+          }
+          if(_MemoryAllocation[2] != "-1")
+          {
+            _Pcb2.running = true;
+          }
+
+          //console.log("Memory base: " + _MemoryManager.base);
+          //_CpuScheduler.roundRobin();
+
+          _ExecutedCommands.push("runall");
+          Shell.clearCounts();
         }
 
         public shellQuantum(args)

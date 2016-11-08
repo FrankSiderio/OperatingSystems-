@@ -97,6 +97,9 @@ var TSOS;
             _Pcb0 = new TSOS.PCB();
             _Pcb1 = new TSOS.PCB();
             _Pcb2 = new TSOS.PCB();
+            _Pcb0.PC = 0;
+            _Pcb1.PC = 256;
+            _Pcb2.PC = 512;
             //draw memory table
             this.drawMemory();
         };
@@ -160,7 +163,7 @@ var TSOS;
             }
         };
         Control.clearMemoryTable = function () {
-            for (var row = 0; row < 32; row++) {
+            for (var row = 0; row < 96; row++) {
                 for (var cell = 1; cell < 9; cell++) {
                     _MemoryTable.rows[row].cells[cell].innerHTML = "00";
                 }
