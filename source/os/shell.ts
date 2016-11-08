@@ -443,6 +443,9 @@ module TSOS {
         public shellClearMem()
         {
           _Memory.clearMemory();
+
+          _ExecutedCommands.push("clearmem");
+          Shell.clearCounts();
         }
 
         public shellRunAll()
@@ -481,11 +484,24 @@ module TSOS {
           {
             _Quantum = args;
           }
+
+          _ExecutedCommands.push("quantum");
+          Shell.clearCounts();
         }
 
         public shellPs()
         {
+          for(var i = 0; i < 3; i++)
+          {
+            if(_MemoryAllocation[i] != "-1")
+            {
+              _StdOut.putText("Running PID: " + _MemoryAllocation[i]);
+              _StdOut.advanceLine();
+            }
+          }
 
+          _ExecutedCommands.push("ps");
+          Shell.clearCounts();
         }
 
         public shellKill(args)
@@ -500,6 +516,9 @@ module TSOS {
             _CPU.isExecuting = false;
             _Memory.clearMemory();
           }
+
+          _ExecutedCommands.push("kill");
+          Shell.clearCounts();
         }
 
         public shellMan(args)

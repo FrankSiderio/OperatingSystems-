@@ -360,6 +360,8 @@ var TSOS;
         };
         Shell.prototype.shellClearMem = function () {
             _Memory.clearMemory();
+            _ExecutedCommands.push("clearmem");
+            Shell.clearCounts();
         };
         Shell.prototype.shellRunAll = function () {
             _RunAll = true;
@@ -386,8 +388,18 @@ var TSOS;
             else {
                 _Quantum = args;
             }
+            _ExecutedCommands.push("quantum");
+            Shell.clearCounts();
         };
         Shell.prototype.shellPs = function () {
+            for (var i = 0; i < 3; i++) {
+                if (_MemoryAllocation[i] != "-1") {
+                    _StdOut.putText("Running PID: " + _MemoryAllocation[i]);
+                    _StdOut.advanceLine();
+                }
+            }
+            _ExecutedCommands.push("ps");
+            Shell.clearCounts();
         };
         Shell.prototype.shellKill = function (args) {
             if (args.length <= 0) {
@@ -398,6 +410,8 @@ var TSOS;
                 _CPU.isExecuting = false;
                 _Memory.clearMemory();
             }
+            _ExecutedCommands.push("kill");
+            Shell.clearCounts();
         };
         Shell.prototype.shellMan = function (args) {
             if (args.length > 0) {
