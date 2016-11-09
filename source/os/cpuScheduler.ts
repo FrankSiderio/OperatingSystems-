@@ -61,7 +61,8 @@ module TSOS
           {
             _MemoryManager.base = 256;
             _MemoryManager.limit = 511;
-            _Kernel.krnTrace("Context Switch");
+            //_Kernel.krnTrace("Context Switch");
+            _KernelInterruptQueue.enqueue(new TSOS.Interrupt(CONTEXT_SWITCH_IRQ, ""));
 
             this.setValues(0);
           }
@@ -72,7 +73,7 @@ module TSOS
           {
             _MemoryManager.base = 512;
             _MemoryManager.limit = 768;
-            _Kernel.krnTrace("Context Switch");
+            _KernelInterruptQueue.enqueue(new TSOS.Interrupt(CONTEXT_SWITCH_IRQ, ""));
 
             this.setValues(1);
           }
@@ -83,6 +84,7 @@ module TSOS
           {
             _MemoryManager.base = 0;
             _MemoryManager.limit = 255;
+            _KernelInterruptQueue.enqueue(new TSOS.Interrupt(CONTEXT_SWITCH_IRQ, ""));
 
             this.setValues(7);
           }
@@ -94,7 +96,7 @@ module TSOS
           {
             _MemoryManager.base = 0;
             _MemoryManager.limit = 255;
-            _Kernel.krnTrace("Context Switch");
+            _KernelInterruptQueue.enqueue(new TSOS.Interrupt(CONTEXT_SWITCH_IRQ, ""));
 
             this.setValues(2);
           }
@@ -102,7 +104,7 @@ module TSOS
           {
             _MemoryManager.base = 256;
             _MemoryManager.limit = 511;
-            _Kernel.krnTrace("Context Switch");
+            _KernelInterruptQueue.enqueue(new TSOS.Interrupt(CONTEXT_SWITCH_IRQ, ""));
 
             this.setValues(4);
           }

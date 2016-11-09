@@ -336,9 +336,6 @@ var TSOS;
                 _StdOut.putText("Please enter in a PID.");
             }
             else {
-                //if(_CurrentPCB.pid == args[0])
-                //{
-                //console.log("pid: " + args);
                 //Runs the pid associated with the memory location 0-2
                 if (args == _MemoryAllocation[0]) {
                     //make sure the base and limit are correct
@@ -361,7 +358,6 @@ var TSOS;
                     _CPU.PC = 512;
                     _Pcb2.running = true;
                 }
-                //console.log("PC at shell run: " + _CPU.PC);
                 _CPU.isExecuting = true;
             }
             _ExecutedCommands.push("run");
@@ -543,7 +539,6 @@ var TSOS;
             Shell.clearCounts();
         };
         //clears the counts (this is better than executing these two lines every time a command is completed plus I am lazy)
-        //this screwed everything up so I'll try to use it later
         Shell.clearCounts = function () {
             _CountUp = 0;
             _CountDown = 0;

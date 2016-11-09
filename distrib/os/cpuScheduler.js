@@ -47,7 +47,8 @@ var TSOS;
                     if (_MemoryAllocation[1] != "-1") {
                         _MemoryManager.base = 256;
                         _MemoryManager.limit = 511;
-                        _Kernel.krnTrace("Context Switch");
+                        //_Kernel.krnTrace("Context Switch");
+                        _KernelInterruptQueue.enqueue(new TSOS.Interrupt(CONTEXT_SWITCH_IRQ, ""));
                         this.setValues(0);
                     }
                 }
@@ -55,12 +56,13 @@ var TSOS;
                     if (_MemoryAllocation[2] != "-1") {
                         _MemoryManager.base = 512;
                         _MemoryManager.limit = 768;
-                        _Kernel.krnTrace("Context Switch");
+                        _KernelInterruptQueue.enqueue(new TSOS.Interrupt(CONTEXT_SWITCH_IRQ, ""));
                         this.setValues(1);
                     }
                     else if (_MemoryAllocation[0] != "-1") {
                         _MemoryManager.base = 0;
                         _MemoryManager.limit = 255;
+                        _KernelInterruptQueue.enqueue(new TSOS.Interrupt(CONTEXT_SWITCH_IRQ, ""));
                         this.setValues(7);
                     }
                 }
@@ -68,13 +70,13 @@ var TSOS;
                     if (_MemoryAllocation[0] != "-1") {
                         _MemoryManager.base = 0;
                         _MemoryManager.limit = 255;
-                        _Kernel.krnTrace("Context Switch");
+                        _KernelInterruptQueue.enqueue(new TSOS.Interrupt(CONTEXT_SWITCH_IRQ, ""));
                         this.setValues(2);
                     }
                     else if (_MemoryAllocation[1] != "-1") {
                         _MemoryManager.base = 256;
                         _MemoryManager.limit = 511;
-                        _Kernel.krnTrace("Context Switch");
+                        _KernelInterruptQueue.enqueue(new TSOS.Interrupt(CONTEXT_SWITCH_IRQ, ""));
                         this.setValues(4);
                     }
                 }
