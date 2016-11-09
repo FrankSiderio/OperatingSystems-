@@ -20,6 +20,7 @@ const CPU_CLOCK_INTERVAL: number = 100;   // This is in ms (milliseconds) so 100
 const TIMER_IRQ: number = 0;  // Pages 23 (timer), 9 (interrupts), and 561 (interrupt priority).
                               // NOTE: The timer is different from hardware/host clock pulses. Don't confuse these.
 const KEYBOARD_IRQ: number = 1;
+const CONTEXT_SWITCH_IRQ: number = 7;
 
 
 //
@@ -40,11 +41,16 @@ var _FontHeightMargin: number = 4;              // Additional space added to fon
 
 var _Trace: boolean = true;  // Default the OS trace to be on.
 
+var _TurnAroundTime = new Array<number>();
+var _WaitTime = new Array<number>();
+
 // The OS Kernel and its queues.
 var _Kernel: TSOS.Kernel;
 var _KernelInterruptQueue;          // Initializing this to null (which I would normally do) would then require us to specify the 'any' type, as below.
 var _KernelInputQueue: any = null;  // Is this better? I don't like uninitialized variables. But I also don't like using the type specifier 'any'
 var _KernelBuffers: any[] = null;   // when clearly 'any' is not what we want. There is likely a better way, but what is it?
+
+var _CpuScheduler: any = null;
 
 // Standard input and output
 var _StdIn;    // Same "to null or not to null" issue as above.
@@ -71,12 +77,21 @@ var _MemoryTable: any = null; // Memory table
 var _MemoryManager: any = null;
 var _Memory: any = null;
 var _MemoryArray = new Array<string>();
-var _ProgramLength: any = null;
-var _ProgramSize = 256; //size of our biggest program (for now)
+var _ProgramLength = new Array<number>(); //contains program lengths for each program
+var _ProgramSize = 256; //size of our biggest program
+var _MemoryAllocation = new Array<string>(); // Array that contains the pids that are loaded into memory
 
 var _SingleStep: boolean = false;
 var _CurrentPCB: any = null;
 var _State = "Not Running"; //to update the PCB with
+
+var _Pcb0: any = null;
+var _Pcb1: any = null;
+var _Pcb2: any = null;
+
+var _Quantum: number = 6;
+var _QuantumCounter: number = 0;
+var _RunAll: boolean = false;
 
 var _ConsoleBuffers = new Array<string>(); //this is for line wrap keeps track of the buffer previous when the next line is advanced
 
@@ -84,7 +99,11 @@ var _ExecutedCommands = new Array<string>();  // Keeps track of all the commands
 var _CountUp: number = 0; // Keeps count of up key presses
 var _CountDown: number = 0; // Keeps count of down key presses
 var _ExecutedCommandsPointer: number = null; // This points to where we are in the executedCommands list where scrolling through with the arrow keys
-var _PID: number = -1; // pid
+var _PID: number = 0; // pid
+
+var _LineCount: number = 0;
+var _LastCharOnLine = "";
+var _LastCursorPosition: number = 0;
 
 var onDocumentLoad = function() {
 	TSOS.Control.hostInit();

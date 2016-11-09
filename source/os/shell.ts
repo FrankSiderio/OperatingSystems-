@@ -49,7 +49,7 @@ module TSOS {
             // shutdown
             sc = new ShellCommand(this.shellShutdown,
                                   "shutdown",
-                                  "- Shuts down the virtual OS but leaves the underlying host / hardware simulation running.");
+                                  "- Shuts down the virtual OS");
             this.commandList[this.commandList.length] = sc;
 
             // cls
@@ -110,8 +110,25 @@ module TSOS {
             sc = new ShellCommand(this.shellRun, "run", "<pid> runs the specified program");
             this.commandList[this.commandList.length] = sc;
 
+            //clearmem
+            sc = new ShellCommand(this.shellClearMem, "clearmem", "clears memory");
+            this.commandList[this.commandList.length] = sc;
+
+            //runall
+            sc = new ShellCommand(this.shellRunAll, "runall", "runs all programs at once");
+            this.commandList[this.commandList.length] = sc;
+
+            //quantum
+            sc = new ShellCommand(this.shellQuantum, "quantum", "quantum <int> sets round robin");
+            this.commandList[this.commandList.length] = sc;
+
             // ps  - list the running processes and their IDs
+            sc = new ShellCommand(this.shellPs, "ps", "display the PIDs of all active processes");
+            this.commandList[this.commandList.length] = sc;
+
             // kill <id> - kills the specified process id.
+            sc = new ShellCommand(this.shellKill, "kill", "kill <pid> to kill an active process");
+            this.commandList[this.commandList.length] = sc;
 
             //
             // Display the initial prompt.
@@ -366,10 +383,11 @@ module TSOS {
             _StdOut.putText("Valid code. Congrats! ");
 
             //there is probably a better way to do this but this allows to run in sequence
-            _CPU.PC = _ProgramLength; //this is so when we get to that function it actually does something
-            _CPU.updateCPU();         //dont worry CPU.PC gets initialized back to zero anyway when it gets there
+            //_CPU.PC = _ProgramLength; //this is so when we get to that function it actually does something
+            //_CPU.updateCPU();         //dont worry CPU.PC gets initialized back to zero anyway when it gets there
 
             _StdOut.putText(_MemoryManager.loadProgram(newInput));
+            _PID++;
             //console.log(_Memory.getMemory());
 
           }
@@ -391,11 +409,35 @@ module TSOS {
           }
           else
           {
-            //if(_CurrentPCB.pid == args[0])
-            //{
-            console.log(_Memory.getMemory());
+            //Runs the pid associated with the memory location 0-2
+            if(args == _MemoryAllocation[0])
+            {
+              //make sure the base and limit are correct
+              _MemoryManager.setBase(0);
+              _MemoryManager.setLimit(255);
+
+              _CPU.PC = 0;
+              _Pcb0.running = true;
+            }
+            else if(args == _MemoryAllocation[1])
+            {
+              //make sure the base and limit are correct
+              _MemoryManager.setBase(256);
+              _MemoryManager.setLimit(511);
+
+              _CPU.PC = 256;
+              _Pcb1.running = true;
+            }
+            else if(args == _MemoryAllocation[2])
+            {
+              //make sure the base and limit are correct
+              _MemoryManager.setBase(512);
+              _MemoryManager.setLimit(768);
+
+              _CPU.PC = 512;
+              _Pcb2.running = true;
+            }
             _CPU.isExecuting = true;
-            //}
 
           }
 
@@ -404,6 +446,113 @@ module TSOS {
           Shell.clearCounts();
         }
 
+        public shellClearMem()
+        {
+          _Memory.clearMemory();
+
+          _ExecutedCommands.push("clearmem");
+          Shell.clearCounts();
+        }
+
+        public shellRunAll()
+        {
+          _RunAll = true;
+
+          _CPU.isExecuting = true;
+          //checking to see if there is something in each block
+          if(_MemoryAllocation[0] != "-1")
+          {
+            _Pcb0.running = true;
+          }
+          if(_MemoryAllocation[1] != "-1")
+          {
+            _Pcb1.running = true;
+          }
+          if(_MemoryAllocation[2] != "-1")
+          {
+            _Pcb2.running = true;
+          }
+
+          //console.log("Memory base: " + _MemoryManager.base);
+          //_CpuScheduler.roundRobin();
+
+          _ExecutedCommands.push("runall");
+          Shell.clearCounts();
+        }
+
+        public shellQuantum(args)
+        {
+          if(args.length <= 0)
+          {
+            _StdOut.putText("Please provide a quantum.");
+          }
+          else
+          {
+            _Quantum = args;
+          }
+
+          _ExecutedCommands.push("quantum");
+          Shell.clearCounts();
+        }
+
+        public shellPs()
+        {
+          for(var i = 0; i < 3; i++)
+          {
+            if(_MemoryAllocation[i] != "-1")
+            {
+              _StdOut.putText("Running PID: " + _MemoryAllocation[i]);
+              _StdOut.advanceLine();
+            }
+          }
+
+          _ExecutedCommands.push("ps");
+          Shell.clearCounts();
+        }
+
+        public shellKill(args)
+        {
+          if(args.length <= 0)
+          {
+            _StdOut.putText("Please enter in a PID.");
+          }
+          else
+          {
+            //find which process we want to kill
+            for(var i = 0; i < 3; i++)
+            {
+              if(args = _MemoryAllocation[i])
+              {
+                var base = 0;
+
+                if(i == 1)
+                {
+                  base = 256;
+                  _MemoryAllocation[i] = "-1";
+                }
+                else if(i == 2)
+                {
+                  base = 512;
+                  _MemoryAllocation[i] = "-1";
+                }
+                else
+                {
+                  _MemoryAllocation[0] = "-1";
+                }
+                _MemoryManager.clearMemorySegment(base);
+              }
+            }
+            //kill process
+            _CPU.break();
+            //_CPU.isExecuting = false;
+
+            //_MemoryManager.clearMemorySegment();
+            //_Memory.clearMemory();
+          }
+
+          _ExecutedCommands.push("kill");
+          Shell.clearCounts();
+        }
 
         public shellMan(args)
         {
@@ -533,7 +682,6 @@ module TSOS {
             Shell.clearCounts();
         }
         //clears the counts (this is better than executing these two lines every time a command is completed plus I am lazy)
-        //this screwed everything up so I'll try to use it later
         public static clearCounts(): void
         {
           _CountUp = 0;

@@ -48,17 +48,31 @@ module TSOS {
         public cycle(): void {
             _Kernel.krnTrace('CPU cycle');
             // TODO: Accumulate CPU usage and profiling statistics here.
+            this.turnAroundTime();
+
             // Do the real work here. Be sure to set this.isExecuting appropriately.
             //console.log("code being loaded: " + _MemoryManager.getMemoryAtLocation(this.PC));
             //console.log("PC: " + this.PC);
 
-
+            //console.log("Memory at location" + _MemoryManager.getMemoryAtLocation(this.PC));
+            //console.log("PC: " + this.PC);
             this.runOpCode(_MemoryManager.getMemoryAtLocation(this.PC));
 
+            if(_RunAll == true)
+            {
+              _QuantumCounter++;
+              _CpuScheduler.roundRobin();
+            }
+
+            //console.log("Mem at this loc: " + _MemoryManager.getMemoryAtLocation(this.PC));
+
+            //console.log("PC: " + this.PC);
+            //console.log(_Memory.getMemory());
 
             this.updateCPUDisplay();
-            this.updateCPU();
-            this.updatePCB();
+            //this.updatePCB();
+            //this.updateCPU();
+            _Pcb0.updateDisplay();
             //_Memory.clearMemory();
 
             if(_SingleStep == true)
@@ -71,6 +85,32 @@ module TSOS {
 
         }
 
+      public turnAroundTime()
+      {
+        //calculating turn around time...lets find which program is running
+        if(_MemoryManager.getBase() == 0)
+        {
+          if(_MemoryAllocation[0] != "-1")
+          {
+            _TurnAroundTime[0]++;
+          }
+        }
+        else if(_MemoryManager.getBase() == 256)
+        {
+          if(_MemoryAllocation[1] != "-1")
+          {
+            _TurnAroundTime[1]++;
+          }
+        }
+        else if(_MemoryManager.getBase() == 512)
+        {
+          if(_MemoryAllocation[2] != "-1")
+          {
+            _TurnAroundTime[2]++;
+          }
+        }
+      }
+
 
       //this function runs the op codes by using a switch statement
       //the switch statement calls different functions depending on which opCode is executed in memory
@@ -80,6 +120,9 @@ module TSOS {
         //console.log("PC: " + this.PC);
         //console.log("Counter: " + counter);
         //don't really need the counter in there. I'll take it out later
+        //console.log("Instruction: " + this.instruction);
+        //console.log("PC: " + this.PC);
+
         switch (this.instruction)
         {
           case "A9":
@@ -146,9 +189,7 @@ module TSOS {
 
           case "00":
             //Break (which is really a system call)
-            this.isExecuting = false;
-            _Console.advanceLine();
-            _Console.putText(">");
+            this.break();
             counter++;
 
           break;
@@ -201,6 +242,10 @@ module TSOS {
       public loadAccFromMemory()
       {
         var nxtTwoBytes = this.getNextTwoBytes();
+        if(_MemoryManager.base > 0)
+        {
+          nxtTwoBytes += _MemoryManager.base;
+        }
         var decimal = this.conversionToDecimal(_MemoryManager.getMemoryAtLocation(nxtTwoBytes));
 
         this.Acc = decimal;
@@ -221,7 +266,12 @@ module TSOS {
       //adds with a carry
       public addWithCarry()
       {
-        this.Acc += this.conversionToDecimal(_MemoryManager.getMemoryAtLocation(this.getNextTwoBytes()));
+        var memoryLocation = this.getNextTwoBytes();
+        if(_MemoryManager.base > 0)
+        {
+          memoryLocation += _MemoryManager.base;
+        }
+        this.Acc += this.conversionToDecimal(_MemoryManager.getMemoryAtLocation(memoryLocation));
         this.PC+=2;
       }
 
@@ -236,6 +286,10 @@ module TSOS {
       public loadXregisterFromMemory()
       {
         var memoryLocation = this.conversionToDecimal(_MemoryManager.getMemoryAtLocation(this.PC + 1));
+        if(_MemoryManager.base > 0)
+        {
+          memoryLocation += _MemoryManager.base;
+        }
         this.Xreg = this.conversionToDecimal(_MemoryManager.getMemoryAtLocation(memoryLocation));
 
         this.PC+=2; //update pc
@@ -252,6 +306,11 @@ module TSOS {
       public loadYregisterFromMemory()
       {
         var memoryLocation = this.conversionToDecimal(_MemoryManager.getMemoryAtLocation(this.PC + 1));
+
+        if(_MemoryManager.base > 0)
+        {
+          memoryLocation += _MemoryManager.base;
+        }
         this.Yreg = this.conversionToDecimal(_MemoryManager.getMemoryAtLocation(memoryLocation));
 
         this.PC+=2; //update pc
@@ -260,6 +319,11 @@ module TSOS {
       public compareToXregister()
       {
         var memoryLocation = this.getNextByte(); //getting the location of the byte to get
+
+        if(_MemoryManager.base > 0)
+        {
+          memoryLocation += _MemoryManager.base;
+        }
         var hexNum = this.conversionToDecimal(_MemoryManager.getMemoryAtLocation(memoryLocation));
 
         if(hexNum == this.Xreg)
@@ -278,10 +342,13 @@ module TSOS {
         if(this.Zflag == 0)
         {
           var value = this.getNextByte();
-          this.PC++;
           this.PC+=value;
+          this.PC++;
 
-          if(this.PC >= _ProgramSize)
+
+          var combined = (_ProgramSize + _MemoryManager.base);
+
+          if(this.PC >= combined)
           {
             this.PC = this.PC - _ProgramSize;
           }
@@ -295,6 +362,11 @@ module TSOS {
       public incrementValueOfByte()
       {
         var memoryLocation = this.conversionToDecimal(_MemoryManager.getMemoryAtLocation(this.PC + 1));
+
+        if(_MemoryManager.base > 0)
+        {
+          memoryLocation += _MemoryManager.base;
+        }
         var hexAtLocation = _MemoryManager.getMemoryAtLocation(memoryLocation);
         var decimalNum = this.conversionToDecimal(hexAtLocation);
 
@@ -331,6 +403,7 @@ module TSOS {
       //handles the sytem call
       public systemCall()
       {
+          //console.log("Base: " + _MemoryManager.base);
           if(this.Xreg == 1)
           {
             _StdOut.putText(this.conversionToDecimal(this.Yreg).toString());
@@ -339,27 +412,162 @@ module TSOS {
           {
             var characterString = "";
             var char = "";
-            var character = _MemoryManager.getMemoryAtLocation(this.Yreg);
+            var location = this.Yreg;
+
+            if(_MemoryManager.base > 0)
+            {
+              location += _MemoryManager.base;
+            }
+
+            var character = _MemoryManager.getMemoryAtLocation(location);
             var characterCode = 0;
 
             while(character != "00")
             {
               var decimalNum = this.conversionToDecimal(character);
-              console.log("character: " + character);
+              //console.log("character: " + character);
 
               char = String.fromCharCode(decimalNum);
-              console.log(char);
+              //console.log(char);
               characterString+=char;
 
 
               this.Yreg++;
-              character = _MemoryManager.getMemoryAtLocation(this.Yreg);
+              var location2 = this.Yreg;
+
+              if(_MemoryManager.base > 0)
+              {
+                location2 += _MemoryManager.base;
+              }
+              character = _MemoryManager.getMemoryAtLocation(location2);
             }
             _StdOut.putText(characterString);
 
           }
       }
 
+      public break()
+      {
+
+        //figure out which program is ending
+        if(_MemoryManager.base == 0 && _Pcb0.running == true)
+        {
+          //alert("First one finished");
+          _Pcb0.running = false;
+          _MemoryManager.clearMemorySegment(0);
+          this.displayStats(0);
+
+          _MemoryAllocation[0] = "-1";
+          //this.check();
+        }
+        else if(_MemoryManager.base == 256 && _Pcb1.running == true)
+        {
+          //alert("Second one finished");
+          _Pcb1.running = false;
+          _MemoryManager.clearMemorySegment(255);
+          this.displayStats(1);
+
+          _MemoryAllocation[1] = "-1";
+
+          //this.check();
+        }
+        else if(_MemoryManager.base = 512 && _Pcb2.running == true)
+        {
+          //alert("Third one finished");
+          _Pcb2.running = false;
+          _MemoryManager.clearMemorySegment(512);
+          this.displayStats(2);
+
+          //this.check();
+          _MemoryAllocation[2] = "-1";
+        }
+
+        //if one of them is running
+        if(_Pcb0.running == true || _Pcb1.running == true || _Pcb2.running == true)
+        {
+          if(_RunAll == true) //if the run all command was used to run them
+          {
+            //_QuantumCounter = _Quantum;
+            //this.cycle();
+            _CPU.isExecuting = true; //continue on
+          }
+        }
+        //if they are all finished
+        else if(_Pcb0.running == false && _Pcb1.running == false && _Pcb2.running == false)
+        {
+          //alert("Done");
+          //_Memory.clearMemory();
+          _RunAll = false;
+          this.isExecuting = false;
+          _Console.advanceLine();
+          _Console.putText(">");
+        }
+
+
+      }
+
+      public displayStats(loc)
+      {
+        console.log("Turn around: " + _TurnAroundTime[loc]);
+        console.log("Wait Time: " + _WaitTime[loc]);
+        //display the running and wait time..if there is one
+        if(_TurnAroundTime[loc] > 0)
+        {
+          //temp fix for kill command bug that makes mem log -1
+          if(_MemoryAllocation[loc] == "-1")
+          {
+            _StdOut.putText("Turn around time is not available");
+          }
+          else
+          {
+            _StdOut.putText("Turn around time of process: " + _MemoryAllocation[loc] + " is: " + _TurnAroundTime[loc]);
+            _StdOut.advanceLine();
+            _TurnAroundTime[loc] = 0;
+          }
+        }
+
+        if(_WaitTime[loc] > 0)
+        {
+          //temp fix for kill command bug that makes mem log -1
+          if(_MemoryAllocation[loc] == "-1")
+          {
+            _StdOut.putText("Wait time is not available");
+          }
+          else
+          {
+            _StdOut.putText("Wait time of process: " + _MemoryAllocation[loc] + " is: " + _WaitTime[loc]);
+            _StdOut.advanceLine();
+            _WaitTime[loc] = 0;
+          }
+        }
+      }
+
+      //check if other programs are finished...so processes eventually get finished
+      public check()
+      {
+
+        if(_MemoryAllocation[0] != "-1")
+        {
+          //alert("0 is not finished");
+          _MemoryManager.base = 0;
+          _MemoryManager.limit = 255;
+          this.PC = 0;
+        }
+        else if(_MemoryAllocation[1] != "-1")
+        {
+          //alert("1 is not finished");
+          _MemoryManager.base = 256;
+          _MemoryManager.limit = 511;
+          this.PC = 255;
+        }
+        else if(_MemoryAllocation[2] != "-1")
+        {
+          //alert("2 is not finished");
+          _MemoryManager.base = 512;
+          _MemoryManager.limit = 768;
+          this.PC = 511;
+        }
+      }
       public updateCPUDisplay()
       {
         document.getElementById("cpuPC").innerHTML = this.PC.toString();
@@ -368,43 +576,5 @@ module TSOS {
         document.getElementById("cpuYReg").innerHTML = this.Yreg.toString();
         document.getElementById("cpuZFlag").innerHTML = this.Zflag.toString();
       }
-
-      public updateCPU()
-      {
-        //if the program is done executing
-        if(this.PC == _ProgramLength)
-        {
-
-          _ProgramLength = 0;
-          _State = "Not Running";
-          //reset CPU and clear memory
-          this.init();
-          _Memory.clearMemory();
-          this.updateCPUDisplay();
-          Control.drawMemory();
-          this.updatePCB();
-        }
-        else
-        {
-          _State = "Running";
-        }
-      }
-
-      public updatePCB()
-      {
-        document.getElementById("pcbPID").innerHTML = _PID.toString();
-        document.getElementById("ir").innerHTML = this.instruction;
-        document.getElementById("pcbPC").innerHTML = this.PC.toString();
-        document.getElementById("pcbAcc").innerHTML = this.Acc.toString();
-        document.getElementById("pcbX").innerHTML = this.Xreg.toString();
-        document.getElementById("pcbY").innerHTML = this.Yreg.toString();
-        document.getElementById("pcbZ").innerHTML = this.Zflag.toString();
-        document.getElementById("state").innerHTML = _State;
-
-      }
-
-
-
-
     }
 }

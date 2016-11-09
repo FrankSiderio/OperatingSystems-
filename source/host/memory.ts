@@ -7,7 +7,7 @@ module TSOS
   export class Memory
   {
     public memoryArray:string [];
-    public totalMemory:number = 256;
+    public totalMemory:number = 768;
 
     constructor(size: number)
     {
@@ -41,7 +41,7 @@ module TSOS
       //Control resets table
       Control.clearMemoryTable();
       this.memoryArray = null;
-      this.init(256);
+      this.init(768);
     }
 
     public addToMemory(location, opCode)

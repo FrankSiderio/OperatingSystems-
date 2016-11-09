@@ -168,12 +168,25 @@ var TSOS;
             //
             // UPDATE: Even though we are now working in TypeScript, char and string remain undistinguished.
             //         Consider fixing that.
+            var lastChar;
+            var currentLength = TSOS.CanvasTextFunctions.measure(_DefaultFontFamily, _DefaultFontSize, text);
             if (text !== "") {
-                // Move the current X position.
-                var offset = _DrawingContext.measureText(this.currentFont, this.currentFontSize, text);
-                // Draw the text at the current X and Y coordinates.
-                _DrawingContext.drawText(this.currentFont, this.currentFontSize, this.currentXPosition, this.currentYPosition, text);
-                this.currentXPosition = this.currentXPosition + offset;
+                if ((this.currentXPosition + currentLength) < _Canvas.width) {
+                    _DrawingContext.drawText(this.currentFont, this.currentFontSize, this.currentXPosition, this.currentYPosition, text);
+                    // Move the current X position.
+                    var offset = _DrawingContext.measureText(this.currentFont, this.currentFontSize, text);
+                    this.currentXPosition = this.currentXPosition + offset;
+                    _LastCharOnLine = text;
+                }
+                else {
+                    _LastCursorPosition = _Console.currentXPosition;
+                    this.advanceLine();
+                    _LineCount += 1;
+                    this.currentXPosition = TSOS.CanvasTextFunctions.measure(_DefaultFontFamily, _DefaultFontSize, ">");
+                    _DrawingContext.drawText(this.currentFont, this.currentFontSize, this.currentXPosition, this.currentYPosition, text);
+                    var offset = _DrawingContext.measureText(this.currentFont, this.currentFontSize, text);
+                    this.currentXPosition = this.currentXPosition + offset;
+                }
             }
         };
         Console.prototype.advanceLine = function () {

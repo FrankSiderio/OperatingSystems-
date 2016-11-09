@@ -16,6 +16,7 @@ var CPU_CLOCK_INTERVAL = 100; // This is in ms (milliseconds) so 1000 = 1 second
 var TIMER_IRQ = 0; // Pages 23 (timer), 9 (interrupts), and 561 (interrupt priority).
 // NOTE: The timer is different from hardware/host clock pulses. Don't confuse these.
 var KEYBOARD_IRQ = 1;
+var CONTEXT_SWITCH_IRQ = 7;
 //
 // Global Variables
 // TODO: Make a global object and use that instead of the "_" naming convention in the global namespace.
@@ -29,11 +30,14 @@ var _DefaultFontFamily = "sans"; // Ignored, I think. The was just a place-holde
 var _DefaultFontSize = 13;
 var _FontHeightMargin = 4; // Additional space added to font size when advancing a line.
 var _Trace = true; // Default the OS trace to be on.
+var _TurnAroundTime = new Array();
+var _WaitTime = new Array();
 // The OS Kernel and its queues.
 var _Kernel;
 var _KernelInterruptQueue; // Initializing this to null (which I would normally do) would then require us to specify the 'any' type, as below.
 var _KernelInputQueue = null; // Is this better? I don't like uninitialized variables. But I also don't like using the type specifier 'any'
 var _KernelBuffers = null; // when clearly 'any' is not what we want. There is likely a better way, but what is it?
+var _CpuScheduler = null;
 // Standard input and output
 var _StdIn; // Same "to null or not to null" issue as above.
 var _StdOut;
@@ -53,17 +57,27 @@ var _MemoryTable = null; // Memory table
 var _MemoryManager = null;
 var _Memory = null;
 var _MemoryArray = new Array();
-var _ProgramLength = null;
-var _ProgramSize = 256; //size of our biggest program (for now)
+var _ProgramLength = new Array(); //contains program lengths for each program
+var _ProgramSize = 256; //size of our biggest program
+var _MemoryAllocation = new Array(); // Array that contains the pids that are loaded into memory
 var _SingleStep = false;
 var _CurrentPCB = null;
 var _State = "Not Running"; //to update the PCB with
+var _Pcb0 = null;
+var _Pcb1 = null;
+var _Pcb2 = null;
+var _Quantum = 6;
+var _QuantumCounter = 0;
+var _RunAll = false;
 var _ConsoleBuffers = new Array(); //this is for line wrap keeps track of the buffer previous when the next line is advanced
 var _ExecutedCommands = new Array(); // Keeps track of all the commands enter
 var _CountUp = 0; // Keeps count of up key presses
 var _CountDown = 0; // Keeps count of down key presses
 var _ExecutedCommandsPointer = null; // This points to where we are in the executedCommands list where scrolling through with the arrow keys
-var _PID = -1; // pid
+var _PID = 0; // pid
+var _LineCount = 0;
+var _LastCharOnLine = "";
+var _LastCursorPosition = 0;
 var onDocumentLoad = function () {
     TSOS.Control.hostInit();
 };

@@ -104,9 +104,28 @@ module TSOS {
             _Kernel.krnBootstrap();  // _GLaDOS.afterStartup() will get called in there, if configured.
 
             //initializing memory stuff
-            _Memory = new Memory(256);
+            _Memory = new Memory(768);
             //console.log(_Memory.getMemory());
             _MemoryManager = new MemoryManager();
+            _CpuScheduler = new CpuScheduler();
+            _MemoryAllocation[0] = "-1";
+            _MemoryAllocation[1] = "-1";
+            _MemoryAllocation[2] = "-1";
+
+            _Pcb0 = new PCB();
+            _Pcb1 = new PCB();
+            _Pcb2 = new PCB();
+            _Pcb0.PC = 0;
+            _Pcb1.PC = 256;
+            _Pcb2.PC = 512;
+
+            _TurnAroundTime[0] = 0;
+            _TurnAroundTime[1] = 0;
+            _TurnAroundTime[2] = 0;
+
+            _WaitTime[0] = 0;
+            _WaitTime[1] = 0;
+            _WaitTime[2] = 0;
 
             //draw memory table
             this.drawMemory();
@@ -159,9 +178,9 @@ module TSOS {
         {
           _MemoryTable = <HTMLTableElement>document.getElementById("memoryTable");
 
-          for(var i = 0; i < 32; i++)
+          for(var i = 0; i < 96; i++)
           {
-            if(i == 32)
+            if(i == 96)
             {
               var tr = document.createElement("tr");
               tr.id = "bottomRow";
@@ -198,7 +217,7 @@ module TSOS {
 
         public static clearMemoryTable()
         {
-          for(var row = 0; row < 32; row++)
+          for(var row = 0; row < 96; row++)
           {
             for(var cell = 1; cell < 9; cell++)
             {
@@ -207,6 +226,18 @@ module TSOS {
           }
         }
 
+        public static clearMemoryTableSegment(base)
+        {
+          var limit = Math.floor((base + 32));
+          base = Math.floor(base);
 
+          for(var row = base; row < limit; row++)
+          {
+            for(var cell = 1; cell < 9; cell++)
+            {
+              _MemoryTable.rows[row].cells[cell].innerHTML = "00";
+            }
+          }
+        }
     }
 }
