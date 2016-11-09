@@ -368,28 +368,27 @@ var TSOS;
             console.log("Wait Time: " + _WaitTime[loc]);
             //display the running and wait time..if there is one
             if (_TurnAroundTime[loc] > 0) {
-                _StdOut.putText("Turn around time of process: " + _MemoryAllocation[loc] + " is: " + _TurnAroundTime[loc]);
-                _TurnAroundTime[loc] = 0;
+                //temp fix for kill command bug that makes mem log -1
+                if (_MemoryAllocation[loc] == "-1") {
+                    _StdOut.putText("Turn around time is not available");
+                }
+                else {
+                    _StdOut.putText("Turn around time of process: " + _MemoryAllocation[loc] + " is: " + _TurnAroundTime[loc]);
+                    _StdOut.advanceLine();
+                    _TurnAroundTime[loc] = 0;
+                }
             }
             if (_WaitTime[loc] > 0) {
-                _StdOut.putText("Wait time of process: " + _MemoryAllocation[loc] + " is: " + _WaitTime[loc]);
-                _WaitTime[loc] = 0;
+                //temp fix for kill command bug that makes mem log -1
+                if (_MemoryAllocation[loc] == "-1") {
+                    _StdOut.putText("Wait time is not available");
+                }
+                else {
+                    _StdOut.putText("Wait time of process: " + _MemoryAllocation[loc] + " is: " + _WaitTime[loc]);
+                    _StdOut.advanceLine();
+                    _WaitTime[loc] = 0;
+                }
             }
-            /*
-            //display the running time..if there is one
-            if(_TurnAroundTime[1] > 0)
-            {
-              _StdOut.putText("Turn around time of process: " + _MemoryAllocation[1] + " is: " + _TurnAroundTime[1]);
-              _TurnAroundTime[1] = 0;
-            }
-    
-            //display the running time..if there is one
-            if(_TurnAroundTime[2] > 0)
-            {
-              _StdOut.putText("Turn around time of process: " + _MemoryAllocation[2] + " is: " + _TurnAroundTime[2]);
-              _TurnAroundTime[2] = 0;
-            }
-            */
         };
         //check if other programs are finished...so processes eventually get finished
         Cpu.prototype.check = function () {

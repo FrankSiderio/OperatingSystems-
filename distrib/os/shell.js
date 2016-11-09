@@ -417,15 +417,20 @@ var TSOS;
                         var base = 0;
                         if (i == 1) {
                             base = 256;
+                            _MemoryAllocation[i] = "-1";
                         }
                         else if (i == 2) {
                             base = 512;
+                            _MemoryAllocation[i] = "-1";
+                        }
+                        else {
+                            _MemoryAllocation[0] = "-1";
                         }
                         _MemoryManager.clearMemorySegment(base);
                     }
                 }
                 //kill process
-                _CPU.isExecuting = false;
+                _CPU.break();
             }
             _ExecutedCommands.push("kill");
             Shell.clearCounts();
