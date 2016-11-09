@@ -110,9 +110,6 @@ module TSOS
           }
         }
 
-        console.log("Base: " + _MemoryManager.base);
-        console.log("Limit: " + _MemoryManager.limit);
-
         //console.log("Memory base after: " + _MemoryManager.base);
         //var interrupt = _KernelInterruptQueue.queue();
         //_Kernel.krnInterruptHandler(interrupt.irq, interrupt.params);

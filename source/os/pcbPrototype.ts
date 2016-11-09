@@ -36,8 +36,15 @@ module TSOS
       {
         runningDisplay[0] = "running";
       }
+      else
+      {
+        if(_MemoryAllocation[0] != "-1")
+        {
+          _WaitTime[0]++;
+        }
+      }
       document.getElementById("state0").innerHTML = runningDisplay[0];
-      
+
       document.getElementById("pcbPID1").innerHTML = _MemoryAllocation[1].toString();
       document.getElementById("ir1").innerHTML = _Pcb1.instruction;
       document.getElementById("pcbPC1").innerHTML = _Pcb1.PC.toString();
@@ -48,6 +55,13 @@ module TSOS
       if(b == 256)
       {
         runningDisplay[1] = "running";
+      }
+      else
+      {
+        if(_MemoryAllocation[0] != "-1")
+        {
+          _WaitTime[1]++;
+        }
       }
       document.getElementById("state1").innerHTML = runningDisplay[1];
 
@@ -61,6 +75,13 @@ module TSOS
       if(b == 512)
       {
         runningDisplay[2] = "running";
+      }
+      else
+      {
+        if(_MemoryAllocation[0] != "-1")
+        {
+          _WaitTime[2]++;
+        }
       }
       document.getElementById("state2").innerHTML = runningDisplay[2];
     }

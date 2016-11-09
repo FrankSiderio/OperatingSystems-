@@ -47,6 +47,7 @@ var TSOS;
         Cpu.prototype.cycle = function () {
             _Kernel.krnTrace('CPU cycle');
             // TODO: Accumulate CPU usage and profiling statistics here.
+            this.turnAroundTime();
             // Do the real work here. Be sure to set this.isExecuting appropriately.
             //console.log("code being loaded: " + _MemoryManager.getMemoryAtLocation(this.PC));
             //console.log("PC: " + this.PC);
@@ -70,6 +71,24 @@ var TSOS;
             }
             //console.log("PC: " + this.PC);
             //console.log("Program Length " + _ProgramLength);
+        };
+        Cpu.prototype.turnAroundTime = function () {
+            //calculating turn around time...lets find which program is running
+            if (_MemoryManager.getBase() == 0) {
+                if (_MemoryAllocation[0] != "-1") {
+                    _TurnAroundTime[0]++;
+                }
+            }
+            else if (_MemoryManager.getBase() == 256) {
+                if (_MemoryAllocation[1] != "-1") {
+                    _TurnAroundTime[1]++;
+                }
+            }
+            else if (_MemoryManager.getBase() == 512) {
+                if (_MemoryAllocation[2] != "-1") {
+                    _TurnAroundTime[2]++;
+                }
+            }
         };
         //this function runs the op codes by using a switch statement
         //the switch statement calls different functions depending on which opCode is executed in memory
@@ -309,18 +328,22 @@ var TSOS;
                 //alert("First one finished");
                 _Pcb0.running = false;
                 _MemoryManager.clearMemorySegment(0);
+                this.displayStats(0);
                 _MemoryAllocation[0] = "-1";
             }
             else if (_MemoryManager.base == 256 && _Pcb1.running == true) {
                 //alert("Second one finished");
                 _Pcb1.running = false;
                 _MemoryManager.clearMemorySegment(255);
+                this.displayStats(1);
                 _MemoryAllocation[1] = "-1";
             }
             else if (_MemoryManager.base = 512 && _Pcb2.running == true) {
                 //alert("Third one finished");
                 _Pcb2.running = false;
                 _MemoryManager.clearMemorySegment(512);
+                this.displayStats(2);
+                //this.check();
                 _MemoryAllocation[2] = "-1";
             }
             //if one of them is running
@@ -339,6 +362,34 @@ var TSOS;
                 _Console.advanceLine();
                 _Console.putText(">");
             }
+        };
+        Cpu.prototype.displayStats = function (loc) {
+            console.log("Turn around: " + _TurnAroundTime[loc]);
+            console.log("Wait Time: " + _WaitTime[loc]);
+            //display the running and wait time..if there is one
+            if (_TurnAroundTime[loc] > 0) {
+                _StdOut.putText("Turn around time of process: " + _MemoryAllocation[loc] + " is: " + _TurnAroundTime[loc]);
+                _TurnAroundTime[loc] = 0;
+            }
+            if (_WaitTime[loc] > 0) {
+                _StdOut.putText("Wait time of process: " + _MemoryAllocation[loc] + " is: " + _WaitTime[loc]);
+                _WaitTime[loc] = 0;
+            }
+            /*
+            //display the running time..if there is one
+            if(_TurnAroundTime[1] > 0)
+            {
+              _StdOut.putText("Turn around time of process: " + _MemoryAllocation[1] + " is: " + _TurnAroundTime[1]);
+              _TurnAroundTime[1] = 0;
+            }
+    
+            //display the running time..if there is one
+            if(_TurnAroundTime[2] > 0)
+            {
+              _StdOut.putText("Turn around time of process: " + _MemoryAllocation[2] + " is: " + _TurnAroundTime[2]);
+              _TurnAroundTime[2] = 0;
+            }
+            */
         };
         //check if other programs are finished...so processes eventually get finished
         Cpu.prototype.check = function () {

@@ -80,8 +80,6 @@ var TSOS;
                         this.setValues(4);
                     }
                 }
-                console.log("Base: " + _MemoryManager.base);
-                console.log("Limit: " + _MemoryManager.limit);
             }
             //_Kernel.krnInterruptHandler(CONTEXT_SWITCH_IRQ, "fdsafdsa");
         };

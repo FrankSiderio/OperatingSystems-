@@ -77,9 +77,6 @@ var TSOS;
                 // Process the first interrupt on the interrupt queue.
                 // TODO: Implement a priority queue based on the IRQ number/id to enforce interrupt priority.
                 var interrupt = _KernelInterruptQueue.dequeue();
-                console.log("Interrupt: " + interrupt);
-                console.log("Interrupt irq: " + interrupt.irq);
-                console.log("Interrupt params: " + interrupt.params);
                 this.krnInterruptHandler(interrupt.irq, interrupt.params);
             }
             else if (_CPU.isExecuting) {

@@ -118,6 +118,15 @@ module TSOS {
             _Pcb0.PC = 0;
             _Pcb1.PC = 256;
             _Pcb2.PC = 512;
+
+            _TurnAroundTime[0] = 0;
+            _TurnAroundTime[1] = 0;
+            _TurnAroundTime[2] = 0;
+
+            _WaitTime[0] = 0;
+            _WaitTime[1] = 0;
+            _WaitTime[2] = 0;
+
             //draw memory table
             this.drawMemory();
         }
