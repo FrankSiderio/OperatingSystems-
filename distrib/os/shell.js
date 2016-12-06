@@ -447,6 +447,8 @@ var TSOS;
         Shell.prototype.shellGetSchedule = function () {
         };
         Shell.prototype.shellFormat = function () {
+            //_FSDD.init();
+            _FileSystem.init();
         };
         Shell.prototype.shellLs = function () {
         };

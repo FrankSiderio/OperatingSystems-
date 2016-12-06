@@ -108,6 +108,11 @@ module TSOS {
             //console.log(_Memory.getMemory());
             _MemoryManager = new MemoryManager();
             _CpuScheduler = new CpuScheduler();
+
+            //initializing hard drive stuff
+            this.createHardDrive();
+            _FileSystem = new fileSystemDeviceDriver();
+
             _MemoryAllocation[0] = "-1";
             _MemoryAllocation[1] = "-1";
             _MemoryAllocation[2] = "-1";
@@ -238,6 +243,12 @@ module TSOS {
               _MemoryTable.rows[row].cells[cell].innerHTML = "00";
             }
           }
+        }
+
+        public static createHardDrive()
+        {
+          sessionStorage.clear();
+          _HardDriveTable = <HTMLTableElement>document.getElementById("hdTable");
         }
     }
 }

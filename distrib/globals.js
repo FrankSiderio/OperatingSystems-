@@ -78,6 +78,9 @@ var _PID = 0; // pid
 var _LineCount = 0;
 var _LastCharOnLine = "";
 var _LastCursorPosition = 0;
+//hardrive stuff
+var _HardDriveTable = null;
+var _FileSystem = null;
 var onDocumentLoad = function () {
     TSOS.Control.hostInit();
 };

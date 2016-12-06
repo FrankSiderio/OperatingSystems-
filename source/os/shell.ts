@@ -574,7 +574,8 @@ module TSOS {
 
         public shellFormat()
         {
-
+          //_FSDD.init();
+          _FileSystem.init();
         }
 
         public shellLs()

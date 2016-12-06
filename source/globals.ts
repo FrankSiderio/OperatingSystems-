@@ -105,6 +105,10 @@ var _LineCount: number = 0;
 var _LastCharOnLine = "";
 var _LastCursorPosition: number = 0;
 
+//hardrive stuff
+var _HardDriveTable: any = null;
+var _FileSystem: any = null;
+
 var onDocumentLoad = function() {
 	TSOS.Control.hostInit();
 };

@@ -91,6 +91,9 @@ var TSOS;
             //console.log(_Memory.getMemory());
             _MemoryManager = new TSOS.MemoryManager();
             _CpuScheduler = new TSOS.CpuScheduler();
+            //initializing hard drive stuff
+            this.createHardDrive();
+            _FileSystem = new TSOS.fileSystemDeviceDriver();
             _MemoryAllocation[0] = "-1";
             _MemoryAllocation[1] = "-1";
             _MemoryAllocation[2] = "-1";
@@ -183,6 +186,10 @@ var TSOS;
                     _MemoryTable.rows[row].cells[cell].innerHTML = "00";
                 }
             }
+        };
+        Control.createHardDrive = function () {
+            sessionStorage.clear();
+            _HardDriveTable = document.getElementById("hdTable");
         };
         return Control;
     }());
