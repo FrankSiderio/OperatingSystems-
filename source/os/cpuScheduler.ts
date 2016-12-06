@@ -33,6 +33,7 @@ module TSOS
   {
     public roundRobin()
     {
+      console.log("Quantum counter: " + _QuantumCounter);
       //do the round robin stuff here
       //console.log("Counter: " + counter);
       //if we are doing round robin

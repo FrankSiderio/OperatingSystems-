@@ -455,7 +455,7 @@ module TSOS {
           //alert("First one finished");
           _Pcb0.running = false;
           _MemoryManager.clearMemorySegment(0);
-          this.displayStats(0);
+          //this.displayStats(0);
 
           _MemoryAllocation[0] = "-1";
           //this.check();
@@ -465,7 +465,7 @@ module TSOS {
           //alert("Second one finished");
           _Pcb1.running = false;
           _MemoryManager.clearMemorySegment(255);
-          this.displayStats(1);
+          //this.displayStats(1);
 
           _MemoryAllocation[1] = "-1";
 
@@ -476,7 +476,7 @@ module TSOS {
           //alert("Third one finished");
           _Pcb2.running = false;
           _MemoryManager.clearMemorySegment(512);
-          this.displayStats(2);
+          //this.displayStats(2);
 
           //this.check();
           _MemoryAllocation[2] = "-1";
@@ -498,6 +498,9 @@ module TSOS {
           //alert("Done");
           //_Memory.clearMemory();
           _RunAll = false;
+          _QuantumCounter = 0;
+          _CpuScheduler.counter = 0;
+
           this.isExecuting = false;
           _Console.advanceLine();
           _Console.putText(">");
@@ -506,10 +509,11 @@ module TSOS {
 
       }
 
+      /*
       public displayStats(loc)
       {
-        console.log("Turn around: " + _TurnAroundTime[loc]);
-        console.log("Wait Time: " + _WaitTime[loc]);
+        //console.log("Turn around: " + _TurnAroundTime[loc]);
+        //console.log("Wait Time: " + _WaitTime[loc]);
         //display the running and wait time..if there is one
         if(_TurnAroundTime[loc] > 0)
         {
@@ -541,6 +545,7 @@ module TSOS {
           }
         }
       }
+      */
 
       //check if other programs are finished...so processes eventually get finished
       public check()

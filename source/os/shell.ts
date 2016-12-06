@@ -130,6 +130,18 @@ module TSOS {
             sc = new ShellCommand(this.shellKill, "kill", "kill <pid> to kill an active process");
             this.commandList[this.commandList.length] = sc;
 
+            //get schedule command
+            sc = new ShellCommand(this.shellGetSchedule, "getschedule", "gets the currently selected scheduling algorithm");
+            this.commandList[this.commandList.length] = sc;
+
+            //format
+            sc = new ShellCommand(this.shellFormat, "format", "initialize all blocks");
+            this.commandList[this.commandList.length] = sc;
+
+            //ls command
+            sc = new ShellCommand(this.shellLs, "ls", "list all the different files stored on disk");
+            this.commandList[this.commandList.length] = sc;
+
             //
             // Display the initial prompt.
             this.putPrompt();
@@ -459,6 +471,7 @@ module TSOS {
           _RunAll = true;
 
           _CPU.isExecuting = true;
+
           //checking to see if there is something in each block
           if(_MemoryAllocation[0] != "-1")
           {
@@ -552,6 +565,21 @@ module TSOS {
 
           _ExecutedCommands.push("kill");
           Shell.clearCounts();
+        }
+
+        public shellGetSchedule()
+        {
+
+        }
+
+        public shellFormat()
+        {
+
+        }
+
+        public shellLs()
+        {
+
         }
 
         public shellMan(args)

@@ -88,6 +88,15 @@ var TSOS;
             // kill <id> - kills the specified process id.
             sc = new TSOS.ShellCommand(this.shellKill, "kill", "kill <pid> to kill an active process");
             this.commandList[this.commandList.length] = sc;
+            //get schedule command
+            sc = new TSOS.ShellCommand(this.shellGetSchedule, "getschedule", "gets the currently selected scheduling algorithm");
+            this.commandList[this.commandList.length] = sc;
+            //format
+            sc = new TSOS.ShellCommand(this.shellFormat, "format", "initialize all blocks");
+            this.commandList[this.commandList.length] = sc;
+            //ls command
+            sc = new TSOS.ShellCommand(this.shellLs, "ls", "list all the different files stored on disk");
+            this.commandList[this.commandList.length] = sc;
             //
             // Display the initial prompt.
             this.putPrompt();
@@ -434,6 +443,12 @@ var TSOS;
             }
             _ExecutedCommands.push("kill");
             Shell.clearCounts();
+        };
+        Shell.prototype.shellGetSchedule = function () {
+        };
+        Shell.prototype.shellFormat = function () {
+        };
+        Shell.prototype.shellLs = function () {
         };
         Shell.prototype.shellMan = function (args) {
             if (args.length > 0) {

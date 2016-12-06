@@ -169,7 +169,7 @@
  -->
   <!-- TODO: Make this look prettier -->
 
-
+<div>
    <div id="divConsole" style="margin:4px; width:500px; height:500px; float:left;">
       <canvas id="display"
               width="500px"
@@ -200,6 +200,29 @@
        <label class = "table" id = "cpuMemory"> Memory </label>
        <table class = "table" id = "memoryTable" style="font-family: Arial; font-size: larger"></table>
      </div>
+
+     <div id="hardrive" style="float: left; margin-left: 100px">
+       <label id="hdElements"> Hard Drive </label>
+       <div style="height: 100px; overflow-y: scroll">
+         <table id="hdTable" class="table table-bordered" style="font-family: Arial; font-size: larger; background: white">
+             <thead>
+             <tr>
+                 <th> T S B  </th>
+                 <th> Meta   </th>
+                 <th> Data  </th>
+             </tr>
+             </thead>
+             <tbody>
+             <tr>
+                 <td id="hdElementTSB"></td>
+                 <td id="hdElementMeta"></td>
+                 <td id="hdElementData"></td>
+             </tr>
+             </tbody>
+         </table>
+       </div>
+     </div>
+
    </div>
 
    <div id="divLog" style="margin-left:520px;">
@@ -233,7 +256,7 @@
           </tr>
           </tbody>
         </table>
-      </div
+      </div>
       <br><br>
       <div id="pcb">
         <div>
@@ -284,29 +307,19 @@
         </div>
       </div>
   </div>
-
-
-    <div id="divUserProgramInput" style="margin-left:520px;">
-       <label>
-          User Program Input
-          <br>
-          <textarea name="taProgramInput"
-                    id  ="taProgramInput"
-                    rows="8"
-                    cols="48"
-          ></textarea>
-       </label>
-    </div>
-
-
-
-
-
-
-
-
+  <br><br>
+  <div id="divUserProgramInput" style="margin-left:520px;">
+     <label>
+        User Program Input
+        <br>
+        <textarea name="taProgramInput"
+                  id  ="taProgramInput"
+                  rows="8"
+                  cols="48"
+        ></textarea>
+     </label>
+  </div>
 </div>
-
 <p class="footerText" style="clear:both;">
    <br>
    Copyright &copy; 2008 - 2015 No Rights Reserved.
