@@ -596,7 +596,19 @@ module TSOS {
 
         public shellLs()
         {
-
+          //check if there are any files created first
+          if(_ListOfFiles.length > 0)
+          {
+            for(var i = 0; i < _ListOfFiles.length; i++)
+            {
+              _StdOut.putText(_ListOfFiles[i]);
+              _StdOut.advanceLine();
+            }
+          }
+          else
+          {
+            _StdOut.putText("Sorry. You don't seem to have any files");
+          }
         }
 
         public shellCreate(args)
@@ -623,7 +635,7 @@ module TSOS {
 
         public shellDelete()
         {
-          
+
         }
 
         public shellMan(args)

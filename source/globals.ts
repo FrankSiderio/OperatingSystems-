@@ -108,6 +108,7 @@ var _LastCursorPosition: number = 0;
 //hardrive stuff
 var _HardDriveTable: any = null;
 var _FileSystem: any = null;
+var _ListOfFiles = new Array<string>(); //for keeping track of the files on the disk...easier than going through the disk
 
 var onDocumentLoad = function() {
 	TSOS.Control.hostInit();
