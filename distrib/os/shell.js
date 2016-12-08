@@ -89,13 +89,25 @@ var TSOS;
             sc = new TSOS.ShellCommand(this.shellKill, "kill", "kill <pid> to kill an active process");
             this.commandList[this.commandList.length] = sc;
             //get schedule command
-            sc = new TSOS.ShellCommand(this.shellGetSchedule, "getschedule", "gets the currently selected scheduling algorithm");
+            sc = new TSOS.ShellCommand(this.shellGetSchedule, "getschedule", "gets current selected scheduling algorithm");
             this.commandList[this.commandList.length] = sc;
             //format
             sc = new TSOS.ShellCommand(this.shellFormat, "format", "initialize all blocks");
             this.commandList[this.commandList.length] = sc;
             //ls command
             sc = new TSOS.ShellCommand(this.shellLs, "ls", "list all the different files stored on disk");
+            this.commandList[this.commandList.length] = sc;
+            //create file
+            sc = new TSOS.ShellCommand(this.shellCreate, "create", "create <filename>");
+            this.commandList[this.commandList.length] = sc;
+            //write file
+            sc = new TSOS.ShellCommand(this.shellWrite, "write", "write <filename> 'data'");
+            this.commandList[this.commandList.length] = sc;
+            //read file
+            sc = new TSOS.ShellCommand(this.shellRead, "read", "read <filename>");
+            this.commandList[this.commandList.length] = sc;
+            //delete file
+            sc = new TSOS.ShellCommand(this.shellDelete, "delete", "delete <filename>");
             this.commandList[this.commandList.length] = sc;
             //
             // Display the initial prompt.
@@ -451,6 +463,20 @@ var TSOS;
             _FileSystem.init();
         };
         Shell.prototype.shellLs = function () {
+        };
+        Shell.prototype.shellCreate = function (args) {
+            if (args.length > 0) {
+                _FileSystem.createFile(args[0]);
+            }
+            else {
+                _StdOut.putText("use the command right you dummy");
+            }
+        };
+        Shell.prototype.shellWrite = function () {
+        };
+        Shell.prototype.shellRead = function () {
+        };
+        Shell.prototype.shellDelete = function () {
         };
         Shell.prototype.shellMan = function (args) {
             if (args.length > 0) {

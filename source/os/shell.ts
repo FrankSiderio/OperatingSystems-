@@ -131,7 +131,7 @@ module TSOS {
             this.commandList[this.commandList.length] = sc;
 
             //get schedule command
-            sc = new ShellCommand(this.shellGetSchedule, "getschedule", "gets the currently selected scheduling algorithm");
+            sc = new ShellCommand(this.shellGetSchedule, "getschedule", "gets current selected scheduling algorithm");
             this.commandList[this.commandList.length] = sc;
 
             //format
@@ -140,6 +140,22 @@ module TSOS {
 
             //ls command
             sc = new ShellCommand(this.shellLs, "ls", "list all the different files stored on disk");
+            this.commandList[this.commandList.length] = sc;
+
+            //create file
+            sc = new ShellCommand(this.shellCreate, "create", "create <filename>");
+            this.commandList[this.commandList.length] = sc;
+
+            //write file
+            sc = new ShellCommand(this.shellWrite, "write", "write <filename> 'data'");
+            this.commandList[this.commandList.length] = sc;
+
+            //read file
+            sc = new ShellCommand(this.shellRead, "read", "read <filename>");
+            this.commandList[this.commandList.length] = sc;
+
+            //delete file
+            sc = new ShellCommand(this.shellDelete, "delete", "delete <filename>");
             this.commandList[this.commandList.length] = sc;
 
             //
@@ -581,6 +597,33 @@ module TSOS {
         public shellLs()
         {
 
+        }
+
+        public shellCreate(args)
+        {
+          if(args.length > 0)
+          {
+            _FileSystem.createFile(args[0]);
+          }
+          else
+          {
+            _StdOut.putText("use the command right you dummy");
+          }
+        }
+
+        public shellWrite()
+        {
+
+        }
+
+        public shellRead()
+        {
+
+        }
+
+        public shellDelete()
+        {
+          
         }
 
         public shellMan(args)
