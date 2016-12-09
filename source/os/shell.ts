@@ -623,9 +623,23 @@ module TSOS {
           }
         }
 
-        public shellWrite()
+        public shellWrite(args)
         {
-
+          if(args.length > 1)
+          {
+            var write = "";
+            //combining what the want to write into one string
+            for(var i = 1; i < args.length; i++)
+            {
+              write+=args[i];
+              write+=" ";//adding a space after every word
+            }
+            _FileSystem.writeFile(args[0], write);
+          }
+          else
+          {
+            _StdOut.putText("Use the command right");
+          }
         }
 
         public shellRead()
