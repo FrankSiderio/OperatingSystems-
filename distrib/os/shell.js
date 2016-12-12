@@ -91,6 +91,9 @@ var TSOS;
             //get schedule command
             sc = new TSOS.ShellCommand(this.shellGetSchedule, "getschedule", "gets current selected scheduling algorithm");
             this.commandList[this.commandList.length] = sc;
+            //set schedule command
+            sc = new TSOS.ShellCommand(this.shellSetSchedule, "setschedule", "sets scheduling algorithm");
+            this.commandList[this.commandList.length] = sc;
             //format
             sc = new TSOS.ShellCommand(this.shellFormat, "format", "initialize all blocks");
             this.commandList[this.commandList.length] = sc;
@@ -458,9 +461,33 @@ var TSOS;
         };
         Shell.prototype.shellGetSchedule = function () {
         };
+        Shell.prototype.shellSetSchedule = function (args) {
+            if (args.length > 0) {
+                if (args[0] == "rr" || args[0] == "fcfs" || args[0] == "priority") {
+                    _SchedulingAlgorithm = args[0];
+                    _StdOut.putText("Set schedule to: " + _SchedulingAlgorithm);
+                }
+                else {
+                    _StdOut.putText("You've entered in the wrong algorithm");
+                }
+            }
+            else {
+                //they used the command wrong
+                if (_SarcasticMode == true) {
+                    _StdOut.putText("Hahahaha. You're so smart.");
+                }
+                else {
+                    _StdOut.putText("It looks like you used the command wrong.");
+                }
+            }
+            _ExecutedCommands.push("setschedule");
+            Shell.clearCounts();
+        };
         Shell.prototype.shellFormat = function () {
             //_FSDD.init();
             _FileSystem.init();
+            _ExecutedCommands.push("format");
+            Shell.clearCounts();
         };
         Shell.prototype.shellLs = function () {
             //check if there are any files created first
@@ -473,6 +500,8 @@ var TSOS;
             else {
                 _StdOut.putText("Sorry. You don't seem to have any files");
             }
+            _ExecutedCommands.push("ls");
+            Shell.clearCounts();
         };
         Shell.prototype.shellCreate = function (args) {
             if (args.length > 0) {
@@ -481,6 +510,8 @@ var TSOS;
             else {
                 _StdOut.putText("use the command right you dummy");
             }
+            _ExecutedCommands.push("create");
+            Shell.clearCounts();
         };
         Shell.prototype.shellWrite = function (args) {
             if (args.length > 1) {
@@ -495,8 +526,20 @@ var TSOS;
             else {
                 _StdOut.putText("Use the command right");
             }
+            _ExecutedCommands.push("write");
+            Shell.clearCounts();
         };
-        Shell.prototype.shellRead = function () {
+        Shell.prototype.shellRead = function (args) {
+            if (args.length > 0) {
+                //removing quotes first
+                var name = args[0].replace(/"/g, "");
+                _FileSystem.readFile(name);
+            }
+            else {
+                _StdOut.putText("Use it right");
+            }
+            _ExecutedCommands.push("format");
+            Shell.clearCounts();
         };
         Shell.prototype.shellDelete = function () {
         };

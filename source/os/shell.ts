@@ -134,6 +134,10 @@ module TSOS {
             sc = new ShellCommand(this.shellGetSchedule, "getschedule", "gets current selected scheduling algorithm");
             this.commandList[this.commandList.length] = sc;
 
+            //set schedule command
+            sc = new ShellCommand(this.shellSetSchedule, "setschedule", "sets scheduling algorithm");
+            this.commandList[this.commandList.length] = sc;
+
             //format
             sc = new ShellCommand(this.shellFormat, "format", "initialize all blocks");
             this.commandList[this.commandList.length] = sc;
@@ -588,10 +592,44 @@ module TSOS {
 
         }
 
+        public shellSetSchedule(args)
+        {
+          if(args.length > 0)
+          {
+            if(args[0] == "rr" || args[0] == "fcfs" || args[0] == "priority")
+            {
+              _SchedulingAlgorithm = args[0];
+              _StdOut.putText("Set schedule to: " + _SchedulingAlgorithm);
+            }
+            else
+            {
+              _StdOut.putText("You've entered in the wrong algorithm");
+            }
+          }
+          else
+          {
+            //they used the command wrong
+            if(_SarcasticMode == true)
+            {
+              _StdOut.putText("Hahahaha. You're so smart.");
+            }
+            else
+            {
+              _StdOut.putText("It looks like you used the command wrong.");
+            }
+          }
+
+          _ExecutedCommands.push("setschedule");
+          Shell.clearCounts();
+        }
+
         public shellFormat()
         {
           //_FSDD.init();
           _FileSystem.init();
+
+          _ExecutedCommands.push("format");
+          Shell.clearCounts();
         }
 
         public shellLs()
@@ -609,6 +647,9 @@ module TSOS {
           {
             _StdOut.putText("Sorry. You don't seem to have any files");
           }
+
+          _ExecutedCommands.push("ls");
+          Shell.clearCounts();
         }
 
         public shellCreate(args)
@@ -621,6 +662,9 @@ module TSOS {
           {
             _StdOut.putText("use the command right you dummy");
           }
+
+          _ExecutedCommands.push("create");
+          Shell.clearCounts();
         }
 
         public shellWrite(args)
@@ -640,11 +684,27 @@ module TSOS {
           {
             _StdOut.putText("Use the command right");
           }
+
+          _ExecutedCommands.push("write");
+          Shell.clearCounts();
         }
 
-        public shellRead()
+        public shellRead(args)
         {
+          if(args.length > 0)
+          {
+            //removing quotes first
+            var name = args[0].replace(/"/g,"");
+            _FileSystem.readFile(name);
+          }
+          else
+          {
+            _StdOut.putText("Use it right");
+          }
 
+
+          _ExecutedCommands.push("format");
+          Shell.clearCounts();
         }
 
         public shellDelete()

@@ -35,8 +35,11 @@ var TSOS;
                 for (var s = 0; s < this.sectors; s++) {
                     for (var b = 0; b < this.blocks; b++) {
                         var data = sessionStorage.getItem(this.keyGenerator(t, s, b));
+                        console.log("Data init: " + data);
                         var meta = (data.substr(0, 4));
+                        console.log("Meta: " + meta);
                         data = data.substr(4, 60);
+                        console.log("Data after: " + data);
                         var key = this.keyGenerator(t, s, b);
                         table += "<tr><td>" + key + "</td><td>" + meta + "</td><td>" + data + "</td></tr>";
                     }
@@ -70,10 +73,10 @@ var TSOS;
             }
             */
             //console.log("Meta: " + meta);
-            //console.log("Free block: " + freeBlock);
-            //console.log("Data: " + data);
+            console.log("Free block: " + freeBlock);
+            console.log("Data: " + data);
             //sessionStorage.setItem(freeDirtyBlock, data)
-            sessionStorage.setItem(freeBlock, data);
+            sessionStorage.setItem("007", data);
             //console.log("Whats here: " + sessionStorage.getItem(this.keyGenerator(0,0,0)));
             //add to the list of files
             _ListOfFiles.push(name);
@@ -97,9 +100,14 @@ var TSOS;
                         var value = sessionStorage.getItem(key);
                         var data = value.substr(4, 64);
                         if (hexFileName == data) {
-                            console.log("File Found!");
-                            console.log("Key: " + key);
-                            console.log("Value: " + value);
+                            //console.log("File Found!");
+                            //console.log("Value: " + value);
+                            //key = key.split('').reverse().join('');
+                            key = this.loc.toString();
+                            this.loc++;
+                            //console.log("Key: " + key);
+                            sessionStorage.setItem(key, value);
+                            this.createTable();
                             t = this.tracks + 1;
                             s = this.sectors + 1;
                             b = this.blocks + 1;
@@ -107,6 +115,9 @@ var TSOS;
                     }
                 }
             }
+        };
+        fileSystemDeviceDriver.prototype.readFile = function (fileName) {
+            console.log("File name: " + fileName);
         };
         //finds the next abailable block on the disk
         fileSystemDeviceDriver.prototype.findNextAvailableBlock = function () {
@@ -130,7 +141,7 @@ var TSOS;
             }
             return freeKey;
         };
-        /*
+        /* This is for finding the next block to write to...so it should start from 100 and the next one would be 101
         public findNextDirtyBlock()
         {
           var freeDirtyKey;

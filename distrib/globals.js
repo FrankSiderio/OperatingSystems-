@@ -68,6 +68,7 @@ var _Pcb1 = null;
 var _Pcb2 = null;
 var _Quantum = 6;
 var _QuantumCounter = 0;
+var _SchedulingAlgorithm = "";
 var _RunAll = false;
 var _ConsoleBuffers = new Array(); //this is for line wrap keeps track of the buffer previous when the next line is advanced
 var _ExecutedCommands = new Array(); // Keeps track of all the commands enter
