@@ -109,7 +109,7 @@ module TSOS
 
     public writeFile(file, write)
     {
-      if(_Format = false)
+      if(_Format == false)
       {
         if(_SarcasticMode == true)
         {
@@ -167,7 +167,32 @@ module TSOS
 
     public readFile(fileName)
     {
-      console.log("File name: " + fileName);
+      fileName = this.stringToHex(fileName);
+
+      for(var t = 0; t < this.tracks; t++)
+      {
+        for(var s = 0; s < this.sectors; s++)
+        {
+          for(var b = 0; b < this.blocks; b++)
+          {
+            var key = this.keyGenerator(t, s, b);
+            var value = sessionStorage.getItem(key);
+            var data = value.substr(4, fileName.length);
+
+            if(data == fileName)
+            {
+              console.log("Found the file!");
+              var meta = value.substr(1, 3);
+              var fileContent = sessionStorage.getItem(meta);
+              fileContent = fileContent.substr(4, fileContent.length); //taking out the meta portion
+
+              console.log("File content: " + fileContent);
+              fileContent = this.hexToString(fileContent);
+              _StdOut.putText(fileContent);
+            }
+          }
+        }
+      }
     }
 
     //finds the next abailable block on the disk
@@ -252,11 +277,11 @@ module TSOS
     //converts a hex value into a string
     public hexToString(hex)
     {
-      var s = "";
-
-      for(var i = 0; i < hex.length; i++)
+      var s = '';
+      for (var i = 0; i < hex.length; i += 2)
       {
-        s += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
+        var v = parseInt(hex.substr(i, 2), 16);
+        if (v) s += String.fromCharCode(v);
       }
 
       return s;

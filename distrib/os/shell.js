@@ -556,9 +556,14 @@ var TSOS;
                 _FileSystem.readFile(name);
             }
             else {
-                _StdOut.putText("Use it right");
+                if (_SarcasticMode == true) {
+                    _StdOut.putText("Use it right you piece of s***");
+                }
+                else {
+                    _StdOut.putText("It looks like you've used the command wrong. Try again");
+                }
             }
-            _ExecutedCommands.push("format");
+            _ExecutedCommands.push("read");
             Shell.clearCounts();
         };
         Shell.prototype.shellDelete = function () {
