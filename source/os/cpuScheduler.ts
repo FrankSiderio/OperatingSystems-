@@ -33,17 +33,18 @@ module TSOS
   {
     public roundRobin()
     {
-      console.log("Quantum counter: " + _QuantumCounter);
       //do the round robin stuff here
       //console.log("Counter: " + counter);
       //if we are doing round robin
       if(_QuantumCounter < _Quantum)
       {
-        if(counter == 0) //first round
+        //console.log("Counter: " + _ScheduleCounter);
+
+        if(_ScheduleCounter == 0) //first round
         {
           _MemoryManager.base = 0;
           _MemoryManager.limit = 255;
-          counter = 1;
+          _ScheduleCounter = 1;
         }
 
         _CPU.isExecuting = true;

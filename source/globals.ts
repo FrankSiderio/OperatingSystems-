@@ -92,6 +92,7 @@ var _Pcb2: any = null;
 var _Quantum: number = 6;
 var _QuantumCounter: number = 0;
 var _SchedulingAlgorithm = "rr"; //round robin is the default schedule
+var _ScheduleCounter = 0;
 var _RunAll: boolean = false;
 
 var _ConsoleBuffers = new Array<string>(); //this is for line wrap keeps track of the buffer previous when the next line is advanced

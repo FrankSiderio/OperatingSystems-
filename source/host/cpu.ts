@@ -56,7 +56,14 @@ module TSOS {
 
             //console.log("Memory at location" + _MemoryManager.getMemoryAtLocation(this.PC));
             //console.log("PC: " + this.PC);
-            this.runOpCode(_MemoryManager.getMemoryAtLocation(this.PC));
+            if(this.isExecuting == true)
+            {
+              this.runOpCode(_MemoryManager.getMemoryAtLocation(this.PC));
+            }
+            else
+            {
+              this.PC = 0;
+            }
 
             if(_RunAll == true)
             {
@@ -117,7 +124,8 @@ module TSOS {
       public runOpCode(code)
       {
         this.instruction = code.toUpperCase();
-        //console.log("PC: " + this.PC);
+        console.log("Instruction: " + this.instruction);
+        console.log("PC: " + this.PC);
         //console.log("Counter: " + counter);
         //don't really need the counter in there. I'll take it out later
         //console.log("Instruction: " + this.instruction);
@@ -499,11 +507,34 @@ module TSOS {
           //_Memory.clearMemory();
           _RunAll = false;
           _QuantumCounter = 0;
-          _CpuScheduler.counter = 0;
+          _ScheduleCounter = 0;
+          _CpuScheduler.pc1 = 256;
+          _CpuScheduler.pc2 = 512;
+          _Pcb0 = new PCB();
 
+          _Pcb1.PC = 256;
+          _Pcb1.Acc = 0;
+          _Pcb1.Xreg = 0;
+          _Pcb1.Yreg = 0;
+          _Pcb1.Zflag = 0;
+          //_Pcb1 = new PCB();
+          //_Pcb2 = new PCB();
+          this.PC = 0;
+          this.Acc = 0;
+          this.Yreg = 0;
+          this.Xreg = 0
+          this.Zflag = 0;
+          _MemoryAllocation[0] = "-1";
+          _MemoryAllocation[1] = "-1";
+          _MemoryAllocation[2] = "-1";
+
+          //console.log("counter thing: " + _CpuScheduler.counter);
+          this.instruction = "";
           this.isExecuting = false;
           _Console.advanceLine();
           _Console.putText(">");
+          console.log("Instruction after break: " + this.instruction);
+          console.log("PC after break: " + this.PC);
         }
 
 

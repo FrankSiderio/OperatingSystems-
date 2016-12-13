@@ -395,6 +395,7 @@ var TSOS;
             Shell.clearCounts();
         };
         Shell.prototype.shellRunAll = function () {
+            _CPU.PC = 0;
             _RunAll = true;
             _CPU.isExecuting = true;
             //checking to see if there is something in each block

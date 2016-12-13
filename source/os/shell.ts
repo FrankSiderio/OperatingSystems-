@@ -491,6 +491,7 @@ module TSOS {
 
         public shellRunAll()
         {
+          _CPU.PC = 0;
           _RunAll = true;
 
           _CPU.isExecuting = true;
