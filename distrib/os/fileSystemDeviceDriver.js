@@ -26,6 +26,7 @@ var TSOS;
                     }
                 }
             }
+            this.displayMessage(1, "Format");
             this.createTable();
         };
         //this also updates the table
@@ -53,19 +54,19 @@ var TSOS;
                     _StdOut.putText("You bitch. You know it's not formatted you smart ass.");
                 }
                 else {
-                    _StdOut.putText("Please format the disk first");
+                    this.displayMessage(3, "");
                 }
             }
             else {
                 //setting name to it's hex value
-                name = this.stringToHex(name);
+                var hexName = this.stringToHex(name);
                 //get the next available block
                 var freeBlock = this.findNextAvailableBlock();
                 var freeDirtyBlock = this.findNextDirtyBlock();
                 console.log("Free dirty block: " + freeDirtyBlock);
                 //setting the meta and data to put into the table
                 var meta = "1" + freeDirtyBlock;
-                var data = meta + name;
+                var data = meta + hexName;
                 for (var i = data.length; i < this.fileSize; i++) {
                     data += "~";
                 }
@@ -73,7 +74,7 @@ var TSOS;
                 //add to the list of files
                 _ListOfFiles.push(name);
                 this.createTable();
-                _StdOut.putText("File created successful");
+                this.displayMessage(1, "Creating file: " + name);
             }
         };
         fileSystemDeviceDriver.prototype.writeFile = function (file, write) {
@@ -82,7 +83,7 @@ var TSOS;
                     _StdOut.putText("Are you trying to be sarcastic? It's not funny...");
                 }
                 else {
-                    _StdOut.putText("Please format the disk first");
+                    this.displayMessage(3, "");
                 }
             }
             else {
@@ -118,7 +119,7 @@ var TSOS;
                         }
                     }
                 }
-                _StdOut.putText("Writing to file successful!");
+                this.displayMessage(1, "Writing to file");
             }
         };
         fileSystemDeviceDriver.prototype.readFile = function (fileName) {
@@ -148,7 +149,7 @@ var TSOS;
                     _StdOut.putText("Dumb ass. Format the disk first");
                 }
                 else {
-                    _StdOut.putText("Please format the disk first");
+                    this.displayMessage(3, "");
                 }
             }
             else {
@@ -172,6 +173,7 @@ var TSOS;
                                 sessionStorage.setItem(key, newData);
                                 sessionStorage.setItem(meta, newData);
                                 this.createTable();
+                                this.displayMessage(1, "Delete");
                             }
                         }
                     }
@@ -240,6 +242,25 @@ var TSOS;
                     s += String.fromCharCode(v);
             }
             return s;
+        };
+        //for display success/error messages
+        fileSystemDeviceDriver.prototype.displayMessage = function (code, type) {
+            //1 = successful
+            //2 = failure
+            //3 = failure because not formatted
+            switch (code) {
+                case 1:
+                    _StdOut.putText(type + " successful!");
+                    break;
+                case 2:
+                    _StdOut.putText(type + " failure...");
+                    break;
+                case 3:
+                    _StdOut.putText("Please format the disk first");
+                    break;
+                default:
+                    break;
+            }
         };
         return fileSystemDeviceDriver;
     }());
