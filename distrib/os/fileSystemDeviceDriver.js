@@ -73,6 +73,7 @@ var TSOS;
                 //add to the list of files
                 _ListOfFiles.push(name);
                 this.createTable();
+                _StdOut.putText("File created successful");
             }
         };
         fileSystemDeviceDriver.prototype.writeFile = function (file, write) {
@@ -84,36 +85,40 @@ var TSOS;
                     _StdOut.putText("Please format the disk first");
                 }
             }
-            var hexFileName = this.stringToHex(file);
-            for (var i = hexFileName.length; i < (this.fileSize - 4); i++) {
-                hexFileName += "~";
-            }
-            console.log("File: " + file);
-            console.log("Writing: " + write);
-            //find which file to write to using a linear search
-            for (var t = 0; t < this.tracks; t++) {
-                for (var s = 0; s < this.sectors; s++) {
-                    for (var b = 0; b < this.blocks; b++) {
-                        //getting the meta block
-                        var key = this.keyGenerator(t, s, b);
-                        var value = sessionStorage.getItem(key);
-                        var data = value.substr(4, 64);
-                        var meta = value.substr(1, 3);
-                        //found the file
-                        if (hexFileName == data) {
-                            //now lets write
-                            write = this.stringToHex(write);
-                            write = key + write;
-                            write = "1" + write; //setting the in-use bit so we know it's in use
-                            sessionStorage.setItem(meta, write);
-                            this.createTable();
-                            //break
-                            t = this.tracks + 1;
-                            s = this.sectors + 1;
-                            b = this.blocks + 1;
+            else {
+                var hexFileName = this.stringToHex(file);
+                for (var i = hexFileName.length; i < (this.fileSize - 4); i++) {
+                    hexFileName += "~";
+                }
+                console.log("File: " + file);
+                console.log("Writing: " + write);
+                _StdOut.putText("Writing to file...");
+                //find which file to write to using a linear search
+                for (var t = 0; t < this.tracks; t++) {
+                    for (var s = 0; s < this.sectors; s++) {
+                        for (var b = 0; b < this.blocks; b++) {
+                            //getting the meta block
+                            var key = this.keyGenerator(t, s, b);
+                            var value = sessionStorage.getItem(key);
+                            var data = value.substr(4, 64);
+                            var meta = value.substr(1, 3);
+                            //found the file
+                            if (hexFileName == data) {
+                                //now lets write
+                                write = this.stringToHex(write);
+                                write = key + write;
+                                write = "1" + write; //setting the in-use bit so we know it's in use
+                                sessionStorage.setItem(meta, write);
+                                this.createTable();
+                                //break
+                                t = this.tracks + 1;
+                                s = this.sectors + 1;
+                                b = this.blocks + 1;
+                            }
                         }
                     }
                 }
+                _StdOut.putText("Writing to file successful!");
             }
         };
         fileSystemDeviceDriver.prototype.readFile = function (fileName) {
@@ -132,6 +137,42 @@ var TSOS;
                             console.log("File content: " + fileContent);
                             fileContent = this.hexToString(fileContent);
                             _StdOut.putText(fileContent);
+                        }
+                    }
+                }
+            }
+        };
+        fileSystemDeviceDriver.prototype.deleteFile = function (fileName) {
+            if (_Format == false) {
+                if (_SarcasticMode == true) {
+                    _StdOut.putText("Dumb ass. Format the disk first");
+                }
+                else {
+                    _StdOut.putText("Please format the disk first");
+                }
+            }
+            else {
+                console.log("Deleting file: " + fileName);
+                fileName = this.stringToHex(fileName);
+                for (var t = 0; t < this.tracks; t++) {
+                    for (var s = 0; s < this.sectors; s++) {
+                        for (var b = 0; b < this.blocks; b++) {
+                            var key = this.keyGenerator(t, s, b);
+                            var value = sessionStorage.getItem(key);
+                            var data = value.substr(4, fileName.length);
+                            console.log("Data: " + data);
+                            if (fileName == data) {
+                                console.log("Found file to delete");
+                                var meta = value.substr(1, 3);
+                                var newData = "";
+                                //clearing the block
+                                for (var i = 0; i < 64; i++) {
+                                    newData += "~";
+                                }
+                                sessionStorage.setItem(key, newData);
+                                sessionStorage.setItem(meta, newData);
+                                this.createTable();
+                            }
                         }
                     }
                 }

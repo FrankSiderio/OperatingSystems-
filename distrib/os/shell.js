@@ -567,7 +567,21 @@ var TSOS;
             _ExecutedCommands.push("read");
             Shell.clearCounts();
         };
-        Shell.prototype.shellDelete = function () {
+        Shell.prototype.shellDelete = function (args) {
+            if (args.length > 0) {
+                var deleteFileName = args[0].replace(/"/g, "");
+                _FileSystem.deleteFile(deleteFileName);
+            }
+            else {
+                if (_SarcasticMode == true) {
+                    _StdOut.putText("You wanna maybe use the command right? Yes? No?");
+                }
+                else {
+                    _StdOut.putText("It looks like you've used the command wrong. Try again");
+                }
+            }
+            _ExecutedCommands.push("delete");
+            Shell.clearCounts();
         };
         Shell.prototype.shellMan = function (args) {
             if (args.length > 0) {
