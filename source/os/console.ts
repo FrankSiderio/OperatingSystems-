@@ -108,10 +108,10 @@ module TSOS {
         {
           var inputString = _Console.buffer;
           var cursorPosition = _Console.currentXPosition;
-          var newBuffer= "";
-          var lastChar = inputString[inputString.length-1];
+          var newBuffer = "";
+          var lastChar = inputString[inputString.length - 1];
 
-          for(var i=0; i<inputString.length-1; i++)
+          for(var i = 0; i <inputString.length - 1; i++)
           {
             newBuffer += inputString[i];
           }

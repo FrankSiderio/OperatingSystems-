@@ -49,12 +49,9 @@ module TSOS
           for(var b = 0; b < this.blocks; b++)
           {
             var data = sessionStorage.getItem(this.keyGenerator(t, s, b));
-            console.log("Data init: " + data);
             var meta = (data.substr(0, 4));
 
-            console.log("Meta: " + meta)
             data = data.substr(4, 60);
-            console.log("Data after: " + data);
 
             var key = this.keyGenerator(t, s, b);
             table += "<tr><td>"+key+"</td><td>"+meta+"</td><td>"+data+"</td></tr>";
@@ -72,52 +69,57 @@ module TSOS
 
     public createFile(name)
     {
-      //removing the quotes
-      name = name.replace(/"/g,"");
-
-      //setting name to it's hex value
-      name = this.stringToHex(name);
-
-      //get the next available block
-      var freeBlock = this.findNextAvailableBlock();
-      //var freeDirtyBlock = this.findNextDirtyBlock();
-      //console.log("Free block: " + freeBlock);
-
-      //setting the meta and data to put into the table
-      var meta = "1" + freeBlock;
-      var data = meta + name;
-
-      for(var i = data.length; i < this.fileSize; i++)
+      if(_Format == false)
       {
-        data+="~";
+        if(_SarcasticMode == true)
+        {
+          _StdOut.putText("You bitch. You know it's not formatted you smart ass.");
+        }
+        else
+        {
+          _StdOut.putText("Please format the disk first");
+        }
       }
-
-      /*
-      var fileData = "1---";
-      for(var i = fileData.length; i < this.fileSize; i++)
+      else
       {
-        fileData+="~";
+        //setting name to it's hex value
+        name = this.stringToHex(name);
+
+        //get the next available block
+        var freeBlock = this.findNextAvailableBlock();
+        var freeDirtyBlock = this.findNextDirtyBlock();
+        console.log("Free dirty block: " + freeDirtyBlock);
+
+        //setting the meta and data to put into the table
+        var meta = "1" + freeDirtyBlock;
+        var data = meta + name;
+
+        for(var i = data.length; i < this.fileSize; i++)
+        {
+          data+="~";
+        }
+
+        sessionStorage.setItem(freeBlock, data);
+
+        //add to the list of files
+        _ListOfFiles.push(name);
+        this.createTable();
       }
-      */
-
-      //console.log("Meta: " + meta);
-      console.log("Free block: " + freeBlock);
-      console.log("Data: " + data);
-
-      //sessionStorage.setItem(freeDirtyBlock, data)
-      sessionStorage.setItem("007", data);
-      //console.log("Whats here: " + sessionStorage.getItem(this.keyGenerator(0,0,0)));
-
-      //add to the list of files
-      _ListOfFiles.push(name);
-      this.createTable();
     }
 
     public writeFile(file, write)
     {
-      file = file.replace(/"/g,"");
-      write = write.replace(/"/g,"");
-
+      if(_Format = false)
+      {
+        if(_SarcasticMode == true)
+        {
+          _StdOut.putText("Are you trying to be sarcastic? It's not funny...");
+        }
+        else
+        {
+          _StdOut.putText("Please format the disk first");
+        }
+      }
       var hexFileName = this.stringToHex(file);
       for(var i = hexFileName.length; i < (this.fileSize - 4); i++)
       {
@@ -138,21 +140,20 @@ module TSOS
             var key = this.keyGenerator(t, s, b);
             var value = sessionStorage.getItem(key);
             var data = value.substr(4, 64);
+            var meta = value.substr(1, 3);
 
+            //found the file
             if(hexFileName == data)
             {
-              //console.log("File Found!");
-              //console.log("Value: " + value);
+              //now lets write
+              write = this.stringToHex(write);
+              write = key + write;
+              write = "1" + write; //setting the in-use bit so we know it's in use
 
-              //key = key.split('').reverse().join('');
-              key = this.loc.toString();
-              this.loc++;
-              //console.log("Key: " + key);
-
-
-              sessionStorage.setItem(key, value);
+              sessionStorage.setItem(meta, write);
               this.createTable();
 
+              //break
               t = this.tracks + 1;
               s = this.sectors + 1;
               b = this.blocks + 1;
@@ -200,12 +201,12 @@ module TSOS
       return freeKey;
     }
 
-    /* This is for finding the next block to write to...so it should start from 100 and the next one would be 101
+    //This is for finding the next block to write to...so it should start from 100 and the next one would be 101
     public findNextDirtyBlock()
     {
       var freeDirtyKey;
 
-      for(var t = 0; t < this.tracks; t++)
+      for(var t = 1; t < this.tracks; t++)
       {
         for(var s = 0; s < this.sectors; s++)
         {
@@ -218,6 +219,7 @@ module TSOS
 
             if(data == "~") //checking the in-use bit
             {
+              sessionStorage.setItem(key, "000");
               freeDirtyKey = key;
               //breaking out of the loop
               t = this.tracks + 1;
@@ -230,7 +232,7 @@ module TSOS
 
       return freeDirtyKey;
     }
-    */
+
 
 
 

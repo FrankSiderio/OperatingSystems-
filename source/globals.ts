@@ -91,7 +91,7 @@ var _Pcb2: any = null;
 
 var _Quantum: number = 6;
 var _QuantumCounter: number = 0;
-var _SchedulingAlgorithm = "";
+var _SchedulingAlgorithm = "rr"; //round robin is the default schedule
 var _RunAll: boolean = false;
 
 var _ConsoleBuffers = new Array<string>(); //this is for line wrap keeps track of the buffer previous when the next line is advanced
@@ -110,6 +110,7 @@ var _LastCursorPosition: number = 0;
 var _HardDriveTable: any = null;
 var _FileSystem: any = null;
 var _ListOfFiles = new Array<string>(); //for keeping track of the files on the disk...easier than going through the disk
+var _Format: boolean = false;
 
 var onDocumentLoad = function() {
 	TSOS.Control.hostInit();

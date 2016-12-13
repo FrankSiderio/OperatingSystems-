@@ -203,14 +203,16 @@ var TSOS;
         //
         Shell.prototype.shellInvalidCommand = function () {
             console.log(_Console.buffer);
-            if (_Console.buffer == "status output should be similar to 'counting0counting1hello worldcounting 2'.") {
-                this.shellStatus("output should be similar to 'counting0counting1hello worldcounting 2'.");
+            if (_Console.buffer == "sarcasticmode on") {
+                _SarcasticMode = true;
+                console.log("Wow. What a great idea this is.");
+                alert("You aren't gonna regret this. ;)");
             }
             _StdOut.putText("Invalid Command. ");
             if (_SarcasticMode) {
-                _StdOut.putText("Unbelievable. You, [subject name here],");
+                _StdOut.putText("Unbelievable. You, piece of s***,");
                 _StdOut.advanceLine();
-                _StdOut.putText("must be the pride of [subject hometown here].");
+                _StdOut.putText("must be the pride of a ******* ****** place.");
             }
             else {
                 _StdOut.putText("Type 'help' for, well... help.");
@@ -460,6 +462,14 @@ var TSOS;
             Shell.clearCounts();
         };
         Shell.prototype.shellGetSchedule = function () {
+            if (_SarcasticMode == true) {
+                _StdOut.putText("Open your calendar app on your phone");
+            }
+            else {
+                _StdOut.putText("The current selected schedule is: " + _SchedulingAlgorithm);
+            }
+            _ExecutedCommands.push("getschedule");
+            Shell.clearCounts();
         };
         Shell.prototype.shellSetSchedule = function (args) {
             if (args.length > 0) {
@@ -484,7 +494,7 @@ var TSOS;
             Shell.clearCounts();
         };
         Shell.prototype.shellFormat = function () {
-            //_FSDD.init();
+            _Format = true;
             _FileSystem.init();
             _ExecutedCommands.push("format");
             Shell.clearCounts();
@@ -505,10 +515,17 @@ var TSOS;
         };
         Shell.prototype.shellCreate = function (args) {
             if (args.length > 0) {
-                _FileSystem.createFile(args[0]);
+                //removing the quotes
+                var name = args[0].replace(/"/g, "");
+                _FileSystem.createFile(name);
             }
             else {
-                _StdOut.putText("use the command right you dummy");
+                if (_SarcasticMode == true) {
+                    _StdOut.putText("Wow. Just wow. You must be so fricken smart");
+                }
+                else {
+                    _StdOut.putText("You must have used the create command incorectly. Try again");
+                }
             }
             _ExecutedCommands.push("create");
             Shell.clearCounts();
@@ -516,12 +533,15 @@ var TSOS;
         Shell.prototype.shellWrite = function (args) {
             if (args.length > 1) {
                 var write = "";
-                //combining what the want to write into one string
+                //combining what they want to write into one string
                 for (var i = 1; i < args.length; i++) {
                     write += args[i];
                     write += " "; //adding a space after every word
                 }
-                _FileSystem.writeFile(args[0], write);
+                //removing quotes
+                var name = args[0].replace(/"/g, "");
+                write = write.replace(/"/g, "");
+                _FileSystem.writeFile(name, write);
             }
             else {
                 _StdOut.putText("Use the command right");

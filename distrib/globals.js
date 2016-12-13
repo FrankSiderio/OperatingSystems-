@@ -68,7 +68,7 @@ var _Pcb1 = null;
 var _Pcb2 = null;
 var _Quantum = 6;
 var _QuantumCounter = 0;
-var _SchedulingAlgorithm = "";
+var _SchedulingAlgorithm = "rr"; //round robin is the default schedule
 var _RunAll = false;
 var _ConsoleBuffers = new Array(); //this is for line wrap keeps track of the buffer previous when the next line is advanced
 var _ExecutedCommands = new Array(); // Keeps track of all the commands enter
@@ -83,6 +83,7 @@ var _LastCursorPosition = 0;
 var _HardDriveTable = null;
 var _FileSystem = null;
 var _ListOfFiles = new Array(); //for keeping track of the files on the disk...easier than going through the disk
+var _Format = false;
 var onDocumentLoad = function () {
     TSOS.Control.hostInit();
 };
