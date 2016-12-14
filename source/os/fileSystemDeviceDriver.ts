@@ -88,7 +88,7 @@ module TSOS
         //get the next available block
         var freeBlock = this.findNextAvailableBlock();
         var freeDirtyBlock = this.findNextDirtyBlock();
-        console.log("Free dirty block: " + freeDirtyBlock);
+        //console.log("Free dirty block: " + freeDirtyBlock);
 
         //setting the meta and data to put into the table
         var meta = "1" + freeDirtyBlock;
@@ -149,12 +149,54 @@ module TSOS
               //found the file
               if(hexFileName == data)
               {
-                //now lets write
-                write = this.stringToHex(write);
-                write = key + write;
-                write = "1" + write; //setting the in-use bit so we know it's in use
+                if(write.length <= 60)
+                {
+                  //now lets write
+                  write = this.stringToHex(write);
+                  write = key + write;
+                  write = "1" + write; //setting the in-use bit so we know it's in use
 
-                sessionStorage.setItem(meta, write);
+                  sessionStorage.setItem(meta, write);
+                }
+
+                //if we need extra space to create the file
+                else
+                {
+                  while(write.length > 0)
+                  {
+                    console.log("Key: " + key);
+                    var freeBlock;
+
+                    if(write.length <= 60)
+                    {
+                      freeBlock = this.findNextDirtyBlock();
+                      write = "1" + key + write;
+
+                      for(var x = write.length; x < this.fileSize; x++)
+                      {
+                        write+="~";
+                      }
+
+                      sessionStorage.setItem(freeBlock, write);
+                      write = "";
+                    }
+                    else
+                    {
+                      var firstFreeBlock = this.findNextDirtyBlock();
+                      var string = "1~~~";
+
+                      sessionStorage.setItem(firstFreeBlock, string);
+                      freeBlock = this.findNextAvailableBlock();
+
+                      var subString = write.substr(0, 60);
+                      var newData = "1" + key + subString;
+
+                      sessionStorage.setItem(firstFreeBlock, newData);
+
+                      write = write.substr(60, (write.length));
+                    }
+                  }
+                }
                 this.createTable();
 
                 //break
@@ -166,7 +208,7 @@ module TSOS
             }
           }
         }
-          this.displayMessage(1, "Writing to file");
+        this.displayMessage(1, "Writing to file");
       }
 
     }
@@ -302,7 +344,7 @@ module TSOS
 
             if(data == "~") //checking the in-use bit
             {
-              sessionStorage.setItem(key, "000");
+              //sessionStorage.setItem(key, "000");
               freeDirtyKey = key;
               //breaking out of the loop
               t = this.tracks + 1;
