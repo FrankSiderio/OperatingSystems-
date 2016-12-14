@@ -74,6 +74,7 @@ var TSOS;
                 //add to the list of files
                 _ListOfFiles.push(name);
                 this.createTable();
+                _KernelInterruptQueue.enqueue(new TSOS.Interrupt(CREATE_FILE_IRQ, ""));
                 this.displayMessage(1, "Creating file: " + name);
             }
         };
@@ -138,6 +139,7 @@ var TSOS;
                                     }
                                 }
                                 this.createTable();
+                                _KernelInterruptQueue.enqueue(new TSOS.Interrupt(WRITE_FILE_IRQ, ""));
                                 //break
                                 t = this.tracks + 1;
                                 s = this.sectors + 1;
@@ -165,6 +167,7 @@ var TSOS;
                             console.log("File content: " + fileContent);
                             fileContent = this.hexToString(fileContent);
                             _StdOut.putText(fileContent);
+                            _KernelInterruptQueue.enqueue(new TSOS.Interrupt(READ_FILE_IRQ, ""));
                         }
                     }
                 }
@@ -181,15 +184,15 @@ var TSOS;
             }
             else {
                 console.log("Deleting file: " + fileName);
-                fileName = this.stringToHex(fileName);
+                var hexFileName = this.stringToHex(fileName);
                 for (var t = 0; t < this.tracks; t++) {
                     for (var s = 0; s < this.sectors; s++) {
                         for (var b = 0; b < this.blocks; b++) {
                             var key = this.keyGenerator(t, s, b);
                             var value = sessionStorage.getItem(key);
-                            var data = value.substr(4, fileName.length);
+                            var data = value.substr(4, (fileName.length * 2));
                             console.log("Data: " + data);
-                            if (fileName == data) {
+                            if (hexFileName == data) {
                                 console.log("Found file to delete");
                                 var meta = value.substr(1, 3);
                                 var newData = "";
@@ -197,13 +200,24 @@ var TSOS;
                                 for (var i = 0; i < 64; i++) {
                                     newData += "~";
                                 }
+                                //we want to clear the file name and its contents
                                 sessionStorage.setItem(key, newData);
                                 sessionStorage.setItem(meta, newData);
                                 this.createTable();
+                                _KernelInterruptQueue.enqueue(new TSOS.Interrupt(DELETE_FILE_IRQ, ""));
+                                this.deleteFromList(fileName);
                                 this.displayMessage(1, "Delete");
                             }
                         }
                     }
+                }
+            }
+        };
+        //deletes it from the array list
+        fileSystemDeviceDriver.prototype.deleteFromList = function (fileName) {
+            for (var i = 0; i < _ListOfFiles.length; i++) {
+                if (_ListOfFiles[i] == fileName) {
+                    _ListOfFiles.splice(i, 1);
                 }
             }
         };
@@ -240,7 +254,7 @@ var TSOS;
                         var value = sessionStorage.getItem(key);
                         var data = value.substr(4, 1);
                         if (data == "~") {
-                            //sessionStorage.setItem(key, "000");
+                            sessionStorage.setItem(key, "0000");
                             freeDirtyKey = key;
                             //breaking out of the loop
                             t = this.tracks + 1;

@@ -98,12 +98,13 @@ module TSOS
         {
           data+="~";
         }
-
         sessionStorage.setItem(freeBlock, data);
 
         //add to the list of files
         _ListOfFiles.push(name);
+
         this.createTable();
+        _KernelInterruptQueue.enqueue(new TSOS.Interrupt(CREATE_FILE_IRQ, ""));
         this.displayMessage(1, "Creating file: " + name);
       }
     }
@@ -198,6 +199,7 @@ module TSOS
                   }
                 }
                 this.createTable();
+                _KernelInterruptQueue.enqueue(new TSOS.Interrupt(WRITE_FILE_IRQ, ""));
 
                 //break
                 t = this.tracks + 1;
@@ -237,6 +239,7 @@ module TSOS
               console.log("File content: " + fileContent);
               fileContent = this.hexToString(fileContent);
               _StdOut.putText(fileContent);
+              _KernelInterruptQueue.enqueue(new TSOS.Interrupt(READ_FILE_IRQ, ""));
             }
           }
         }
@@ -260,7 +263,7 @@ module TSOS
       {
         console.log("Deleting file: " + fileName);
 
-        fileName = this.stringToHex(fileName);
+        var hexFileName = this.stringToHex(fileName);
 
         for(var t = 0; t < this.tracks; t++)
         {
@@ -270,9 +273,9 @@ module TSOS
             {
               var key = this.keyGenerator(t, s, b);
               var value = sessionStorage.getItem(key);
-              var data = value.substr(4, fileName.length);
+              var data = value.substr(4, (fileName.length * 2));
               console.log("Data: " + data);
-              if(fileName == data)
+              if(hexFileName == data)
               {
                 console.log("Found file to delete");
                 var meta = value.substr(1, 3);
@@ -283,14 +286,29 @@ module TSOS
                 {
                   newData+="~";
                 }
+                //we want to clear the file name and its contents
                 sessionStorage.setItem(key, newData);
                 sessionStorage.setItem(meta, newData);
 
                 this.createTable();
+                _KernelInterruptQueue.enqueue(new TSOS.Interrupt(DELETE_FILE_IRQ, ""));
+                this.deleteFromList(fileName);
                 this.displayMessage(1, "Delete");
               }
             }
           }
+        }
+      }
+    }
+
+    //deletes it from the array list
+    public deleteFromList(fileName)
+    {
+      for(var i = 0; i < _ListOfFiles.length; i++)
+      {
+        if(_ListOfFiles[i] == fileName)
+        {
+          _ListOfFiles.splice(i, 1);
         }
       }
     }
@@ -344,7 +362,7 @@ module TSOS
 
             if(data == "~") //checking the in-use bit
             {
-              //sessionStorage.setItem(key, "000");
+              sessionStorage.setItem(key, "0000");
               freeDirtyKey = key;
               //breaking out of the loop
               t = this.tracks + 1;

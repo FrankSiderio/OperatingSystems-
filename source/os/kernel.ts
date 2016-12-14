@@ -134,6 +134,18 @@ module TSOS {
                 case CONTEXT_SWITCH_IRQ:
                     this.krnTrace("Context Switch");
                     break;
+                case CREATE_FILE_IRQ:
+                  this.krnTrace("Creating File");
+                  break;
+                case WRITE_FILE_IRQ:
+                  this.krnTrace("Writing File");
+                  break;
+                case READ_FILE_IRQ:
+                  this.krnTrace("Reading File");
+                  break;
+                case DELETE_FILE_IRQ:
+                  this.krnTrace("Deleting File");
+                  break;
                 default:
                     this.krnTrapError("Invalid Interrupt Request. irq=" + irq + " params=[" + params + "]");
             }
