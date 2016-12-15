@@ -70,6 +70,7 @@ var _State = "Not Running"; //to update the PCB with
 var _Pcb0 = null;
 var _Pcb1 = null;
 var _Pcb2 = null;
+var _PcbDisk = new Array();
 var _Quantum = 6;
 var _QuantumCounter = 0;
 var _SchedulingAlgorithm = "rr"; //round robin is the default schedule
@@ -84,6 +85,7 @@ var _PID = 0; // pid
 var _LineCount = 0;
 var _LastCharOnLine = "";
 var _LastCursorPosition = 0;
+var _SwappedProgram = "";
 //hardrive stuff
 var _HardDriveTable = null;
 var _FileSystem = null;

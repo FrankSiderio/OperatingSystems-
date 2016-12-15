@@ -60,15 +60,11 @@ module TSOS {
             {
               this.runOpCode(_MemoryManager.getMemoryAtLocation(this.PC));
             }
-            else
-            {
-              this.PC = 0;
-            }
 
             if(_RunAll == true)
             {
-              _QuantumCounter++;
-              _CpuScheduler.roundRobin();
+              _CpuScheduler.scheduler();
+              //_CpuScheduler.roundRobin();
             }
 
             //console.log("Mem at this loc: " + _MemoryManager.getMemoryAtLocation(this.PC));
@@ -124,8 +120,8 @@ module TSOS {
       public runOpCode(code)
       {
         this.instruction = code.toUpperCase();
-        console.log("Instruction: " + this.instruction);
-        console.log("PC: " + this.PC);
+        //console.log("Instruction: " + this.instruction);
+        //console.log("PC: " + this.PC);
         //console.log("Counter: " + counter);
         //don't really need the counter in there. I'll take it out later
         //console.log("Instruction: " + this.instruction);
@@ -414,7 +410,8 @@ module TSOS {
           //console.log("Base: " + _MemoryManager.base);
           if(this.Xreg == 1)
           {
-            _StdOut.putText(this.conversionToDecimal(this.Yreg).toString());
+            //console.log("Y reg: " + this.conversionToDecimal(this.Yreg).toString());
+            _StdOut.putText(this.Yreg.toString());
           }
           else if(this.Xreg == 2)
           {
@@ -432,6 +429,7 @@ module TSOS {
 
             while(character != "00")
             {
+              //console.log("Character: " + character);
               var decimalNum = this.conversionToDecimal(character);
               //console.log("character: " + character);
 
@@ -536,6 +534,8 @@ module TSOS {
           console.log("Instruction after break: " + this.instruction);
           console.log("PC after break: " + this.PC);
         }
+
+        _ProgramCounter--;
 
 
       }

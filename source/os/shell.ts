@@ -422,16 +422,25 @@ module TSOS {
             //_CPU.updateCPU();         //dont worry CPU.PC gets initialized back to zero anyway when it gets there
             if(_MemoryAllocation[0] != "-1" && _MemoryAllocation[1] != "-1" && _MemoryAllocation[2] != "-1")
             {
+              //dynamically declaring the object to a specific element in the array
+              //the element should correlate to the pid
+              _PcbDisk[_PID] = new PCB();
+              console.log("NEW PCB FROM DISK: " + _PcbDisk[_PID].toString());
+
               input = input.replace(/ /g,'');
-              console.log("Input length: " + input.length);
+              //console.log("Input length: " + input.length);
               _FileSystem.createFile("Process-" + _PID);
               _FileSystem.writeFile("Process-" + _PID, input);
+              _CpuScheduler.counter = 1;
+
+              _PcbDisk[_PID].Pc = 0;
             }
             else
             {
               _StdOut.putText(_MemoryManager.loadProgram(newInput));
             }
             _PID++;
+            _ProgramCounter++;
             //console.log(_Memory.getMemory());
 
           }

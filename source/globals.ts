@@ -90,6 +90,7 @@ var _State = "Not Running"; //to update the PCB with
 var _Pcb0: any = null;
 var _Pcb1: any = null;
 var _Pcb2: any = null;
+var _PcbDisk = new Array();
 
 var _Quantum: number = 6;
 var _QuantumCounter: number = 0;
@@ -108,6 +109,9 @@ var _PID: number = 0; // pid
 var _LineCount: number = 0;
 var _LastCharOnLine = "";
 var _LastCursorPosition: number = 0;
+
+var _SwappedProgram = "";
+var _ProgramCounter = 0;
 
 //hardrive stuff
 var _HardDriveTable: any = null;

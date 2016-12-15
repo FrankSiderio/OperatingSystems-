@@ -36,7 +36,8 @@ module TSOS
         this.base = 512;
         this.limit = 768;
         _MemoryAllocation[2] = _PID.toString();
-        this.setProgramLength(1, opCode);
+        //this.setProgramLength(2, opCode);
+        _ProgramLength[2] = opCode.length - 1;
       }
 
       //console.log("base: " + this.base);

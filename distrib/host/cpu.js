@@ -56,12 +56,8 @@ var TSOS;
             if (this.isExecuting == true) {
                 this.runOpCode(_MemoryManager.getMemoryAtLocation(this.PC));
             }
-            else {
-                this.PC = 0;
-            }
             if (_RunAll == true) {
-                _QuantumCounter++;
-                _CpuScheduler.roundRobin();
+                _CpuScheduler.scheduler();
             }
             //console.log("Mem at this loc: " + _MemoryManager.getMemoryAtLocation(this.PC));
             //console.log("PC: " + this.PC);
@@ -99,8 +95,8 @@ var TSOS;
         //the switch statement calls different functions depending on which opCode is executed in memory
         Cpu.prototype.runOpCode = function (code) {
             this.instruction = code.toUpperCase();
-            console.log("Instruction: " + this.instruction);
-            console.log("PC: " + this.PC);
+            //console.log("Instruction: " + this.instruction);
+            //console.log("PC: " + this.PC);
             //console.log("Counter: " + counter);
             //don't really need the counter in there. I'll take it out later
             //console.log("Instruction: " + this.instruction);
@@ -301,7 +297,8 @@ var TSOS;
         Cpu.prototype.systemCall = function () {
             //console.log("Base: " + _MemoryManager.base);
             if (this.Xreg == 1) {
-                _StdOut.putText(this.conversionToDecimal(this.Yreg).toString());
+                //console.log("Y reg: " + this.conversionToDecimal(this.Yreg).toString());
+                _StdOut.putText(this.Yreg.toString());
             }
             else if (this.Xreg == 2) {
                 var characterString = "";
@@ -313,6 +310,7 @@ var TSOS;
                 var character = _MemoryManager.getMemoryAtLocation(location);
                 var characterCode = 0;
                 while (character != "00") {
+                    //console.log("Character: " + character);
                     var decimalNum = this.conversionToDecimal(character);
                     //console.log("character: " + character);
                     char = String.fromCharCode(decimalNum);

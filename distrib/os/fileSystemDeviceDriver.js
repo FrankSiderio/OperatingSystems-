@@ -92,8 +92,8 @@ var TSOS;
                 for (var i = hexFileName.length; i < (this.fileSize - 4); i++) {
                     hexFileName += "~";
                 }
-                console.log("File: " + file);
-                console.log("Writing: " + write);
+                //console.log("File: " + file);
+                //console.log("Writing: " + write);
                 _StdOut.putText("Writing to file...");
                 //find which file to write to using a linear search
                 for (var t = 0; t < this.tracks; t++) {
@@ -115,7 +115,7 @@ var TSOS;
                                 }
                                 else {
                                     while (write.length > 0) {
-                                        console.log("Key: " + key);
+                                        //console.log("Key: " + key);
                                         var freeBlock;
                                         if (write.length <= 60) {
                                             freeBlock = this.findNextDirtyBlock();
@@ -302,6 +302,62 @@ var TSOS;
                 default:
                     break;
             }
+        };
+        //return the program so we can load it onto memory
+        fileSystemDeviceDriver.prototype.findProgram = function (pid) {
+            var process = "Process-" + pid;
+            var program = "";
+            //process = this.stringToHex(process);
+            for (var t = 0; t < this.tracks; t++) {
+                for (var s = 0; s < this.tracks; s++) {
+                    for (var b = 0; b < this.tracks; b++) {
+                        var key = this.keyGenerator(t, s, b);
+                        var value = sessionStorage.getItem(key);
+                        var data = value.substr(4, (process.length * 2));
+                        data = this.hexToString(data);
+                        //console.log("If: " + data + " equals: " + process);
+                        if (data == process) {
+                            console.log("Found file to roll out");
+                            //var meta = value.substr(1, 3);
+                            //console.log("t: " + t + " s: " + s + " b " + b);
+                            //sending the function the t, s, b which will tell us where the program is located
+                            program = this.returnProgram(t, s, b);
+                        }
+                    }
+                }
+            }
+            return program;
+        };
+        //this will return the program string
+        fileSystemDeviceDriver.prototype.returnProgram = function (t, s, b) {
+            var key = this.keyGenerator(t, s, b);
+            var value = sessionStorage.getItem(key);
+            var string = "";
+            var returningString = "";
+            //console.log("Key: " + key);
+            for (var tr = 1; tr < this.tracks; tr++) {
+                for (var se = 0; se < this.sectors; se++) {
+                    for (var bl = 0; bl < this.blocks; bl++) {
+                        var newKey = this.keyGenerator(tr, se, bl);
+                        var value = sessionStorage.getItem(newKey);
+                        var meta = value.substr(1, 3);
+                        if (meta == key) {
+                            //add to a string or something
+                            //console.log("Found what we have to return");
+                            var data = value.substr(4, 60);
+                            string += data;
+                        }
+                    }
+                }
+            }
+            //removing the unwanted ~ character
+            for (var i = 0; i < string.length; i++) {
+                if (string.charAt(i) != "~") {
+                    returningString += string.charAt(i);
+                }
+            }
+            //console.log("String value that we will return: " + returningString);
+            return returningString;
         };
         return fileSystemDeviceDriver;
     }());

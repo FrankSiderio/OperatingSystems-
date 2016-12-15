@@ -5,27 +5,26 @@
 //Probably not the best way to do this but it works.
 var TSOS;
 (function (TSOS) {
-    //var pcb0 = new PCB();
-    var pc0;
-    var acc0;
-    var xreg0;
-    var yreg0;
-    var zflag0;
-    var pc1 = 256;
-    var acc1;
-    var xreg1;
-    var yreg1;
-    var zflag1;
-    var pc2 = 512;
-    var acc2;
-    var xreg2;
-    var yreg2;
-    var zflag2;
-    var counter = 0;
     var CpuScheduler = (function () {
         function CpuScheduler() {
+            this.counter = 0;
         }
+        //figures out which scheduling algorithm we are using and calls that function
+        CpuScheduler.prototype.scheduler = function () {
+            switch (_SchedulingAlgorithm) {
+                case "rr":
+                    _QuantumCounter++;
+                    this.roundRobin();
+                    break;
+                case "fcfs":
+                    this.fcfs();
+                    break;
+                case "priority":
+                    break;
+            }
+        };
         CpuScheduler.prototype.roundRobin = function () {
+            console.log("RR");
             //do the round robin stuff here
             //console.log("Counter: " + counter);
             //if we are doing round robin
@@ -68,21 +67,64 @@ var TSOS;
                     }
                 }
                 else if (_MemoryManager.base == 512) {
-                    if (_MemoryAllocation[0] != "-1") {
-                        _MemoryManager.base = 0;
-                        _MemoryManager.limit = 255;
-                        _KernelInterruptQueue.enqueue(new TSOS.Interrupt(CONTEXT_SWITCH_IRQ, ""));
-                        this.setValues(2);
+                    console.log("Counter: " + this.counter);
+                    if (this.counter == 1) {
+                        console.log("Theres a program on disk!");
+                        //need to get that program off of disk and onto memory
+                        var program = _FileSystem.findProgram(3);
+                        console.log("Op code that we need to load into mem: " + program);
+                        this.counter = 0;
+                        this.rollIntoMemory(program);
                     }
-                    else if (_MemoryAllocation[1] != "-1") {
-                        _MemoryManager.base = 256;
-                        _MemoryManager.limit = 511;
-                        _KernelInterruptQueue.enqueue(new TSOS.Interrupt(CONTEXT_SWITCH_IRQ, ""));
-                        this.setValues(4);
+                    else {
+                        //we need to
+                        //counter = 0;
+                        if (_MemoryAllocation[0] != "-1") {
+                            _MemoryManager.base = 0;
+                            _MemoryManager.limit = 255;
+                            _KernelInterruptQueue.enqueue(new TSOS.Interrupt(CONTEXT_SWITCH_IRQ, ""));
+                            this.setValues(2);
+                        }
+                        else if (_MemoryAllocation[1] != "-1") {
+                            _MemoryManager.base = 256;
+                            _MemoryManager.limit = 511;
+                            _KernelInterruptQueue.enqueue(new TSOS.Interrupt(CONTEXT_SWITCH_IRQ, ""));
+                            this.setValues(4);
+                        }
                     }
                 }
             }
             //_Kernel.krnInterruptHandler(CONTEXT_SWITCH_IRQ, "fdsafdsa");
+        };
+        CpuScheduler.prototype.fcfs = function () {
+            console.log("FCFS");
+        };
+        CpuScheduler.prototype.rollIntoMemory = function (opCode) {
+            //opCode = opCode.replace(/(.{2})/g, " ");
+            var newOpCode = "";
+            //adding a space after every two characters
+            for (var i = 0; i < opCode.length; i++) {
+                if ((i % 2) == 0 && i != 0) {
+                    newOpCode += " ";
+                }
+                newOpCode += opCode.charAt(i);
+            }
+            //making it nice so it loads into memory properly
+            var program = newOpCode.replace(/\n/g, " ").split(" ");
+            //console.log("Returned mem: " + _Memory.getMemory());
+            //getting the op code from the last segment of memory
+            var memory = "";
+            for (var i = 0; i < 256; i++) {
+                memory += _Memory.getMemoryLocation(i);
+            }
+            //var oldProgram = mem.substr(512, _Memory.getMemory.length);
+            console.log("Program length: " + _ProgramLength[2]);
+            console.log("Old program: " + memory.substr(0, (_ProgramLength[2] * 2)));
+            _SwappedProgram = memory.substr(0, (_ProgramLength[2] * 2));
+            _MemoryManager.setBase(0);
+            _MemoryManager.loadProgram(program);
+        };
+        CpuScheduler.prototype.rollOntoDisk = function (program) {
         };
         // this might change...better way to implement
         CpuScheduler.prototype.setValues = function (num) {
@@ -152,6 +194,8 @@ var TSOS;
                 _CPU.Xreg = _Pcb0.XReg;
                 _CPU.Yreg = _Pcb0.YReg;
                 _CPU.Zflag = _Pcb0.ZFlag;
+            }
+            else if (num == 8) {
             }
         };
         return CpuScheduler;
