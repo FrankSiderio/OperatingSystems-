@@ -92,8 +92,8 @@ var TSOS;
                 for (var i = hexFileName.length; i < (this.fileSize - 4); i++) {
                     hexFileName += "~";
                 }
-                //console.log("File: " + file);
-                //console.log("Writing: " + write);
+                console.log("File: " + file);
+                console.log("Writing: " + write.toString());
                 _StdOut.putText("Writing to file...");
                 //find which file to write to using a linear search
                 for (var t = 0; t < this.tracks; t++) {
@@ -106,6 +106,7 @@ var TSOS;
                             var meta = value.substr(1, 3);
                             //found the file
                             if (hexFileName == data) {
+                                console.log("Found file to write to");
                                 if (write.length <= 60) {
                                     //now lets write
                                     write = this.stringToHex(write);

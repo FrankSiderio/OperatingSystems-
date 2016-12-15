@@ -41,6 +41,12 @@ module TSOS
       //Control resets table
       Control.clearMemoryTable();
       this.memoryArray = null;
+      _CPU.init();
+
+      _CurrentMemoryBlock = -1;
+      _ResidentList = [];
+      _ReadyQueue = [];
+      _RunnablePIDs = [];
       this.init(768);
     }
 

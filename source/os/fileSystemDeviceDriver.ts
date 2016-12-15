@@ -131,8 +131,8 @@ module TSOS
           hexFileName+="~";
         }
 
-        //console.log("File: " + file);
-        //console.log("Writing: " + write);
+        console.log("File: " + file);
+        console.log("Writing: " + write.toString());
         _StdOut.putText("Writing to file...");
         //find which file to write to using a linear search
         for(var t = 0; t < this.tracks; t++)
@@ -150,6 +150,7 @@ module TSOS
               //found the file
               if(hexFileName == data)
               {
+                console.log("Found file to write to");
                 if(write.length <= 60)
                 {
                   //now lets write

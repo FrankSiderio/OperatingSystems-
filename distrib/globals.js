@@ -25,6 +25,7 @@ var DELETE_FILE_IRQ = 2;
 var TERMINATED = "Terminated";
 var RUNNING = "Running";
 var WAITING = "Waiting";
+var DEFAULT_FILE_NAME = "Process-"; //the default file name for a process going into the disk
 //
 // Global Variables
 // TODO: Make a global object and use that instead of the "_" naming convention in the global namespace.

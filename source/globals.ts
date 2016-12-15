@@ -30,6 +30,8 @@ const DELETE_FILE_IRQ: number = 2;
 const TERMINATED: string = "Terminated";
 const RUNNING: string = "Running";
 const WAITING: string = "Waiting";
+
+const DEFAULT_FILE_NAME: string = "Process-"; //the default file name for a process going into the disk
 //
 // Global Variables
 // TODO: Make a global object and use that instead of the "_" naming convention in the global namespace.

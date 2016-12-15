@@ -30,6 +30,11 @@ var TSOS;
             //Control resets table
             TSOS.Control.clearMemoryTable();
             this.memoryArray = null;
+            _CPU.init();
+            _CurrentMemoryBlock = -1;
+            _ResidentList = [];
+            _ReadyQueue = [];
+            _RunnablePIDs = [];
             this.init(768);
         };
         Memory.prototype.addToMemory = function (location, opCode) {

@@ -451,23 +451,61 @@ module TSOS {
               console.log("Current pcb pid: " + _CurrentPCB.pid);
               _RunnablePIDs.push(_CurrentPCB.pid);
 
-              console.log("Runnable pids: " + _RunnablePIDs);
-
               //This program is in memory
               _CurrentPCB.location = "Memory";
               //Adding it to the resident list
               _ResidentList.push(_CurrentPCB);
+
+              _StdOut.putText("Valid code. Congrats! PID: " + _PID);
+              _PID++;
             }
 
             //otherwise we need to load it onto the disk
             else if(_CurrentMemoryBlock > 2 && _Format == true)
             {
                 console.log("Need to load onto disk!");
+                //set the pid to the currentpcb pid then add it to the runnable pid list
+                _CurrentPCB.pid = _PID;
+                _RunnablePIDs.push(_CurrentPCB.pid);
+
+                _CurrentPCB.location = "Disk";
+                _CurrentPCB.base = -1;
+
+                _ResidentList.push(_CurrentPCB);
+                var fileName = DEFAULT_FILE_NAME + _PID;
+                _FileSystem.createFile(fileName);
+
+                var fileData = "";
+                //removing commas before we send it to the file system to write
+                for(var i = 0; i < newInput.length; i++)
+                {
+                  if(newInput[i] != ",")
+                  {
+                    fileData += newInput[i];
+                  }
+                }
+
+                _FileSystem.writeFile(fileName, fileData);
+
+                _StdOut.advanceLine();
+                _StdOut.putText(">");
+
+                _StdOut.putText("Valid code. Congrats! PID: " + _PID);
+                _PID++;
             }
-            _StdOut.putText("Valid code. Congrats! PID: " + _PID);
+            else if(_Format == false)
+            {
+              if(_SarcasticMode == true)
+              {
+                _StdOut.putText("Ha. You are the smartest user i've seen.");
+              }
+              else
+              {
+                _StdOut.putText("Please format the disk first");
+              }
+            }
           }
-          _PID++;
-          console.log("Resident list: " + _ResidentList);
+          //console.log("Resident list: " + _ResidentList);
           //console.log(_Formatted);
 
           _ExecutedCommands.push("load");
@@ -537,12 +575,12 @@ module TSOS {
 
             if(i > 0)
             {
-              _ReadyQueue[i].state = "Waiting";
+              _ReadyQueue[i].state = WAITING;
             }
           }
           console.log("Ready queue: " + _ReadyQueue);
           _CurrentPCB = _ReadyQueue[0];
-          _CurrentPCB.state = "Running";
+          _CurrentPCB.state = RUNNING;
           _CPU.isExecuting = true;
 
           _ExecutedCommands.push("runall");
