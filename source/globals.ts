@@ -25,6 +25,11 @@ const CREATE_FILE_IRQ: number = 5;
 const WRITE_FILE_IRQ: number = 4;
 const READ_FILE_IRQ: number = 3;
 const DELETE_FILE_IRQ: number = 2;
+
+//for change/checking the states of the pcbs
+const TERMINATED: string = "Terminated";
+const RUNNING: string = "Running";
+const WAITING: string = "Waiting";
 //
 // Global Variables
 // TODO: Make a global object and use that instead of the "_" naming convention in the global namespace.

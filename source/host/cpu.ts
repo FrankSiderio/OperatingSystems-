@@ -473,8 +473,8 @@ module TSOS {
         else
         {
           this.isExecuting = false;
-          _StdOut.putText(">");
           _StdOut.advanceLine();
+          _StdOut.putText(">");
         }
       }
 

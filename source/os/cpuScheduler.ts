@@ -47,7 +47,7 @@ module TSOS
         _KernelInterruptQueue.enqueue(new TSOS.Interrupt(CONTEXT_SWITCH_IRQ, ""));
 
         //switch if process is over
-        if(_CurrentPCB.state == "Terminated")
+        if(_CurrentPCB.state == TERMINATED)
         {
           console.log("Process is done");
           //terminate the process
@@ -60,7 +60,7 @@ module TSOS
           //update the running pid
           _RunningPID = parseInt(_ReadyQueue[0].pid);
           //now the new process is running
-          _ReadyQueue[0].state = "Running";
+          _ReadyQueue[0].state = RUNNING;
           _CPU.PC = _ReadyQueue[0].PC - 1;
         }
         //regular context switch
@@ -70,7 +70,7 @@ module TSOS
           //declare the pcb that will be pushed
           var pcbPushed = _CurrentPCB;
           //change the state
-          _ReadyQueue[0].state = "Waiting";
+          _ReadyQueue[0].state = WAITING;
           //add the new pcb and shift the ready queue
           _ReadyQueue.push(pcbPushed);
           _ReadyQueue.shift();
@@ -81,7 +81,7 @@ module TSOS
 
           _RunningPID = parseInt(_ReadyQueue[0].pid);
           //update the state and pc
-          _ReadyQueue[0].state = "Running";
+          _ReadyQueue[0].state = RUNNING;
           _CPU.PC = _ReadyQueue[0].PC;
         }
 
@@ -101,8 +101,10 @@ module TSOS
     public fcfs()
     {
       console.log("FCFS");
+      _Quantum = 123214342;
 
-
+      //TODO: Find a better way to do this
+      _SchedulingAlgorithm = "rr";
     }
 
     public rollIntoMemory(opCode)

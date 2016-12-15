@@ -21,6 +21,10 @@ var CREATE_FILE_IRQ = 5;
 var WRITE_FILE_IRQ = 4;
 var READ_FILE_IRQ = 3;
 var DELETE_FILE_IRQ = 2;
+//for change/checking the states of the pcbs
+var TERMINATED = "Terminated";
+var RUNNING = "Running";
+var WAITING = "Waiting";
 //
 // Global Variables
 // TODO: Make a global object and use that instead of the "_" naming convention in the global namespace.

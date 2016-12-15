@@ -379,7 +379,7 @@ var TSOS;
                 else if (_CurrentMemoryBlock > 2 && _Format == true) {
                     console.log("Need to load onto disk!");
                 }
-                _StdOut.putText("Valid code. Congrats! ");
+                _StdOut.putText("Valid code. Congrats! PID: " + _PID);
             }
             _PID++;
             console.log("Resident list: " + _ResidentList);
@@ -395,29 +395,24 @@ var TSOS;
                 _StdOut.putText("Please enter in a PID.");
             }
             else {
-                //Runs the pid associated with the memory location 0-2
-                if (args == _MemoryAllocation[0]) {
-                    //make sure the base and limit are correct
-                    _MemoryManager.setBase(0);
-                    _MemoryManager.setLimit(255);
-                    _CPU.PC = 0;
-                    _Pcb0.running = true;
+                var runningPID = args[0];
+                var validPID = false;
+                //finding the pid the user has requested to run
+                for (var i = 0; i < _ResidentList.length; i++) {
+                    //checking the pid entered with the pids in the array
+                    if (runningPID == _ResidentList[i].pid) {
+                        _CurrentPCB = _ResidentList[i];
+                        validPID = true;
+                    }
                 }
-                else if (args == _MemoryAllocation[1]) {
-                    //make sure the base and limit are correct
-                    _MemoryManager.setBase(256);
-                    _MemoryManager.setLimit(511);
-                    _CPU.PC = 256;
-                    _Pcb1.running = true;
+                if (validPID == true) {
+                    if (_CurrentPCB.location === "Disk") {
+                        //swap to mem
+                        console.log("Need to swap from the disk");
+                    }
+                    _CPU.PC = _CurrentPCB.base;
+                    _CPU.isExecuting = true;
                 }
-                else if (args == _MemoryAllocation[2]) {
-                    //make sure the base and limit are correct
-                    _MemoryManager.setBase(512);
-                    _MemoryManager.setLimit(768);
-                    _CPU.PC = 512;
-                    _Pcb2.running = true;
-                }
-                _CPU.isExecuting = true;
             }
             _ExecutedCommands.push("run");
             Shell.clearCounts();

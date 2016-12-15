@@ -32,7 +32,7 @@ var TSOS;
             if (_ReadyQueue.length > 1) {
                 _KernelInterruptQueue.enqueue(new TSOS.Interrupt(CONTEXT_SWITCH_IRQ, ""));
                 //switch if process is over
-                if (_CurrentPCB.state == "Terminated") {
+                if (_CurrentPCB.state == TERMINATED) {
                     console.log("Process is done");
                     //terminate the process
                     var terminate = _ReadyQueue.shift();
@@ -43,7 +43,7 @@ var TSOS;
                     //update the running pid
                     _RunningPID = parseInt(_ReadyQueue[0].pid);
                     //now the new process is running
-                    _ReadyQueue[0].state = "Running";
+                    _ReadyQueue[0].state = RUNNING;
                     _CPU.PC = _ReadyQueue[0].PC - 1;
                 }
                 else {
@@ -51,7 +51,7 @@ var TSOS;
                     //declare the pcb that will be pushed
                     var pcbPushed = _CurrentPCB;
                     //change the state
-                    _ReadyQueue[0].state = "Waiting";
+                    _ReadyQueue[0].state = WAITING;
                     //add the new pcb and shift the ready queue
                     _ReadyQueue.push(pcbPushed);
                     _ReadyQueue.shift();
@@ -60,7 +60,7 @@ var TSOS;
                     var location = _CurrentPCB.location;
                     _RunningPID = parseInt(_ReadyQueue[0].pid);
                     //update the state and pc
-                    _ReadyQueue[0].state = "Running";
+                    _ReadyQueue[0].state = RUNNING;
                     _CPU.PC = _ReadyQueue[0].PC;
                 }
                 //update the cpu so it runs the right stuff
@@ -74,6 +74,9 @@ var TSOS;
         };
         CpuScheduler.prototype.fcfs = function () {
             console.log("FCFS");
+            _Quantum = 123214342;
+            //TODO: Find a better way to do this
+            _SchedulingAlgorithm = "rr";
         };
         CpuScheduler.prototype.rollIntoMemory = function (opCode) {
             //opCode = opCode.replace(/(.{2})/g, " ");

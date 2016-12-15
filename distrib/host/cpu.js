@@ -346,6 +346,7 @@ var TSOS;
             else {
                 this.isExecuting = false;
                 _StdOut.advanceLine();
+                _StdOut.putText(">");
             }
         };
         /*
