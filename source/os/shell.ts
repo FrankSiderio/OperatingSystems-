@@ -412,38 +412,64 @@ module TSOS {
           }
           else
           {
-
             var newInput = input.replace(/\n/g, " " ).split( " " );
-            _CurrentPCB = new PCB();
+            var base = 0;
+            var limit = 0;
+
+
+            if(_CurrentMemoryBlock >= 2)
+            {
+              base = -1;
+              limit = -1;
+              _CurrentMemoryBlock++;
+            }
+            //if we are still loading less than 3 programs
+            else if(_CurrentMemoryBlock < 2)
+            {
+              _CurrentMemoryBlock++;
+              base = _CurrentMemoryBlock * 256;
+              limit = (_CurrentMemoryBlock * 256) + 255;
+            }
+
+            _CurrentPCB = new PCB(); //setting the current pcb
+
+            //setting the base and limit for the current PCB
+            if(_CurrentMemoryBlock <= 2)
+            {
+              _CurrentPCB.base = base;
+              _CurrentPCB.limit = limit;
+            }
+
+            if(_CurrentMemoryBlock <= 2)
+            {
+              //setting the base in memory and then loading the program
+              var pid = (_MemoryManager.loadProgram(_CurrentMemoryBlock, newInput));
+              //_StdOut.putText("PID: " + pid);
+              //setting the current pcbs base and pid and then adding it to the runnable pids array
+              _CurrentPCB.PC = base;
+              _CurrentPCB.pid = _PID;
+              console.log("Current pcb pid: " + _CurrentPCB.pid);
+              _RunnablePIDs.push(_CurrentPCB.pid);
+
+              console.log("Runnable pids: " + _RunnablePIDs);
+
+              //This program is in memory
+              _CurrentPCB.location = "Memory";
+              //Adding it to the resident list
+              _ResidentList.push(_CurrentPCB);
+            }
+
+            //otherwise we need to load it onto the disk
+            else if(_CurrentMemoryBlock > 2 && _Format == true)
+            {
+                console.log("Need to load onto disk!");
+            }
             _StdOut.putText("Valid code. Congrats! ");
 
-            //there is probably a better way to do this but this allows to run in sequence
-            //_CPU.PC = _ProgramLength; //this is so when we get to that function it actually does something
-            //_CPU.updateCPU();         //dont worry CPU.PC gets initialized back to zero anyway when it gets there
-            if(_MemoryAllocation[0] != "-1" && _MemoryAllocation[1] != "-1" && _MemoryAllocation[2] != "-1")
-            {
-              //dynamically declaring the object to a specific element in the array
-              //the element should correlate to the pid
-              _PcbDisk[_PID] = new PCB();
-              console.log("NEW PCB FROM DISK: " + _PcbDisk[_PID].toString());
-
-              input = input.replace(/ /g,'');
-              //console.log("Input length: " + input.length);
-              _FileSystem.createFile("Process-" + _PID);
-              _FileSystem.writeFile("Process-" + _PID, input);
-              _CpuScheduler.counter = 1;
-
-              _PcbDisk[_PID].Pc = 0;
-            }
-            else
-            {
-              _StdOut.putText(_MemoryManager.loadProgram(newInput));
-            }
-            _PID++;
-            _ProgramCounter++;
-            //console.log(_Memory.getMemory());
-
           }
+          _PID++;
+          console.log("Resident list: " + _ResidentList);
+          //console.log(_Formatted);
 
           _ExecutedCommands.push("load");
           Shell.clearCounts();
@@ -509,27 +535,24 @@ module TSOS {
 
         public shellRunAll()
         {
-          _CPU.PC = 0;
           _RunAll = true;
+          //_MemoryManager.base = 0;
+          _ReadyQueue = [];
 
+          //adding the programs to the ready queue
+          for(var i = 0; i < _ResidentList.length; i++)
+          {
+            _ReadyQueue.push(_ResidentList[i]);
+
+            if(i > 0)
+            {
+              _ReadyQueue[i].state = "Waiting";
+            }
+          }
+          console.log("Ready queue: " + _ReadyQueue);
+          _CurrentPCB = _ReadyQueue[0];
+          _CurrentPCB.state = "Running";
           _CPU.isExecuting = true;
-
-          //checking to see if there is something in each block
-          if(_MemoryAllocation[0] != "-1")
-          {
-            _Pcb0.running = true;
-          }
-          if(_MemoryAllocation[1] != "-1")
-          {
-            _Pcb1.running = true;
-          }
-          if(_MemoryAllocation[2] != "-1")
-          {
-            _Pcb2.running = true;
-          }
-
-          //console.log("Memory base: " + _MemoryManager.base);
-          //_CpuScheduler.roundRobin();
 
           _ExecutedCommands.push("runall");
           Shell.clearCounts();

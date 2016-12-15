@@ -187,6 +187,37 @@ var TSOS;
                 }
             }
         };
+        Control.updateReadyQueue = function () {
+            var output = "<thead style='font-weight:bold'>";
+            output += "<th>PID</th>";
+            output += "<th>Base</th>";
+            output += "<th>Limit</th>";
+            output += "<th>PC</th>";
+            output += "<th>ACC</th>";
+            output += "<th>X- Reg</th>";
+            output += "<th>Y - Reg</th>";
+            output += "<th>Z - Flag</th>";
+            output += "<th>State</th>";
+            output += "<th>Priority</th>";
+            output += "<th>Location</th>";
+            output += "</thead>";
+            for (var i = 0; i < _ReadyQueue.length; i++) {
+                output += "<tr>";
+                output += "<td> " + _ReadyQueue[i].pid + "</td>";
+                output += "<td> " + _ReadyQueue[i].base + "</td>";
+                output += "<td> " + _ReadyQueue[i].limit + "</td>";
+                output += "<td> " + _ReadyQueue[i].PC + "</td>";
+                output += "<td> " + _ReadyQueue[i].Acc + "</td>";
+                output += "<td> " + _ReadyQueue[i].Xreg + "</td>";
+                output += "<td> " + _ReadyQueue[i].Yreg + "</td>";
+                output += "<td> " + _ReadyQueue[i].Zflag + "</td>";
+                output += "<td> " + _ReadyQueue[i].processState + "</td>";
+                output += "<td> " + _ReadyQueue[i].priority + "</td>";
+                output += "<td> " + _ReadyQueue[i].location + "</td>";
+                output += "</tr>";
+            }
+            document.getElementById("ProcessTableDisplay").innerHTML = output;
+        };
         Control.createHardDrive = function () {
             sessionStorage.clear();
             _HardDriveTable = document.getElementById("hdTable");

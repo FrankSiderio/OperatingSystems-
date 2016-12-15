@@ -80,11 +80,16 @@ var TSOS;
                 this.krnInterruptHandler(interrupt.irq, interrupt.params);
             }
             else if (_CPU.isExecuting) {
-                _CPU.cycle();
+                this.handleClockPulse();
             }
             else {
                 this.krnTrace("Idle");
             }
+        };
+        //calls the scheduler 
+        Kernel.prototype.handleClockPulse = function () {
+            _CpuScheduler.scheduler();
+            _CPU.cycle();
         };
         //
         // Interrupt Handling

@@ -10,11 +10,27 @@ module TSOS
     //constructor(){}
     //public init(){}
     //loading the program into memory
-    public loadProgram(opCode)
+    public loadProgram(currentBlock, opCode)
     {
 
       //_Memory.clearMemory();
       //Chooses with memory block to allocate
+      if(currentBlock == 0)
+      {
+        this.base = 0;
+        this.limit = 255;
+      }
+      else if(currentBlock == 1)
+      {
+        this.base = 256;
+        this.limit = 511;
+      }
+      else if(currentBlock == 2)
+      {
+        this.base = 512;
+        this.limit = 768;
+      }
+      /*
       if(_MemoryAllocation[0] == "-1")
       {
         this.base = 0;
@@ -39,7 +55,7 @@ module TSOS
         //this.setProgramLength(2, opCode);
         _ProgramLength[2] = opCode.length - 1;
       }
-
+      */
       //console.log("base: " + this.base);
       //console.log("limit: " + this.limit);
 

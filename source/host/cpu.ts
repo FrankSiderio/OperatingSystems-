@@ -59,23 +59,26 @@ module TSOS {
             if(this.isExecuting == true)
             {
               this.runOpCode(_MemoryManager.getMemoryAtLocation(this.PC));
+              TSOS.Control.updateReadyQueue();
+              //_CpuScheduler.scheduler();
             }
 
+            /*
             if(_RunAll == true)
             {
               _CpuScheduler.scheduler();
               //_CpuScheduler.roundRobin();
             }
-
+            */
             //console.log("Mem at this loc: " + _MemoryManager.getMemoryAtLocation(this.PC));
 
             //console.log("PC: " + this.PC);
             //console.log(_Memory.getMemory());
 
-            this.updateCPUDisplay();
+            //this.updateCPUDisplay();
             //this.updatePCB();
             //this.updateCPU();
-            _Pcb0.updateDisplay();
+            //_Pcb0.updateDisplay();
             //_Memory.clearMemory();
 
             if(_SingleStep == true)
@@ -229,6 +232,12 @@ module TSOS {
           //default: alert("default");
         }
         this.PC++;
+        _CurrentPCB.PC = this.PC;
+        _CurrentPCB.Acc = this.Acc;
+        _CurrentPCB.XReg = this.Xreg;
+        _CurrentPCB.YReg = this.Yreg;
+        _CurrentPCB.ZFlag = this.Zflag;
+
 
         //}
         //his.isExecuting = false;
@@ -246,9 +255,9 @@ module TSOS {
       public loadAccFromMemory()
       {
         var nxtTwoBytes = this.getNextTwoBytes();
-        if(_MemoryManager.base > 0)
+        if(_CurrentPCB.base > 0)
         {
-          nxtTwoBytes += _MemoryManager.base;
+          nxtTwoBytes += _CurrentPCB.base;
         }
         var decimal = this.conversionToDecimal(_MemoryManager.getMemoryAtLocation(nxtTwoBytes));
 
@@ -262,6 +271,7 @@ module TSOS {
         var nextTwoBytes = this.getNextTwoBytes();
         var hexNum = this.Acc;
 
+        _MemoryManager.base = _CurrentPCB.base;
         _MemoryManager.updateMemoryAtLocation(nextTwoBytes, hexNum); //updates memory
         this.PC+=2;
 
@@ -271,9 +281,9 @@ module TSOS {
       public addWithCarry()
       {
         var memoryLocation = this.getNextTwoBytes();
-        if(_MemoryManager.base > 0)
+        if(_CurrentPCB.base > 0)
         {
-          memoryLocation += _MemoryManager.base;
+          memoryLocation += _CurrentPCB.base;
         }
         this.Acc += this.conversionToDecimal(_MemoryManager.getMemoryAtLocation(memoryLocation));
         this.PC+=2;
@@ -290,9 +300,9 @@ module TSOS {
       public loadXregisterFromMemory()
       {
         var memoryLocation = this.conversionToDecimal(_MemoryManager.getMemoryAtLocation(this.PC + 1));
-        if(_MemoryManager.base > 0)
+        if(_CurrentPCB.base > 0)
         {
-          memoryLocation += _MemoryManager.base;
+          memoryLocation += _CurrentPCB.base;
         }
         this.Xreg = this.conversionToDecimal(_MemoryManager.getMemoryAtLocation(memoryLocation));
 
@@ -311,9 +321,9 @@ module TSOS {
       {
         var memoryLocation = this.conversionToDecimal(_MemoryManager.getMemoryAtLocation(this.PC + 1));
 
-        if(_MemoryManager.base > 0)
+        if(_CurrentPCB.base > 0)
         {
-          memoryLocation += _MemoryManager.base;
+          memoryLocation += _CurrentPCB.base;
         }
         this.Yreg = this.conversionToDecimal(_MemoryManager.getMemoryAtLocation(memoryLocation));
 
@@ -324,9 +334,9 @@ module TSOS {
       {
         var memoryLocation = this.getNextByte(); //getting the location of the byte to get
 
-        if(_MemoryManager.base > 0)
+        if(_CurrentPCB.base > 0)
         {
-          memoryLocation += _MemoryManager.base;
+          memoryLocation += _CurrentPCB.base;
         }
         var hexNum = this.conversionToDecimal(_MemoryManager.getMemoryAtLocation(memoryLocation));
 
@@ -350,7 +360,7 @@ module TSOS {
           this.PC++;
 
 
-          var combined = (_ProgramSize + _MemoryManager.base);
+          var combined = (_ProgramSize + _CurrentPCB.base);
 
           if(this.PC >= combined)
           {
@@ -367,14 +377,15 @@ module TSOS {
       {
         var memoryLocation = this.conversionToDecimal(_MemoryManager.getMemoryAtLocation(this.PC + 1));
 
-        if(_MemoryManager.base > 0)
+        if(_CurrentPCB.base > 0)
         {
-          memoryLocation += _MemoryManager.base;
+          memoryLocation += _CurrentPCB.base;
         }
         var hexAtLocation = _MemoryManager.getMemoryAtLocation(memoryLocation);
         var decimalNum = this.conversionToDecimal(hexAtLocation);
 
         decimalNum++;
+        _MemoryManager.base = _CurrentPCB.base;
         _MemoryManager.updateMemoryAtLocation(memoryLocation, decimalNum);
         this.PC+=2;
       }
@@ -419,9 +430,9 @@ module TSOS {
             var char = "";
             var location = this.Yreg;
 
-            if(_MemoryManager.base > 0)
+            if(_CurrentPCB.base > 0)
             {
-              location += _MemoryManager.base;
+              location += _CurrentPCB.base;
             }
 
             var character = _MemoryManager.getMemoryAtLocation(location);
@@ -441,9 +452,9 @@ module TSOS {
               this.Yreg++;
               var location2 = this.Yreg;
 
-              if(_MemoryManager.base > 0)
+              if(_CurrentPCB.base > 0)
               {
-                location2 += _MemoryManager.base;
+                location2 += _CurrentPCB.base;
               }
               character = _MemoryManager.getMemoryAtLocation(location2);
             }
@@ -454,90 +465,17 @@ module TSOS {
 
       public break()
       {
-
-        //figure out which program is ending
-        if(_MemoryManager.base == 0 && _Pcb0.running == true)
+        if(_ReadyQueue.length > 1)
         {
-          //alert("First one finished");
-          _Pcb0.running = false;
-          _MemoryManager.clearMemorySegment(0);
-          //this.displayStats(0);
-
-          _MemoryAllocation[0] = "-1";
-          //this.check();
+          _ReadyQueue[0].state = "Terminated";
+          _CpuScheduler.roundRobin();
         }
-        else if(_MemoryManager.base == 256 && _Pcb1.running == true)
+        else
         {
-          //alert("Second one finished");
-          _Pcb1.running = false;
-          _MemoryManager.clearMemorySegment(255);
-          //this.displayStats(1);
-
-          _MemoryAllocation[1] = "-1";
-
-          //this.check();
-        }
-        else if(_MemoryManager.base = 512 && _Pcb2.running == true)
-        {
-          //alert("Third one finished");
-          _Pcb2.running = false;
-          _MemoryManager.clearMemorySegment(512);
-          //this.displayStats(2);
-
-          //this.check();
-          _MemoryAllocation[2] = "-1";
-        }
-
-        //if one of them is running
-        if(_Pcb0.running == true || _Pcb1.running == true || _Pcb2.running == true)
-        {
-          if(_RunAll == true) //if the run all command was used to run them
-          {
-            //_QuantumCounter = _Quantum;
-            //this.cycle();
-            _CPU.isExecuting = true; //continue on
-          }
-        }
-        //if they are all finished
-        else if(_Pcb0.running == false && _Pcb1.running == false && _Pcb2.running == false)
-        {
-          //alert("Done");
-          //_Memory.clearMemory();
-          _RunAll = false;
-          _QuantumCounter = 0;
-          _ScheduleCounter = 0;
-          _CpuScheduler.pc1 = 256;
-          _CpuScheduler.pc2 = 512;
-          _Pcb0 = new PCB();
-
-          _Pcb1.PC = 256;
-          _Pcb1.Acc = 0;
-          _Pcb1.Xreg = 0;
-          _Pcb1.Yreg = 0;
-          _Pcb1.Zflag = 0;
-          //_Pcb1 = new PCB();
-          //_Pcb2 = new PCB();
-          this.PC = 0;
-          this.Acc = 0;
-          this.Yreg = 0;
-          this.Xreg = 0
-          this.Zflag = 0;
-          _MemoryAllocation[0] = "-1";
-          _MemoryAllocation[1] = "-1";
-          _MemoryAllocation[2] = "-1";
-
-          //console.log("counter thing: " + _CpuScheduler.counter);
-          this.instruction = "";
           this.isExecuting = false;
-          _Console.advanceLine();
-          _Console.putText(">");
-          console.log("Instruction after break: " + this.instruction);
-          console.log("PC after break: " + this.PC);
+          _StdOut.putText(">");
+          _StdOut.advanceLine();
         }
-
-        _ProgramCounter--;
-
-
       }
 
       /*
