@@ -41,6 +41,10 @@ var _FontHeightMargin = 4; // Additional space added to font size when advancing
 var _Trace = true; // Default the OS trace to be on.
 var _TurnAroundTime = new Array();
 var _WaitTime = new Array();
+var _Priority = 10;
+var _PriorityAlg = false;
+var _DefaultPriority = 10;
+var _FCFS = false; //this is so we know when we used fcfs so we make sure the global variable for scheduling is correct
 // The OS Kernel and its queues.
 var _Kernel;
 var _KernelInterruptQueue; // Initializing this to null (which I would normally do) would then require us to specify the 'any' type, as below.

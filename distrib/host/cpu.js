@@ -56,6 +56,7 @@ var TSOS;
             if (this.isExecuting == true) {
                 this.runOpCode(_MemoryManager.getMemoryAtLocation(this.PC));
                 TSOS.Control.updateReadyQueue();
+                this.updateCPUDisplay();
             }
             /*
             if(_RunAll == true)
@@ -349,6 +350,16 @@ var TSOS;
                 _CpuScheduler.roundRobin();
             }
             else {
+                //if we used fcfs algorithm
+                if (_FCFS == true) {
+                    _SchedulingAlgorithm = "fcfs";
+                    _FCFS = false;
+                }
+                //if we used priority algorithm
+                if (_PriorityAlg == true) {
+                    _SchedulingAlgorithm = "priority";
+                    _PriorityAlg = false;
+                }
                 this.isExecuting = false;
                 _StdOut.advanceLine();
                 _StdOut.putText(">");
@@ -391,29 +402,18 @@ var TSOS;
           }
         }
         */
-        //check if other programs are finished...so processes eventually get finished
-        Cpu.prototype.check = function () {
-            if (_MemoryAllocation[0] != "-1") {
-                //alert("0 is not finished");
-                _MemoryManager.base = 0;
-                _MemoryManager.limit = 255;
-                this.PC = 0;
-            }
-            else if (_MemoryAllocation[1] != "-1") {
-                //alert("1 is not finished");
-                _MemoryManager.base = 256;
-                _MemoryManager.limit = 511;
-                this.PC = 255;
-            }
-            else if (_MemoryAllocation[2] != "-1") {
-                //alert("2 is not finished");
-                _MemoryManager.base = 512;
-                _MemoryManager.limit = 768;
-                this.PC = 511;
-            }
-        };
         Cpu.prototype.updateCPUDisplay = function () {
-            document.getElementById("cpuPC").innerHTML = this.PC.toString();
+            var pc = 0;
+            if (this.PC >= 0) {
+                pc = this.PC;
+            }
+            if (this.PC >= 255) {
+                pc = pc - 255;
+            }
+            else if (this.PC >= 511) {
+                pc = pc - 511;
+            }
+            document.getElementById("cpuPC").innerHTML = pc.toString();
             document.getElementById("cpuACC").innerHTML = this.Acc.toString();
             document.getElementById("cpuXReg").innerHTML = this.Xreg.toString();
             document.getElementById("cpuYReg").innerHTML = this.Yreg.toString();

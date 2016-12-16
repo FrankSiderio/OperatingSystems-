@@ -110,6 +110,16 @@ module TSOS
       _Quantum = 123214342;
 
       //TODO: Find a better way to do this
+      _FCFS = true;
+      _SchedulingAlgorithm = "rr";
+    }
+
+    //basically the same as fcfs
+    public priority()
+    {
+      _Quantum = 21343423432;
+
+      _PriorityAlg = true;
       _SchedulingAlgorithm = "rr";
     }
 

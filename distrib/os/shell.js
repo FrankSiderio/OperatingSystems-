@@ -356,6 +356,7 @@ var TSOS;
                     limit = (_CurrentMemoryBlock * 256) + 255;
                 }
                 _CurrentPCB = new TSOS.PCB(); //setting the current pcb
+                _CurrentPCB.priority = _Priority;
                 //setting the base and limit for the current PCB
                 if (_CurrentMemoryBlock <= 2) {
                     _CurrentPCB.base = base;
@@ -557,9 +558,20 @@ var TSOS;
             Shell.clearCounts();
         };
         Shell.prototype.shellFormat = function () {
-            _Format = true;
-            _FileSystem.init();
-            _FileSystem.displayMessage(1, "Format");
+            //dont want user to format while programs are running
+            if (_CPU.isExecuting == false) {
+                _Format = true;
+                _FileSystem.init();
+                _FileSystem.displayMessage(1, "Format");
+            }
+            else {
+                if (_SarcasticMode == true) {
+                    alert("NO");
+                }
+                else {
+                    _StdOut.putText("You cannot format disk will executing programs");
+                }
+            }
             _ExecutedCommands.push("format");
             Shell.clearCounts();
         };

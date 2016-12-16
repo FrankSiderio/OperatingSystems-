@@ -60,6 +60,7 @@ module TSOS {
             {
               this.runOpCode(_MemoryManager.getMemoryAtLocation(this.PC));
               TSOS.Control.updateReadyQueue();
+              this.updateCPUDisplay();
               //_CpuScheduler.scheduler();
             }
 
@@ -489,6 +490,18 @@ module TSOS {
         }
         else
         {
+          //if we used fcfs algorithm
+          if(_FCFS == true)
+          {
+            _SchedulingAlgorithm = "fcfs";
+            _FCFS = false;
+          }
+          //if we used priority algorithm
+          if(_PriorityAlg == true)
+          {
+            _SchedulingAlgorithm = "priority";
+            _PriorityAlg = false;
+          }
           this.isExecuting = false;
           _StdOut.advanceLine();
           _StdOut.putText(">");
@@ -533,35 +546,9 @@ module TSOS {
       }
       */
 
-      //check if other programs are finished...so processes eventually get finished
-      public check()
-      {
-
-        if(_MemoryAllocation[0] != "-1")
-        {
-          //alert("0 is not finished");
-          _MemoryManager.base = 0;
-          _MemoryManager.limit = 255;
-          this.PC = 0;
-        }
-        else if(_MemoryAllocation[1] != "-1")
-        {
-          //alert("1 is not finished");
-          _MemoryManager.base = 256;
-          _MemoryManager.limit = 511;
-          this.PC = 255;
-        }
-        else if(_MemoryAllocation[2] != "-1")
-        {
-          //alert("2 is not finished");
-          _MemoryManager.base = 512;
-          _MemoryManager.limit = 768;
-          this.PC = 511;
-        }
-      }
       public updateCPUDisplay()
       {
-        document.getElementById("cpuPC").innerHTML = this.PC.toString();
+        document.getElementById("cpuPC").innerHTML = this.toString();
         document.getElementById("cpuACC").innerHTML = this.Acc.toString();
         document.getElementById("cpuXReg").innerHTML = this.Xreg.toString();
         document.getElementById("cpuYReg").innerHTML = this.Yreg.toString();

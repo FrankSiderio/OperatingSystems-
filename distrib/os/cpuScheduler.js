@@ -81,6 +81,13 @@ var TSOS;
             console.log("FCFS");
             _Quantum = 123214342;
             //TODO: Find a better way to do this
+            _FCFS = true;
+            _SchedulingAlgorithm = "rr";
+        };
+        //basically the same as fcfs
+        CpuScheduler.prototype.priority = function () {
+            _Quantum = 21343423432;
+            _PriorityAlg = true;
             _SchedulingAlgorithm = "rr";
         };
         CpuScheduler.prototype.rollInOut = function (opCode) {

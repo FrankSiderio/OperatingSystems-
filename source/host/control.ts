@@ -236,7 +236,7 @@ module TSOS {
 
         public static updateReadyQueue()
         {
-          var output="<thead style='font-weight:bold'>";
+          var output = "<thead style='font-weight:bold'>";
             output += "<th>PID</th>";
             output += "<th>Base</th>";
             output += "<th>Limit</th>";
@@ -252,19 +252,19 @@ module TSOS {
 
             for (var i = 0; i < _ReadyQueue.length; i++)
             {
-                output += "<tr>";
-                output += "<td> "+_ReadyQueue[i].pid+"</td>";
-                output += "<td> "+_ReadyQueue[i].base+"</td>";
-                output += "<td> "+_ReadyQueue[i].limit+"</td>";
-                output += "<td> "+ _ReadyQueue[i].PC+"</td>";
-                output += "<td> "+_ReadyQueue[i].Acc+"</td>";
-                output += "<td> "+_ReadyQueue[i].XReg+"</td>";
-                output += "<td> "+_ReadyQueue[i].YReg+"</td>";
-                output += "<td> "+_ReadyQueue[i].ZFlag+"</td>";
-                output += "<td> "+_ReadyQueue[i].state+"</td>";
-                output += "<td> "+_ReadyQueue[i].priority+"</td>";
-                output += "<td> "+_ReadyQueue[i].location+"</td>";
-                output += "</tr>";
+              output += "<tr>";
+              output += "<td> " + _ReadyQueue[i].pid   + "</td>";
+              output += "<td> " + _ReadyQueue[i].base  + "</td>";
+              output += "<td> " + _ReadyQueue[i].limit + "</td>";
+              output += "<td> " + _ReadyQueue[i].PC +"</td>";
+              output += "<td> " + _ReadyQueue[i].Acc   + "</td>";
+              output += "<td> " + _ReadyQueue[i].XReg  + "</td>";
+              output += "<td> " + _ReadyQueue[i].YReg  + "</td>";
+              output += "<td> " + _ReadyQueue[i].ZFlag + "</td>";
+              output += "<td> " + _ReadyQueue[i].state + "</td>";
+              output += "<td> " + _ReadyQueue[i].priority + "</td>";
+              output += "<td> " + _ReadyQueue[i].location + "</td>";
+              output += "</tr>";
             }
             document.getElementById("ProcessTableDisplay").innerHTML = output;
         }

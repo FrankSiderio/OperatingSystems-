@@ -53,6 +53,11 @@ var _Trace: boolean = true;  // Default the OS trace to be on.
 var _TurnAroundTime = new Array<number>();
 var _WaitTime = new Array<number>();
 
+var _Priority: number = 10;
+var _PriorityAlg: boolean = false;
+var _DefaultPriority: number = 10;
+var _FCFS: boolean = false; //this is so we know when we used fcfs so we make sure the global variable for scheduling is correct
+
 // The OS Kernel and its queues.
 var _Kernel: TSOS.Kernel;
 var _KernelInterruptQueue;          // Initializing this to null (which I would normally do) would then require us to specify the 'any' type, as below.

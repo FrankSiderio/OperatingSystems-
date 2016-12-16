@@ -432,7 +432,7 @@ module TSOS {
             }
 
             _CurrentPCB = new PCB(); //setting the current pcb
-
+            _CurrentPCB.priority = _Priority;
             //setting the base and limit for the current PCB
             if(_CurrentMemoryBlock <= 2)
             {

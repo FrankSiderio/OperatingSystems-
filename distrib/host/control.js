@@ -193,11 +193,12 @@ var TSOS;
             output += "<th>Location</th>";
             output += "</thead>";
             for (var i = 0; i < _ReadyQueue.length; i++) {
+                var pc = _ReadyQueue[i].PC - _MemoryManager.base;
                 output += "<tr>";
                 output += "<td> " + _ReadyQueue[i].pid + "</td>";
                 output += "<td> " + _ReadyQueue[i].base + "</td>";
                 output += "<td> " + _ReadyQueue[i].limit + "</td>";
-                output += "<td> " + _ReadyQueue[i].PC + "</td>";
+                output += "<td> " + pc + "</td>";
                 output += "<td> " + _ReadyQueue[i].Acc + "</td>";
                 output += "<td> " + _ReadyQueue[i].XReg + "</td>";
                 output += "<td> " + _ReadyQueue[i].YReg + "</td>";
