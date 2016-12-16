@@ -209,5 +209,6 @@ module TSOS {
             this.krnShutdown();
             clearInterval(_hardwareClockID);
         }
+        
     }
 }

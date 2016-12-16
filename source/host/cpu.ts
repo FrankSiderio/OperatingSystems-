@@ -467,6 +467,23 @@ module TSOS {
       {
         if(_ReadyQueue.length > 1)
         {
+          for(var i = 0; i < _ReadyQueue.length; i++)
+          {
+            //Maybe use this to prevent zombie processes
+            if(_ReadyQueue[i].location == "Disk")
+            {
+              //alert("There is a program still on disk");
+              /*
+              for(var x = 0; x < _ReadyQueue.length; x++)
+              {
+                if(_ReadyQueue[x].state == TERMINATED)
+                {
+                  _ReadyQueue[x] = _ReadyQueue[i];
+                }
+              }
+              */
+            }
+          }
           _ReadyQueue[0].state = "Terminated";
           _CpuScheduler.roundRobin();
         }

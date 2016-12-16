@@ -183,6 +183,7 @@ module TSOS
       _CurrentPCB.location = "Memory";
       var dataInMemory = "";
 
+      //clearing memory block 0...thats the one we want to swap into
       for(var i = 0; i < 255; i++)
       {
         dataInMemory += _Memory.getMemoryLocation(i);
@@ -192,6 +193,7 @@ module TSOS
       //console.log("Memory data to be moved: " + dataInMemory);
       //console.log("Supposed to be running: " + _CurrentPCB.pid + " Location: " + _CurrentPCB.location);
 
+      //this is the program we are going to swap onto the disk
       var pidProgramAtBase0;
       for(var i = 0; i < _ReadyQueue.length; i++)
       {
@@ -211,10 +213,12 @@ module TSOS
 
       //console.log("File to disk: " + fileToDisk);
 
+      //if it's not there already we are going to create it
       if(fileToDisk == "")
       {
         _FileSystem.createFile(fileName);
       }
+      //otherwise delete it and re-make it
       else
       {
         _FileSystem.deleteFile(fileName);
@@ -222,21 +226,26 @@ module TSOS
       }
 
       //console.log("DATA IN MEMORY THAT WE ARE WRITING: " + dataInMemory);
+
+      //lets get the data in memory that we want to put onto the disk
       dataInMemory = _FileSystem.stringToHex(dataInMemory);
       _FileSystem.writeFile(fileName, dataInMemory);
 
+      //find the process on the disk that we want to put in memory
       var getFileWithName = DEFAULT_FILE_NAME + currentPCBpid;
       var fileOnDisk = _FileSystem.findProgram(currentPCBpid);
       fileOnDisk = _FileSystem.hexToString(fileOnDisk);
 
       //console.log("Supposed to be running: " + _CurrentPCB.pid + " location " + _CurrentPCB.location);
       fileOnDisk = fileOnDisk.replace(/\s+/g, '');
-      console.log("FILE THAT WE GOT FROM DISK: " + fileOnDisk);
+      //console.log("FILE THAT WE GOT FROM DISK: " + fileOnDisk);
 
+      //array to insert the program for memory
       var fileOnDiskArray = [];
       var i = 0;
 
-      while(fileOnDisk.length > 0 && i <= 255)
+      //inserting it into the array
+      while(fileOnDisk.length > 0 && i < 255)
       {
         var subString = fileOnDisk.substr(0, 2);
         fileOnDiskArray.push(subString);
@@ -245,13 +254,16 @@ module TSOS
         i++;
       }
 
-      console.log("FILE ON DISK ARRAY: " + fileOnDiskArray);
-
+      console.log("FILE ON DISK ARRAY: " + fileOnDiskArray.toString());
+      console.log("FILE ON DISK LENGTH: " + fileOnDiskArray.length);
       //console.log("File on disk array" + fileOnDiskArray);
+
+      //loading it onto memory
       for(var i = 0; i < fileOnDiskArray.length; i++)
       {
         //alert("HEY");
         var code = fileOnDiskArray[i];
+        console.log("CODE: " + code);
         _MemoryManager.base = 0;
         _MemoryManager.updateMemoryAtLocation(i, code);
 

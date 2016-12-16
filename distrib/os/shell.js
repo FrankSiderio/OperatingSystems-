@@ -501,26 +501,25 @@ var TSOS;
                 _StdOut.putText("Please enter in a PID.");
             }
             else {
-                //find which process we want to kill
-                for (var i = 0; i < 3; i++) {
-                    if (args = _MemoryAllocation[i]) {
-                        var base = 0;
-                        if (i == 1) {
-                            base = 256;
-                            _MemoryAllocation[i] = "-1";
+                if (_SarcasticMode == true) {
+                    _StdOut.putText("I don't wanna and you can't stop me");
+                }
+                else {
+                    var pid = args[0];
+                    //removing from ready queue
+                    for (var i = 0; i < _ReadyQueue.length; i++) {
+                        if (pid == _ReadyQueue[i].pid) {
+                            _ReadyQueue.splice(i, 1);
                         }
-                        else if (i == 2) {
-                            base = 512;
-                            _MemoryAllocation[i] = "-1";
+                    }
+                    //removing from runnable pid array
+                    for (var i = 0; i < _RunnablePIDs.length; i++) {
+                        var pidCheck = _RunnablePIDs[i];
+                        if (pid == pidCheck) {
+                            _RunnablePIDs.splice(i, 1);
                         }
-                        else {
-                            _MemoryAllocation[0] = "-1";
-                        }
-                        _MemoryManager.clearMemorySegment(base);
                     }
                 }
-                //kill process
-                _CPU.break();
             }
             _ExecutedCommands.push("kill");
             Shell.clearCounts();

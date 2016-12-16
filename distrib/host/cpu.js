@@ -340,6 +340,11 @@ var TSOS;
         };
         Cpu.prototype.break = function () {
             if (_ReadyQueue.length > 1) {
+                for (var i = 0; i < _ReadyQueue.length; i++) {
+                    //Maybe use this to prevent zombie processes
+                    if (_ReadyQueue[i].location == "Disk") {
+                    }
+                }
                 _ReadyQueue[0].state = "Terminated";
                 _CpuScheduler.roundRobin();
             }

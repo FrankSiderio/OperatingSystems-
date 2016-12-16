@@ -109,28 +109,6 @@ var TSOS;
             //_Memory.addToMemory(memoryLocation, opCode);
             //console.log("Limit: " + this.limit);
             //console.log("Row: " + currentTableRow);
-            if (this.base == 0) {
-                if (currentTableRow < 32) {
-                    TSOS.Control.updateMemoryTable(currentTableRow, memoryLocation % 8, hexCode);
-                }
-            }
-            else if (this.base == 256) {
-                if (currentTableRow < 64) {
-                    TSOS.Control.updateMemoryTable(currentTableRow, memoryLocation % 8, hexCode);
-                }
-            }
-            else if (this.base == 512) {
-                if (currentTableRow < 96) {
-                    TSOS.Control.updateMemoryTable(currentTableRow, memoryLocation % 8, hexCode);
-                }
-            }
-            else {
-                //alert("Memory exceeded!");
-                _Kernel.krnTrapError("MemoryExceeded!");
-                _CPU.isExecuting = false;
-            }
-            //Control.updateMemoryTable(currentTableRow, memoryLocation % 8, hexCode);
-            //console.log(_Memory.getMemory());
         };
         //getters and setters
         MemoryManager.prototype.getBase = function () {

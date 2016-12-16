@@ -635,36 +635,32 @@ module TSOS {
           }
           else
           {
-            //find which process we want to kill
-            for(var i = 0; i < 3; i++)
+            if(_SarcasticMode == true)
             {
-              if(args = _MemoryAllocation[i])
+              _StdOut.putText("I don't wanna and you can't stop me");
+            }
+            else
+            {
+              var pid = args[0];
+              //removing from ready queue
+              for(var i = 0; i < _ReadyQueue.length; i++)
               {
-                var base = 0;
+                if(pid == _ReadyQueue[i].pid)
+                {
+                  _ReadyQueue.splice(i, 1);
+                }
+              }
+              //removing from runnable pid array
+              for(var i = 0; i < _RunnablePIDs.length; i++)
+              {
+                var pidCheck = _RunnablePIDs[i];
 
-                if(i == 1)
+                if(pid == pidCheck)
                 {
-                  base = 256;
-                  _MemoryAllocation[i] = "-1";
+                  _RunnablePIDs.splice(i, 1);
                 }
-                else if(i == 2)
-                {
-                  base = 512;
-                  _MemoryAllocation[i] = "-1";
-                }
-                else
-                {
-                  _MemoryAllocation[0] = "-1";
-                }
-                _MemoryManager.clearMemorySegment(base);
               }
             }
-            //kill process
-            _CPU.break();
-            //_CPU.isExecuting = false;
-
-            //_MemoryManager.clearMemorySegment();
-            //_Memory.clearMemory();
           }
 
           _ExecutedCommands.push("kill");
@@ -719,10 +715,25 @@ module TSOS {
 
         public shellFormat()
         {
-          _Format = true;
-          _FileSystem.init();
+          //dont want user to format while programs are running
+          if(_CPU.isExecuting == false)
+          {
+            _Format = true;
+            _FileSystem.init();
 
-          _FileSystem.displayMessage(1, "Format");
+            _FileSystem.displayMessage(1, "Format");
+          }
+          else
+          {
+            if(_SarcasticMode == true)
+            {
+              alert("NO");
+            }
+            else
+            {
+              _StdOut.putText("You cannot format disk will executing programs");
+            }
+          }
           _ExecutedCommands.push("format");
           Shell.clearCounts();
         }
