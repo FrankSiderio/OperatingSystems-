@@ -399,6 +399,7 @@ var TSOS;
                     //console.log("FILE DATA: " + fileData);
                     fileData = _FileSystem.stringToHex(fileData);
                     _FileSystem.writeFile(fileName, fileData);
+                    _StdOut.putText(fileName + " was created!");
                     _StdOut.advanceLine();
                     _StdOut.putText(">");
                     _StdOut.putText("Valid code. Congrats! PID: " + _PID);

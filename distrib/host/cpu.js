@@ -403,17 +403,7 @@ var TSOS;
         }
         */
         Cpu.prototype.updateCPUDisplay = function () {
-            var pc = 0;
-            if (this.PC >= 0) {
-                pc = this.PC;
-            }
-            if (this.PC >= 255) {
-                pc = pc - 255;
-            }
-            else if (this.PC >= 511) {
-                pc = pc - 511;
-            }
-            document.getElementById("cpuPC").innerHTML = pc.toString();
+            document.getElementById("cpuPC").innerHTML = this.PC.toString();
             document.getElementById("cpuACC").innerHTML = this.Acc.toString();
             document.getElementById("cpuXReg").innerHTML = this.Xreg.toString();
             document.getElementById("cpuYReg").innerHTML = this.Yreg.toString();

@@ -548,7 +548,7 @@ module TSOS {
 
       public updateCPUDisplay()
       {
-        document.getElementById("cpuPC").innerHTML = this.toString();
+        document.getElementById("cpuPC").innerHTML = this.PC.toString();
         document.getElementById("cpuACC").innerHTML = this.Acc.toString();
         document.getElementById("cpuXReg").innerHTML = this.Xreg.toString();
         document.getElementById("cpuYReg").innerHTML = this.Yreg.toString();

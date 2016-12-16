@@ -30,34 +30,6 @@ module TSOS
         this.base = 512;
         this.limit = 768;
       }
-      /*
-      if(_MemoryAllocation[0] == "-1")
-      {
-        this.base = 0;
-        this.limit = 255;
-        _MemoryAllocation[0] = _PID.toString();
-        this.setProgramLength(0, opCode);
-        //console.log("mem alloc 0: " + _MemoryAllocation[0]);
-      }
-      else if(_MemoryAllocation[1] == "-1")
-      {
-        this.base = 256;
-        this.limit = 511;
-        _MemoryAllocation[1] = _PID.toString();
-        this.setProgramLength(1, opCode);
-        //console.log("mem alloc 1: " + _MemoryAllocation[1]);
-      }
-      else if(_MemoryAllocation[2] == "-1")
-      {
-        this.base = 512;
-        this.limit = 768;
-        _MemoryAllocation[2] = _PID.toString();
-        //this.setProgramLength(2, opCode);
-        _ProgramLength[2] = opCode.length - 1;
-      }
-      */
-      //console.log("base: " + this.base);
-      //console.log("limit: " + this.limit);
 
       //calls updateMemoryLocation to update the physical address
       for(var i = 0; i < opCode.length; i++)
@@ -132,6 +104,7 @@ module TSOS
       currentBlock[newMemLocation] = hexCode;
 
       var currentTableRow = ((Math.floor(memoryLocation / 8)) + startingRow);
+      Control.updateMemoryTable(currentTableRow, memoryLocation % 8, hexCode);
       //console.log("Current table row: " + currentTableRow);
       //_Memory.addToMemory(memoryLocation, opCode);
       //console.log("Limit: " + this.limit);

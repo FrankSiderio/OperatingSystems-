@@ -102,6 +102,7 @@ var TSOS;
             _WaitTime[2] = 0;
             //draw memory table
             this.drawMemory();
+            document.getElementById("taProgramInput").value = "A9 00 8D 00 00 A9 00 8D 4B 00 A9 00 8D 4B 00 A2 03 EC 4B 00 D0 07 A2 01 EC 00 00 D0 05 A2 00 EC 00 00 D0 26 A0 4C A2 02 FF AC 4B 00 A2 01 FF A9 01 6D 4B 00 8D 4B 00 A2 02 EC 4B 00 D0 05 A0 55 A2 02 FF A2 01 EC 00 00 D0 C5 00 00 63 6F 75 6E 74 69 6E 67 00 68 65 6C 6C 6F 20 77 6F 72 6C 64 00";
         };
         Control.hostBtnHaltOS_click = function (btn) {
             Control.hostLog("Emergency halt", "host");
@@ -193,12 +194,11 @@ var TSOS;
             output += "<th>Location</th>";
             output += "</thead>";
             for (var i = 0; i < _ReadyQueue.length; i++) {
-                var pc = _ReadyQueue[i].PC - _MemoryManager.base;
                 output += "<tr>";
                 output += "<td> " + _ReadyQueue[i].pid + "</td>";
                 output += "<td> " + _ReadyQueue[i].base + "</td>";
                 output += "<td> " + _ReadyQueue[i].limit + "</td>";
-                output += "<td> " + pc + "</td>";
+                output += "<td> " + _ReadyQueue[i].PC + "</td>";
                 output += "<td> " + _ReadyQueue[i].Acc + "</td>";
                 output += "<td> " + _ReadyQueue[i].XReg + "</td>";
                 output += "<td> " + _ReadyQueue[i].YReg + "</td>";

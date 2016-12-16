@@ -490,6 +490,7 @@ module TSOS {
                 fileData = _FileSystem.stringToHex(fileData);
                 _FileSystem.writeFile(fileName, fileData);
 
+                _StdOut.putText(fileName + " was created!");
                 _StdOut.advanceLine();
                 _StdOut.putText(">");
 
