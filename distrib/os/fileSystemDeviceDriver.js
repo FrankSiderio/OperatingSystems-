@@ -26,7 +26,7 @@ var TSOS;
                     }
                 }
             }
-            this.displayMessage(1, "Format");
+            //this.displayMessage(1, "Format");
             this.createTable();
         };
         //this also updates the table
@@ -75,7 +75,6 @@ var TSOS;
                 _ListOfFiles.push(name);
                 this.createTable();
                 _KernelInterruptQueue.enqueue(new TSOS.Interrupt(CREATE_FILE_IRQ, ""));
-                this.displayMessage(1, "Creating file: " + name);
             }
         };
         fileSystemDeviceDriver.prototype.writeFile = function (file, write) {
@@ -92,8 +91,8 @@ var TSOS;
                 for (var i = hexFileName.length; i < (this.fileSize - 4); i++) {
                     hexFileName += "~";
                 }
-                console.log("File: " + file);
-                console.log("Writing: " + write.toString());
+                //console.log("File: " + file);
+                //console.log("Writing: " + write.toString());
                 //_StdOut.putText("Writing to file...");
                 //find which file to write to using a linear search
                 for (var t = 0; t < this.tracks; t++) {
@@ -106,7 +105,7 @@ var TSOS;
                             var meta = value.substr(1, 3);
                             //found the file
                             if (hexFileName == data) {
-                                console.log("Found file to write to");
+                                //console.log("Found file to write to");
                                 if (write.length <= 60) {
                                     //now lets write
                                     write = this.stringToHex(write);
@@ -183,7 +182,7 @@ var TSOS;
                 }
             }
             else {
-                console.log("Deleting file: " + fileName);
+                //console.log("Deleting file: " + fileName);
                 var hexFileName = this.stringToHex(fileName);
                 for (var t = 0; t < this.tracks; t++) {
                     for (var s = 0; s < this.sectors; s++) {
@@ -191,7 +190,7 @@ var TSOS;
                             var key = this.keyGenerator(t, s, b);
                             var value = sessionStorage.getItem(key);
                             var data = value.substr(4, (fileName.length * 2));
-                            console.log("Data: " + data);
+                            //console.log("Data: " + data);
                             if (hexFileName == data) {
                                 console.log("Found file to delete");
                                 var meta = value.substr(1, 3);
@@ -206,7 +205,6 @@ var TSOS;
                                 this.createTable();
                                 _KernelInterruptQueue.enqueue(new TSOS.Interrupt(DELETE_FILE_IRQ, ""));
                                 this.deleteFromList(fileName);
-                                this.displayMessage(1, "Delete");
                             }
                         }
                     }

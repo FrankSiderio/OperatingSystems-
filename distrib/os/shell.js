@@ -364,11 +364,12 @@ var TSOS;
                 if (_CurrentMemoryBlock <= 2) {
                     //setting the base in memory and then loading the program
                     var pid = (_MemoryManager.loadProgram(_CurrentMemoryBlock, newInput));
+                    //_StdOut.putText(pid);
                     //_StdOut.putText("PID: " + pid);
                     //setting the current pcbs base and pid and then adding it to the runnable pids array
                     _CurrentPCB.PC = base;
                     _CurrentPCB.pid = _PID;
-                    console.log("Current pcb pid: " + _CurrentPCB.pid);
+                    //console.log("Current pcb pid: " + _CurrentPCB.pid);
                     _RunnablePIDs.push(_CurrentPCB.pid);
                     //This program is in memory
                     _CurrentPCB.location = "Memory";
@@ -384,16 +385,18 @@ var TSOS;
                     _RunnablePIDs.push(_CurrentPCB.pid);
                     _CurrentPCB.location = "Disk";
                     _CurrentPCB.base = -1;
+                    //_CurrentPCB.limit = -1;
                     _ResidentList.push(_CurrentPCB);
                     var fileName = DEFAULT_FILE_NAME + _PID;
                     _FileSystem.createFile(fileName);
                     var fileData = "";
-                    //removing commas before we send it to the file system to write
                     for (var i = 0; i < newInput.length; i++) {
                         if (newInput[i] != ",") {
                             fileData += newInput[i];
                         }
                     }
+                    //console.log("FILE DATA: " + fileData);
+                    fileData = _FileSystem.stringToHex(fileData);
                     _FileSystem.writeFile(fileName, fileData);
                     _StdOut.advanceLine();
                     _StdOut.putText(">");
@@ -437,7 +440,9 @@ var TSOS;
                         //swap to mem
                         console.log("Need to swap from the disk");
                         var opCode = _FileSystem.findProgram(_CurrentPCB.pid);
-                        _CpuScheduler.rollIntoMemory(opCode);
+                        opCode = _FileSystem.hexToString(opCode);
+                        console.log("OP CODE: " + opCode);
+                        _CpuScheduler.rollInOut(opCode);
                     }
                     _CPU.PC = _CurrentPCB.base;
                     _CPU.isExecuting = true;
@@ -462,10 +467,12 @@ var TSOS;
                     _ReadyQueue[i].state = WAITING;
                 }
             }
-            console.log("Ready queue: " + _ReadyQueue);
+            //console.log("Ready queue 0: " + _ReadyQueue[0].pid);
             _CurrentPCB = _ReadyQueue[0];
+            //console.log("Current PCB PID: " + _CurrentPCB.pid);
             _CurrentPCB.state = RUNNING;
             _CPU.isExecuting = true;
+            //console.log("Current PCB pid: " + _CurrentPCB.pid);
             _ExecutedCommands.push("runall");
             Shell.clearCounts();
         };
@@ -553,6 +560,7 @@ var TSOS;
         Shell.prototype.shellFormat = function () {
             _Format = true;
             _FileSystem.init();
+            _FileSystem.displayMessage(1, "Format");
             _ExecutedCommands.push("format");
             Shell.clearCounts();
         };
@@ -584,6 +592,7 @@ var TSOS;
                     _StdOut.putText("You must have used the create command incorectly. Try again");
                 }
             }
+            _FileSystem.displayMessage(1, "Creating file " + name);
             _ExecutedCommands.push("create");
             Shell.clearCounts();
         };
@@ -603,6 +612,7 @@ var TSOS;
             else {
                 _StdOut.putText("Use the command right");
             }
+            _FileSystem.displayMessage(1, "Writing to file");
             _ExecutedCommands.push("write");
             Shell.clearCounts();
         };
@@ -636,6 +646,7 @@ var TSOS;
                     _StdOut.putText("It looks like you've used the command wrong. Try again");
                 }
             }
+            _FileSystem.displayMessage(1, "Delete");
             _ExecutedCommands.push("delete");
             Shell.clearCounts();
         };

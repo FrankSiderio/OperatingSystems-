@@ -86,7 +86,7 @@ var TSOS;
                 this.krnTrace("Idle");
             }
         };
-        //calls the scheduler 
+        //calls the scheduler
         Kernel.prototype.handleClockPulse = function () {
             _CpuScheduler.scheduler();
             _CPU.cycle();
@@ -180,7 +180,7 @@ var TSOS;
             TSOS.Control.hostLog("OS ERROR - TRAP: " + msg);
             // TODO: Display error on console, perhaps in some sort of colored screen. (Maybe blue?)
             var page = document.getElementById("divMain");
-            page.setAttribute("style", "background-color: blue"); //bsod
+            //page.setAttribute("style", "background-color: blue"); //bsod
             _Console.putText("Oh no its the blue screen of death!");
             // TODO: Get a blue screen of death image to flash
             //img.src = "bsod.jpg";

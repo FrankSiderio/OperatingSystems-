@@ -33,7 +33,7 @@ var TSOS;
                 _KernelInterruptQueue.enqueue(new TSOS.Interrupt(CONTEXT_SWITCH_IRQ, ""));
                 //switch if process is over
                 if (_CurrentPCB.state == TERMINATED) {
-                    console.log("Process is done");
+                    //console.log("Process is done");
                     //terminate the process
                     var terminate = _ReadyQueue.shift();
                     //reset the quantum counter
@@ -47,7 +47,7 @@ var TSOS;
                     _CPU.PC = _ReadyQueue[0].PC - 1;
                 }
                 else {
-                    console.log("Regular context switch");
+                    //console.log("Regular context switch");
                     //declare the pcb that will be pushed
                     var pcbPushed = _CurrentPCB;
                     //change the state
@@ -59,9 +59,9 @@ var TSOS;
                     _CurrentPCB = _ReadyQueue[0];
                     var location = _CurrentPCB.location;
                     if (location == "Disk") {
-                        var opCode = _FileSystem.findProgram(_CurrentPCB.pid);
-                        console.log("Op code rolling onto memory: " + opCode);
-                        this.rollIntoMemory(opCode);
+                        //var opCode = _FileSystem.findProgram(_CurrentPCB.pid);
+                        //console.log("Op code rolling onto memory: " + opCode);
+                        this.rollInOutRunAll();
                     }
                     _RunningPID = parseInt(_ReadyQueue[0].pid);
                     //update the state and pc
@@ -83,7 +83,7 @@ var TSOS;
             //TODO: Find a better way to do this
             _SchedulingAlgorithm = "rr";
         };
-        CpuScheduler.prototype.rollIntoMemory = function (opCode) {
+        CpuScheduler.prototype.rollInOut = function (opCode) {
             _CurrentPCB.location = "Memory";
             var swappedProgram = "";
             for (var i = 0; i < 255; i++) {
@@ -128,7 +128,68 @@ var TSOS;
             _MemoryManager.setBase(0);
             _MemoryManager.loadProgram(0, program);
         };
-        CpuScheduler.prototype.rollOntoDisk = function (program) {
+        //if we have to swap while runall is in effect
+        CpuScheduler.prototype.rollInOutRunAll = function () {
+            var currentPCBpid = _CurrentPCB.pid;
+            //alert(currentPCBpid);
+            _CurrentPCB.location = "Memory";
+            var dataInMemory = "";
+            for (var i = 0; i < 255; i++) {
+                dataInMemory += _Memory.getMemoryLocation(i);
+                _MemoryManager.base = 0;
+                _MemoryManager.updateMemoryAtLocation(i, "00");
+            }
+            //console.log("Memory data to be moved: " + dataInMemory);
+            //console.log("Supposed to be running: " + _CurrentPCB.pid + " Location: " + _CurrentPCB.location);
+            var pidProgramAtBase0;
+            for (var i = 0; i < _ReadyQueue.length; i++) {
+                if (_ReadyQueue[i].base == 0) {
+                    _ReadyQueue[i].location = "Disk";
+                    pidProgramAtBase0 = _ReadyQueue[i].pid;
+                }
+            }
+            _ResidentList[pidProgramAtBase0].base = -1;
+            _ResidentList[pidProgramAtBase0].limit = -1;
+            //console.log("Supposed to be running: " + _CurrentPCB.pid + " Location " + _CurrentPCB.location);
+            var fileName = DEFAULT_FILE_NAME + pidProgramAtBase0;
+            var fileToDisk = _FileSystem.findProgram(pidProgramAtBase0);
+            //console.log("File to disk: " + fileToDisk);
+            if (fileToDisk == "") {
+                _FileSystem.createFile(fileName);
+            }
+            else {
+                _FileSystem.deleteFile(fileName);
+                _FileSystem.createFile(fileName);
+            }
+            //console.log("DATA IN MEMORY THAT WE ARE WRITING: " + dataInMemory);
+            dataInMemory = _FileSystem.stringToHex(dataInMemory);
+            _FileSystem.writeFile(fileName, dataInMemory);
+            var getFileWithName = DEFAULT_FILE_NAME + currentPCBpid;
+            var fileOnDisk = _FileSystem.findProgram(currentPCBpid);
+            fileOnDisk = _FileSystem.hexToString(fileOnDisk);
+            //console.log("Supposed to be running: " + _CurrentPCB.pid + " location " + _CurrentPCB.location);
+            fileOnDisk = fileOnDisk.replace(/\s+/g, '');
+            console.log("FILE THAT WE GOT FROM DISK: " + fileOnDisk);
+            var fileOnDiskArray = [];
+            var i = 0;
+            while (fileOnDisk.length > 0 && i <= 255) {
+                var subString = fileOnDisk.substr(0, 2);
+                fileOnDiskArray.push(subString);
+                var newLength = fileOnDisk.length - 2;
+                fileOnDisk = fileOnDisk.substr(2, newLength);
+                i++;
+            }
+            console.log("FILE ON DISK ARRAY: " + fileOnDiskArray);
+            //console.log("File on disk array" + fileOnDiskArray);
+            for (var i = 0; i < fileOnDiskArray.length; i++) {
+                //alert("HEY");
+                var code = fileOnDiskArray[i];
+                _MemoryManager.base = 0;
+                _MemoryManager.updateMemoryAtLocation(i, code);
+            }
+            //console.log("Code: " + code);
+            _CurrentPCB.base = 0;
+            _CurrentPCB.limit = 255;
         };
         return CpuScheduler;
     }());

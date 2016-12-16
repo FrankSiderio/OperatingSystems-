@@ -444,11 +444,12 @@ module TSOS {
             {
               //setting the base in memory and then loading the program
               var pid = (_MemoryManager.loadProgram(_CurrentMemoryBlock, newInput));
+              //_StdOut.putText(pid);
               //_StdOut.putText("PID: " + pid);
               //setting the current pcbs base and pid and then adding it to the runnable pids array
               _CurrentPCB.PC = base;
               _CurrentPCB.pid = _PID;
-              console.log("Current pcb pid: " + _CurrentPCB.pid);
+              //console.log("Current pcb pid: " + _CurrentPCB.pid);
               _RunnablePIDs.push(_CurrentPCB.pid);
 
               //This program is in memory
@@ -470,13 +471,13 @@ module TSOS {
 
                 _CurrentPCB.location = "Disk";
                 _CurrentPCB.base = -1;
+                //_CurrentPCB.limit = -1;
 
                 _ResidentList.push(_CurrentPCB);
                 var fileName = DEFAULT_FILE_NAME + _PID;
                 _FileSystem.createFile(fileName);
 
                 var fileData = "";
-                //removing commas before we send it to the file system to write
                 for(var i = 0; i < newInput.length; i++)
                 {
                   if(newInput[i] != ",")
@@ -484,7 +485,9 @@ module TSOS {
                     fileData += newInput[i];
                   }
                 }
+                //console.log("FILE DATA: " + fileData);
 
+                fileData = _FileSystem.stringToHex(fileData);
                 _FileSystem.writeFile(fileName, fileData);
 
                 _StdOut.advanceLine();
@@ -546,6 +549,8 @@ module TSOS {
                 //swap to mem
                 console.log("Need to swap from the disk");
                 var opCode = _FileSystem.findProgram(_CurrentPCB.pid);
+                opCode = _FileSystem.hexToString(opCode);
+                console.log("OP CODE: " + opCode);
                 _CpuScheduler.rollInOut(opCode);
               }
               _CPU.PC = _CurrentPCB.base;
@@ -580,10 +585,13 @@ module TSOS {
               _ReadyQueue[i].state = WAITING;
             }
           }
-          console.log("Ready queue: " + _ReadyQueue);
+          //console.log("Ready queue 0: " + _ReadyQueue[0].pid);
           _CurrentPCB = _ReadyQueue[0];
+          //console.log("Current PCB PID: " + _CurrentPCB.pid);
           _CurrentPCB.state = RUNNING;
           _CPU.isExecuting = true;
+
+          //console.log("Current PCB pid: " + _CurrentPCB.pid);
 
           _ExecutedCommands.push("runall");
           Shell.clearCounts();
@@ -714,6 +722,7 @@ module TSOS {
           _Format = true;
           _FileSystem.init();
 
+          _FileSystem.displayMessage(1, "Format");
           _ExecutedCommands.push("format");
           Shell.clearCounts();
         }
@@ -758,6 +767,7 @@ module TSOS {
             }
           }
 
+          _FileSystem.displayMessage(1, "Creating file " + name);
           _ExecutedCommands.push("create");
           Shell.clearCounts();
         }
@@ -785,6 +795,7 @@ module TSOS {
             _StdOut.putText("Use the command right");
           }
 
+          _FileSystem.displayMessage(1, "Writing to file");
           _ExecutedCommands.push("write");
           Shell.clearCounts();
         }
@@ -833,6 +844,7 @@ module TSOS {
             }
           }
 
+          _FileSystem.displayMessage(1, "Delete");
           _ExecutedCommands.push("delete");
           Shell.clearCounts();
         }

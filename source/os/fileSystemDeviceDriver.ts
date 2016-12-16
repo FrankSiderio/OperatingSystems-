@@ -34,7 +34,7 @@ module TSOS
           }
         }
       }
-      this.displayMessage(1, "Format");
+      //this.displayMessage(1, "Format");
       this.createTable();
     }
 
@@ -62,10 +62,12 @@ module TSOS
       _HardDriveTable.innerHTML = table;
 
     }
+
     public keyGenerator(t, s, b)
     {
         return (t + "" + s + "" + b);
     }
+
 
     public createFile(name)
     {
@@ -105,7 +107,7 @@ module TSOS
 
         this.createTable();
         _KernelInterruptQueue.enqueue(new TSOS.Interrupt(CREATE_FILE_IRQ, ""));
-        this.displayMessage(1, "Creating file: " + name);
+        //this.displayMessage(1, "Creating file: " + name);
       }
     }
 
@@ -131,8 +133,8 @@ module TSOS
           hexFileName+="~";
         }
 
-        console.log("File: " + file);
-        console.log("Writing: " + write.toString());
+        //console.log("File: " + file);
+        //console.log("Writing: " + write.toString());
         //_StdOut.putText("Writing to file...");
         //find which file to write to using a linear search
         for(var t = 0; t < this.tracks; t++)
@@ -150,7 +152,7 @@ module TSOS
               //found the file
               if(hexFileName == data)
               {
-                console.log("Found file to write to");
+                //console.log("Found file to write to");
                 if(write.length <= 60)
                 {
                   //now lets write
@@ -262,7 +264,7 @@ module TSOS
       }
       else
       {
-        console.log("Deleting file: " + fileName);
+        //console.log("Deleting file: " + fileName);
 
         var hexFileName = this.stringToHex(fileName);
 
@@ -275,7 +277,7 @@ module TSOS
               var key = this.keyGenerator(t, s, b);
               var value = sessionStorage.getItem(key);
               var data = value.substr(4, (fileName.length * 2));
-              console.log("Data: " + data);
+              //console.log("Data: " + data);
               if(hexFileName == data)
               {
                 console.log("Found file to delete");
@@ -294,7 +296,7 @@ module TSOS
                 this.createTable();
                 _KernelInterruptQueue.enqueue(new TSOS.Interrupt(DELETE_FILE_IRQ, ""));
                 this.deleteFromList(fileName);
-                this.displayMessage(1, "Delete");
+                //this.displayMessage(1, "Delete");
               }
             }
           }
@@ -512,9 +514,6 @@ module TSOS
       return returningString;
 
     }
-
-
-
 
   }
 
