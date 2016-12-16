@@ -10,29 +10,21 @@ var TSOS;
         //constructor(){}
         //public init(){}
         //loading the program into memory
-        MemoryManager.prototype.loadProgram = function (opCode) {
+        MemoryManager.prototype.loadProgram = function (currentBlock, opCode) {
             //_Memory.clearMemory();
             //Chooses with memory block to allocate
-            if (_MemoryAllocation[0] == "-1") {
+            if (currentBlock == 0) {
                 this.base = 0;
                 this.limit = 255;
-                _MemoryAllocation[0] = _PID.toString();
-                this.setProgramLength(0, opCode);
             }
-            else if (_MemoryAllocation[1] == "-1") {
+            else if (currentBlock == 1) {
                 this.base = 256;
                 this.limit = 511;
-                _MemoryAllocation[1] = _PID.toString();
-                this.setProgramLength(1, opCode);
             }
-            else if (_MemoryAllocation[2] == "-1") {
+            else if (currentBlock == 2) {
                 this.base = 512;
                 this.limit = 768;
-                _MemoryAllocation[2] = _PID.toString();
-                this.setProgramLength(1, opCode);
             }
-            //console.log("base: " + this.base);
-            //console.log("limit: " + this.limit);
             //calls updateMemoryLocation to update the physical address
             for (var i = 0; i < opCode.length; i++) {
                 this.updateMemoryAtLocation(i, opCode[i]);
@@ -85,32 +77,11 @@ var TSOS;
             var newMemLocation = (memoryLocation + this.base);
             currentBlock[newMemLocation] = hexCode;
             var currentTableRow = ((Math.floor(memoryLocation / 8)) + startingRow);
+            TSOS.Control.updateMemoryTable(currentTableRow, memoryLocation % 8, hexCode);
             //console.log("Current table row: " + currentTableRow);
             //_Memory.addToMemory(memoryLocation, opCode);
             //console.log("Limit: " + this.limit);
             //console.log("Row: " + currentTableRow);
-            if (this.base == 0) {
-                if (currentTableRow < 32) {
-                    TSOS.Control.updateMemoryTable(currentTableRow, memoryLocation % 8, hexCode);
-                }
-            }
-            else if (this.base == 256) {
-                if (currentTableRow < 64) {
-                    TSOS.Control.updateMemoryTable(currentTableRow, memoryLocation % 8, hexCode);
-                }
-            }
-            else if (this.base == 512) {
-                if (currentTableRow < 96) {
-                    TSOS.Control.updateMemoryTable(currentTableRow, memoryLocation % 8, hexCode);
-                }
-            }
-            else {
-                //alert("Memory exceeded!");
-                _Kernel.krnTrapError("MemoryExceeded!");
-                _CPU.isExecuting = false;
-            }
-            //Control.updateMemoryTable(currentTableRow, memoryLocation % 8, hexCode);
-            //console.log(_Memory.getMemory());
         };
         //getters and setters
         MemoryManager.prototype.getBase = function () {

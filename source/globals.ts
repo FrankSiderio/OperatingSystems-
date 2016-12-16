@@ -21,8 +21,17 @@ const TIMER_IRQ: number = 0;  // Pages 23 (timer), 9 (interrupts), and 561 (inte
                               // NOTE: The timer is different from hardware/host clock pulses. Don't confuse these.
 const KEYBOARD_IRQ: number = 1;
 const CONTEXT_SWITCH_IRQ: number = 7;
+const CREATE_FILE_IRQ: number = 5;
+const WRITE_FILE_IRQ: number = 4;
+const READ_FILE_IRQ: number = 3;
+const DELETE_FILE_IRQ: number = 2;
 
+//for change/checking the states of the pcbs
+const TERMINATED: string = "Terminated";
+const RUNNING: string = "Running";
+const WAITING: string = "Waiting";
 
+const DEFAULT_FILE_NAME: string = "Process-"; //the default file name for a process going into the disk
 //
 // Global Variables
 // TODO: Make a global object and use that instead of the "_" naming convention in the global namespace.
@@ -44,13 +53,18 @@ var _Trace: boolean = true;  // Default the OS trace to be on.
 var _TurnAroundTime = new Array<number>();
 var _WaitTime = new Array<number>();
 
+var _Priority: number = 10;
+var _PriorityAlg: boolean = false;
+var _DefaultPriority: number = 10;
+var _FCFS: boolean = false; //this is so we know when we used fcfs so we make sure the global variable for scheduling is correct
+
 // The OS Kernel and its queues.
 var _Kernel: TSOS.Kernel;
 var _KernelInterruptQueue;          // Initializing this to null (which I would normally do) would then require us to specify the 'any' type, as below.
 var _KernelInputQueue: any = null;  // Is this better? I don't like uninitialized variables. But I also don't like using the type specifier 'any'
 var _KernelBuffers: any[] = null;   // when clearly 'any' is not what we want. There is likely a better way, but what is it?
 
-var _CpuScheduler: any = null;
+var _CpuScheduler: TSOS.CpuScheduler;
 
 // Standard input and output
 var _StdIn;    // Same "to null or not to null" issue as above.
@@ -80,6 +94,11 @@ var _MemoryArray = new Array<string>();
 var _ProgramLength = new Array<number>(); //contains program lengths for each program
 var _ProgramSize = 256; //size of our biggest program
 var _MemoryAllocation = new Array<string>(); // Array that contains the pids that are loaded into memory
+var _ResidentList: any[] = [];
+var _ReadyQueue: any[] = [];
+var _CurrentMemoryBlock: number = -1;
+var _RunnablePIDs: any[] = [];
+var _RunningPID: any = null;
 
 var _SingleStep: boolean = false;
 var _CurrentPCB: any = null;
@@ -88,9 +107,12 @@ var _State = "Not Running"; //to update the PCB with
 var _Pcb0: any = null;
 var _Pcb1: any = null;
 var _Pcb2: any = null;
+var _PcbDisk = new Array();
 
 var _Quantum: number = 6;
 var _QuantumCounter: number = 0;
+var _SchedulingAlgorithm = "rr"; //round robin is the default schedule
+var _ScheduleCounter = 0;
 var _RunAll: boolean = false;
 
 var _ConsoleBuffers = new Array<string>(); //this is for line wrap keeps track of the buffer previous when the next line is advanced
@@ -104,6 +126,15 @@ var _PID: number = 0; // pid
 var _LineCount: number = 0;
 var _LastCharOnLine = "";
 var _LastCursorPosition: number = 0;
+
+var _SwappedProgram = "";
+var _ProgramCounter = 0;
+
+//hardrive stuff
+var _HardDriveTable: any = null;
+var _FileSystem: any = null;
+var _ListOfFiles = new Array<string>(); //for keeping track of the files on the disk...easier than going through the disk
+var _Format: boolean = false;
 
 var onDocumentLoad = function() {
 	TSOS.Control.hostInit();

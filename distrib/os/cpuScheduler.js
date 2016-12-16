@@ -1,157 +1,212 @@
 ///<reference path="../globals.ts" />
-///<reference path="../host/control.ts" />
 //CPU Scheduling class
 //We have 3 instances of the pcb class that contains everything so we can swap back and forth
 //Probably not the best way to do this but it works.
 var TSOS;
 (function (TSOS) {
-    //var pcb0 = new PCB();
-    var pc0;
-    var acc0;
-    var xreg0;
-    var yreg0;
-    var zflag0;
-    var pc1 = 256;
-    var acc1;
-    var xreg1;
-    var yreg1;
-    var zflag1;
-    var pc2 = 512;
-    var acc2;
-    var xreg2;
-    var yreg2;
-    var zflag2;
-    var counter = 0;
     var CpuScheduler = (function () {
         function CpuScheduler() {
+            this.counter = 0;
         }
-        CpuScheduler.prototype.roundRobin = function () {
-            //do the round robin stuff here
-            //console.log("Counter: " + counter);
-            //if we are doing round robin
-            if (_QuantumCounter < _Quantum) {
-                if (counter == 0) {
-                    _MemoryManager.base = 0;
-                    _MemoryManager.limit = 255;
-                    counter = 1;
-                }
-                _CPU.isExecuting = true;
+        //figures out which scheduling algorithm we are using and calls that function
+        CpuScheduler.prototype.scheduler = function () {
+            switch (_SchedulingAlgorithm) {
+                case "rr":
+                    if (_QuantumCounter >= _Quantum && _ReadyQueue.length > 0) {
+                        this.roundRobin();
+                        _QuantumCounter = 0;
+                    }
+                    break;
+                case "fcfs":
+                    this.fcfs();
+                    break;
+                case "priority":
+                    break;
             }
-            else if (_QuantumCounter == _Quantum) {
-                _QuantumCounter = 0;
-                //alert("switch");
-                //alert("Base: " + _MemoryManager.base);
-                //console.log("Memory base: " + _MemoryManager.base);
-                //figure out where to switch to
-                if (_MemoryManager.base == 0) {
-                    if (_MemoryAllocation[1] != "-1") {
-                        _MemoryManager.base = 256;
-                        _MemoryManager.limit = 511;
-                        //_Kernel.krnTrace("Context Switch");
-                        _KernelInterruptQueue.enqueue(new TSOS.Interrupt(CONTEXT_SWITCH_IRQ, ""));
-                        this.setValues(0);
-                    }
-                }
-                else if (_MemoryManager.base == 256) {
-                    if (_MemoryAllocation[2] != "-1") {
-                        _MemoryManager.base = 512;
-                        _MemoryManager.limit = 768;
-                        _KernelInterruptQueue.enqueue(new TSOS.Interrupt(CONTEXT_SWITCH_IRQ, ""));
-                        this.setValues(1);
-                    }
-                    else if (_MemoryAllocation[0] != "-1") {
-                        _MemoryManager.base = 0;
-                        _MemoryManager.limit = 255;
-                        _KernelInterruptQueue.enqueue(new TSOS.Interrupt(CONTEXT_SWITCH_IRQ, ""));
-                        this.setValues(7);
-                    }
-                }
-                else if (_MemoryManager.base == 512) {
-                    if (_MemoryAllocation[0] != "-1") {
-                        _MemoryManager.base = 0;
-                        _MemoryManager.limit = 255;
-                        _KernelInterruptQueue.enqueue(new TSOS.Interrupt(CONTEXT_SWITCH_IRQ, ""));
-                        this.setValues(2);
-                    }
-                    else if (_MemoryAllocation[1] != "-1") {
-                        _MemoryManager.base = 256;
-                        _MemoryManager.limit = 511;
-                        _KernelInterruptQueue.enqueue(new TSOS.Interrupt(CONTEXT_SWITCH_IRQ, ""));
-                        this.setValues(4);
-                    }
-                }
-            }
-            //_Kernel.krnInterruptHandler(CONTEXT_SWITCH_IRQ, "fdsafdsa");
+            _QuantumCounter++;
+            _CPU.cycle();
         };
-        // this might change...better way to implement
-        CpuScheduler.prototype.setValues = function (num) {
-            //save the current CPU values so we can get them later
-            //num tells us which block we are saving the values from
-            if (num == 0) {
-                _Pcb0.PC = _CPU.PC;
-                _Pcb0.Acc = _CPU.Acc;
-                _Pcb0.XReg = _CPU.Xreg;
-                _Pcb0.YReg = _CPU.Yreg;
-                _Pcb0.ZFlag = _CPU.Zflag;
-                _Pcb0.instruction = _CPU.instruction;
-                _CPU.PC = _Pcb1.PC;
-                _CPU.Acc = _Pcb1.Acc;
-                _CPU.Xreg = _Pcb1.XReg;
-                _CPU.Yreg = _Pcb1.YReg;
-                _CPU.Zflag = _Pcb1.ZFlag;
+        //round robin scheduling
+        CpuScheduler.prototype.roundRobin = function () {
+            //if theres more than one program in the queue we need to switch
+            if (_ReadyQueue.length > 1) {
+                _KernelInterruptQueue.enqueue(new TSOS.Interrupt(CONTEXT_SWITCH_IRQ, ""));
+                //switch if process is over
+                if (_CurrentPCB.state == TERMINATED) {
+                    //console.log("Process is done");
+                    //terminate the process
+                    var terminate = _ReadyQueue.shift();
+                    //reset the quantum counter
+                    _QuantumCounter = 0;
+                    //change the current pcb
+                    _CurrentPCB = _ReadyQueue[0];
+                    //update the running pid
+                    _RunningPID = parseInt(_ReadyQueue[0].pid);
+                    //now the new process is running
+                    _ReadyQueue[0].state = RUNNING;
+                    _CPU.PC = _ReadyQueue[0].PC - 1;
+                }
+                else {
+                    //console.log("Regular context switch");
+                    //declare the pcb that will be pushed
+                    var pcbPushed = _CurrentPCB;
+                    //change the state
+                    _ReadyQueue[0].state = WAITING;
+                    //add the new pcb and shift the ready queue
+                    _ReadyQueue.push(pcbPushed);
+                    _ReadyQueue.shift();
+                    //update the ready queue
+                    _CurrentPCB = _ReadyQueue[0];
+                    var location = _CurrentPCB.location;
+                    if (location == "Disk") {
+                        //var opCode = _FileSystem.findProgram(_CurrentPCB.pid);
+                        //console.log("Op code rolling onto memory: " + opCode);
+                        this.rollInOutRunAll();
+                    }
+                    _RunningPID = parseInt(_ReadyQueue[0].pid);
+                    //update the state and pc
+                    _ReadyQueue[0].state = RUNNING;
+                    _CPU.PC = _ReadyQueue[0].PC;
+                }
+                //update the cpu so it runs the right stuff
+                _CPU.Acc = _ReadyQueue[0].Acc;
+                _CPU.Xreg = _ReadyQueue[0].XReg;
+                _CPU.Yreg = _ReadyQueue[0].YReg;
+                _CPU.Zflag = _ReadyQueue[0].ZFlag;
+                _CurrentMemoryBlock = _CurrentPCB.base / 256;
             }
-            else if (num == 1) {
-                _Pcb1.PC = _CPU.PC;
-                _Pcb1.Acc = _CPU.Acc;
-                _Pcb1.XReg = _CPU.Xreg;
-                _Pcb1.YReg = _CPU.Yreg;
-                _Pcb1.ZFlag = _CPU.Zflag;
-                _Pcb1.instruction = _CPU.instruction;
-                _CPU.PC = _Pcb2.PC;
-                _CPU.Acc = _Pcb2.Acc;
-                _CPU.Xreg = _Pcb2.XReg;
-                _CPU.Yreg = _Pcb2.YReg;
-                _CPU.Zflag = _Pcb2.ZFlag;
+            _CPU.isExecuting = true;
+        };
+        CpuScheduler.prototype.fcfs = function () {
+            console.log("FCFS");
+            _Quantum = 123214342;
+            //TODO: Find a better way to do this
+            _FCFS = true;
+            _SchedulingAlgorithm = "rr";
+        };
+        //basically the same as fcfs
+        CpuScheduler.prototype.priority = function () {
+            _Quantum = 21343423432;
+            _PriorityAlg = true;
+            _SchedulingAlgorithm = "rr";
+        };
+        CpuScheduler.prototype.rollInOut = function (opCode) {
+            _CurrentPCB.location = "Memory";
+            var swappedProgram = "";
+            for (var i = 0; i < 255; i++) {
+                swappedProgram += _Memory.getMemoryLocation(i);
+                _MemoryManager.base = 0;
+                _MemoryManager.updateMemoryAtLocation(i, "00");
+                swappedProgram += " ";
             }
-            else if (num == 2) {
-                _Pcb2.PC = _CPU.PC;
-                _Pcb2.Acc = _CPU.Acc;
-                _Pcb2.XReg = _CPU.Xreg;
-                _Pcb2.YReg = _CPU.Yreg;
-                _Pcb2.ZFlag = _CPU.Zflag;
-                _Pcb2.instruction = _CPU.instruction;
-                _CPU.PC = _Pcb0.PC;
-                _CPU.Acc = _Pcb0.Acc;
-                _CPU.Xreg = _Pcb0.XReg;
-                _CPU.Yreg = _Pcb0.YReg;
-                _CPU.Zflag = _Pcb0.ZFlag;
+            var pidProgramAtBase0;
+            for (var i = 0; i < _ResidentList.length; i++) {
+                if (_ResidentList[i].base == 0) {
+                    _ResidentList[i].location = "Disk";
+                    _ResidentList[i].base = -1;
+                    _ResidentList[i].limit = -1;
+                    pidProgramAtBase0 = _ResidentList[i].pid;
+                }
             }
-            else if (num == 4) {
-                _Pcb2.PC = _CPU.PC;
-                _Pcb2.Acc = _CPU.Acc;
-                _Pcb2.XReg = _CPU.Xreg;
-                _Pcb2.YReg = _CPU.Yreg;
-                _Pcb2.ZFlag = _CPU.Zflag;
-                _Pcb2.instruction = _CPU.instruction;
-                _CPU.PC = _Pcb1.PC;
-                _CPU.Acc = _Pcb1.Acc;
-                _CPU.Xreg = _Pcb1.XReg;
-                _CPU.Yreg = _Pcb1.YReg;
-                _CPU.Zflag = _Pcb1.ZFlag;
+            var fileName = DEFAULT_FILE_NAME + pidProgramAtBase0;
+            _FileSystem.writeFile(fileName, swappedProgram);
+            //opCode = opCode.replace(/(.{2})/g, " ");
+            var newOpCode = "";
+            //adding a space after every two characters
+            for (var i = 0; i < opCode.length; i++) {
+                if ((i % 2) == 0 && i != 0) {
+                    newOpCode += " ";
+                }
+                newOpCode += opCode.charAt(i);
             }
-            else if (num == 7) {
-                _Pcb1.PC = _CPU.PC;
-                _Pcb1.Acc = _CPU.Acc;
-                _Pcb1.XReg = _CPU.Xreg;
-                _Pcb1.YReg = _CPU.Yreg;
-                _Pcb1.ZFlag = _CPU.Zflag;
-                _Pcb1.instruction = _CPU.instruction;
-                _CPU.PC = _Pcb0.PC;
-                _CPU.Acc = _Pcb0.Acc;
-                _CPU.Xreg = _Pcb0.XReg;
-                _CPU.Yreg = _Pcb0.YReg;
-                _CPU.Zflag = _Pcb0.ZFlag;
+            //making it nice so it loads into memory properly
+            var program = newOpCode.replace(/\n/g, " ").split(" ");
+            //console.log("Returned mem: " + _Memory.getMemory());
+            //getting the op code from the last segment of memory
+            var memory = "";
+            for (var i = 0; i < 256; i++) {
+                memory += _Memory.getMemoryLocation(i);
             }
+            //var oldProgram = mem.substr(512, _Memory.getMemory.length);
+            //console.log("Program length: " + _ProgramLength[2]);
+            //console.log("Old program: " + memory.substr(0, (_ProgramLength[2] * 2)));
+            //_SwappedProgram = memory.substr(0, (_ProgramLength[2] * 2));
+            _CurrentPCB.base = 0;
+            _MemoryManager.setBase(0);
+            _MemoryManager.loadProgram(0, program);
+        };
+        //if we have to swap while runall is in effect
+        CpuScheduler.prototype.rollInOutRunAll = function () {
+            var currentPCBpid = _CurrentPCB.pid;
+            //alert(currentPCBpid);
+            _CurrentPCB.location = "Memory";
+            var dataInMemory = "";
+            //clearing memory block 0...thats the one we want to swap into
+            for (var i = 0; i < 255; i++) {
+                dataInMemory += _Memory.getMemoryLocation(i);
+                _MemoryManager.base = 0;
+                _MemoryManager.updateMemoryAtLocation(i, "00");
+            }
+            //console.log("Memory data to be moved: " + dataInMemory);
+            //console.log("Supposed to be running: " + _CurrentPCB.pid + " Location: " + _CurrentPCB.location);
+            //this is the program we are going to swap onto the disk
+            var pidProgramAtBase0;
+            for (var i = 0; i < _ReadyQueue.length; i++) {
+                if (_ReadyQueue[i].base == 0) {
+                    _ReadyQueue[i].location = "Disk";
+                    pidProgramAtBase0 = _ReadyQueue[i].pid;
+                }
+            }
+            _ResidentList[pidProgramAtBase0].base = -1;
+            _ResidentList[pidProgramAtBase0].limit = -1;
+            //console.log("Supposed to be running: " + _CurrentPCB.pid + " Location " + _CurrentPCB.location);
+            var fileName = DEFAULT_FILE_NAME + pidProgramAtBase0;
+            var fileToDisk = _FileSystem.findProgram(pidProgramAtBase0);
+            //console.log("File to disk: " + fileToDisk);
+            //if it's not there already we are going to create it
+            if (fileToDisk == "") {
+                _FileSystem.createFile(fileName);
+            }
+            else {
+                _FileSystem.deleteFile(fileName);
+                _FileSystem.createFile(fileName);
+            }
+            //console.log("DATA IN MEMORY THAT WE ARE WRITING: " + dataInMemory);
+            //lets get the data in memory that we want to put onto the disk
+            dataInMemory = _FileSystem.stringToHex(dataInMemory);
+            _FileSystem.writeFile(fileName, dataInMemory);
+            //find the process on the disk that we want to put in memory
+            var getFileWithName = DEFAULT_FILE_NAME + currentPCBpid;
+            var fileOnDisk = _FileSystem.findProgram(currentPCBpid);
+            fileOnDisk = _FileSystem.hexToString(fileOnDisk);
+            //console.log("Supposed to be running: " + _CurrentPCB.pid + " location " + _CurrentPCB.location);
+            fileOnDisk = fileOnDisk.replace(/\s+/g, '');
+            //console.log("FILE THAT WE GOT FROM DISK: " + fileOnDisk);
+            //array to insert the program for memory
+            var fileOnDiskArray = [];
+            var i = 0;
+            //inserting it into the array
+            while (fileOnDisk.length > 0 && i < 255) {
+                var subString = fileOnDisk.substr(0, 2);
+                fileOnDiskArray.push(subString);
+                var newLength = fileOnDisk.length - 2;
+                fileOnDisk = fileOnDisk.substr(2, newLength);
+                i++;
+            }
+            console.log("FILE ON DISK ARRAY: " + fileOnDiskArray.toString());
+            console.log("FILE ON DISK LENGTH: " + fileOnDiskArray.length);
+            //console.log("File on disk array" + fileOnDiskArray);
+            //loading it onto memory
+            for (var i = 0; i < fileOnDiskArray.length; i++) {
+                //alert("HEY");
+                var code = fileOnDiskArray[i];
+                console.log("CODE: " + code);
+                _MemoryManager.base = 0;
+                _MemoryManager.updateMemoryAtLocation(i, code);
+            }
+            //console.log("Code: " + code);
+            _CurrentPCB.base = 0;
+            _CurrentPCB.limit = 255;
         };
         return CpuScheduler;
     }());

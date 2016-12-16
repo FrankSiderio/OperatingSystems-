@@ -80,11 +80,16 @@ var TSOS;
                 this.krnInterruptHandler(interrupt.irq, interrupt.params);
             }
             else if (_CPU.isExecuting) {
-                _CPU.cycle();
+                this.handleClockPulse();
             }
             else {
                 this.krnTrace("Idle");
             }
+        };
+        //calls the scheduler
+        Kernel.prototype.handleClockPulse = function () {
+            _CpuScheduler.scheduler();
+            _CPU.cycle();
         };
         //
         // Interrupt Handling
@@ -117,6 +122,18 @@ var TSOS;
                     break;
                 case CONTEXT_SWITCH_IRQ:
                     this.krnTrace("Context Switch");
+                    break;
+                case CREATE_FILE_IRQ:
+                    this.krnTrace("Creating File");
+                    break;
+                case WRITE_FILE_IRQ:
+                    this.krnTrace("Writing File");
+                    break;
+                case READ_FILE_IRQ:
+                    this.krnTrace("Reading File");
+                    break;
+                case DELETE_FILE_IRQ:
+                    this.krnTrace("Deleting File");
                     break;
                 default:
                     this.krnTrapError("Invalid Interrupt Request. irq=" + irq + " params=[" + params + "]");
@@ -163,7 +180,7 @@ var TSOS;
             TSOS.Control.hostLog("OS ERROR - TRAP: " + msg);
             // TODO: Display error on console, perhaps in some sort of colored screen. (Maybe blue?)
             var page = document.getElementById("divMain");
-            page.setAttribute("style", "background-color: blue"); //bsod
+            //page.setAttribute("style", "background-color: blue"); //bsod
             _Console.putText("Oh no its the blue screen of death!");
             // TODO: Get a blue screen of death image to flash
             //img.src = "bsod.jpg";

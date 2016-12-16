@@ -17,6 +17,15 @@ var TIMER_IRQ = 0; // Pages 23 (timer), 9 (interrupts), and 561 (interrupt prior
 // NOTE: The timer is different from hardware/host clock pulses. Don't confuse these.
 var KEYBOARD_IRQ = 1;
 var CONTEXT_SWITCH_IRQ = 7;
+var CREATE_FILE_IRQ = 5;
+var WRITE_FILE_IRQ = 4;
+var READ_FILE_IRQ = 3;
+var DELETE_FILE_IRQ = 2;
+//for change/checking the states of the pcbs
+var TERMINATED = "Terminated";
+var RUNNING = "Running";
+var WAITING = "Waiting";
+var DEFAULT_FILE_NAME = "Process-"; //the default file name for a process going into the disk
 //
 // Global Variables
 // TODO: Make a global object and use that instead of the "_" naming convention in the global namespace.
@@ -32,12 +41,16 @@ var _FontHeightMargin = 4; // Additional space added to font size when advancing
 var _Trace = true; // Default the OS trace to be on.
 var _TurnAroundTime = new Array();
 var _WaitTime = new Array();
+var _Priority = 10;
+var _PriorityAlg = false;
+var _DefaultPriority = 10;
+var _FCFS = false; //this is so we know when we used fcfs so we make sure the global variable for scheduling is correct
 // The OS Kernel and its queues.
 var _Kernel;
 var _KernelInterruptQueue; // Initializing this to null (which I would normally do) would then require us to specify the 'any' type, as below.
 var _KernelInputQueue = null; // Is this better? I don't like uninitialized variables. But I also don't like using the type specifier 'any'
 var _KernelBuffers = null; // when clearly 'any' is not what we want. There is likely a better way, but what is it?
-var _CpuScheduler = null;
+var _CpuScheduler;
 // Standard input and output
 var _StdIn; // Same "to null or not to null" issue as above.
 var _StdOut;
@@ -60,14 +73,22 @@ var _MemoryArray = new Array();
 var _ProgramLength = new Array(); //contains program lengths for each program
 var _ProgramSize = 256; //size of our biggest program
 var _MemoryAllocation = new Array(); // Array that contains the pids that are loaded into memory
+var _ResidentList = [];
+var _ReadyQueue = [];
+var _CurrentMemoryBlock = -1;
+var _RunnablePIDs = [];
+var _RunningPID = null;
 var _SingleStep = false;
 var _CurrentPCB = null;
 var _State = "Not Running"; //to update the PCB with
 var _Pcb0 = null;
 var _Pcb1 = null;
 var _Pcb2 = null;
+var _PcbDisk = new Array();
 var _Quantum = 6;
 var _QuantumCounter = 0;
+var _SchedulingAlgorithm = "rr"; //round robin is the default schedule
+var _ScheduleCounter = 0;
 var _RunAll = false;
 var _ConsoleBuffers = new Array(); //this is for line wrap keeps track of the buffer previous when the next line is advanced
 var _ExecutedCommands = new Array(); // Keeps track of all the commands enter
@@ -78,6 +99,13 @@ var _PID = 0; // pid
 var _LineCount = 0;
 var _LastCharOnLine = "";
 var _LastCursorPosition = 0;
+var _SwappedProgram = "";
+var _ProgramCounter = 0;
+//hardrive stuff
+var _HardDriveTable = null;
+var _FileSystem = null;
+var _ListOfFiles = new Array(); //for keeping track of the files on the disk...easier than going through the disk
+var _Format = false;
 var onDocumentLoad = function () {
     TSOS.Control.hostInit();
 };

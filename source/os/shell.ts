@@ -130,6 +130,38 @@ module TSOS {
             sc = new ShellCommand(this.shellKill, "kill", "kill <pid> to kill an active process");
             this.commandList[this.commandList.length] = sc;
 
+            //get schedule command
+            sc = new ShellCommand(this.shellGetSchedule, "getschedule", "gets current selected scheduling algorithm");
+            this.commandList[this.commandList.length] = sc;
+
+            //set schedule command
+            sc = new ShellCommand(this.shellSetSchedule, "setschedule", "sets scheduling algorithm");
+            this.commandList[this.commandList.length] = sc;
+
+            //format
+            sc = new ShellCommand(this.shellFormat, "format", "initialize all blocks");
+            this.commandList[this.commandList.length] = sc;
+
+            //ls command
+            sc = new ShellCommand(this.shellLs, "ls", "list all the different files stored on disk");
+            this.commandList[this.commandList.length] = sc;
+
+            //create file
+            sc = new ShellCommand(this.shellCreate, "create", "create <filename>");
+            this.commandList[this.commandList.length] = sc;
+
+            //write file
+            sc = new ShellCommand(this.shellWrite, "write", "write <filename> 'data'");
+            this.commandList[this.commandList.length] = sc;
+
+            //read file
+            sc = new ShellCommand(this.shellRead, "read", "read <filename>");
+            this.commandList[this.commandList.length] = sc;
+
+            //delete file
+            sc = new ShellCommand(this.shellDelete, "delete", "delete <filename>");
+            this.commandList[this.commandList.length] = sc;
+
             //
             // Display the initial prompt.
             this.putPrompt();
@@ -227,16 +259,19 @@ module TSOS {
         //
         public shellInvalidCommand() {
             console.log(_Console.buffer);
-            if(_Console.buffer == "status output should be similar to 'counting0counting1hello worldcounting 2'.")
+
+            if(_Console.buffer == "sarcasticmode on")
             {
-              this.shellStatus("output should be similar to 'counting0counting1hello worldcounting 2'.");
+              _SarcasticMode = true;
+              console.log("Wow. What a great idea this is.");
+              alert("You aren't gonna regret this. ;)");
             }
 
             _StdOut.putText("Invalid Command. ");
             if (_SarcasticMode) {
-                _StdOut.putText("Unbelievable. You, [subject name here],");
+                _StdOut.putText("Unbelievable. You, piece of s***,");
                 _StdOut.advanceLine();
-                _StdOut.putText("must be the pride of [subject hometown here].");
+                _StdOut.putText("must be the pride of a ******* ****** place.");
             } else {
                 _StdOut.putText("Type 'help' for, well... help.");
             }
@@ -377,20 +412,105 @@ module TSOS {
           }
           else
           {
-
             var newInput = input.replace(/\n/g, " " ).split( " " );
-            _CurrentPCB = new PCB();
-            _StdOut.putText("Valid code. Congrats! ");
+            var base = 0;
+            var limit = 0;
 
-            //there is probably a better way to do this but this allows to run in sequence
-            //_CPU.PC = _ProgramLength; //this is so when we get to that function it actually does something
-            //_CPU.updateCPU();         //dont worry CPU.PC gets initialized back to zero anyway when it gets there
 
-            _StdOut.putText(_MemoryManager.loadProgram(newInput));
-            _PID++;
-            //console.log(_Memory.getMemory());
+            if(_CurrentMemoryBlock >= 2)
+            {
+              base = -1;
+              limit = -1;
+              _CurrentMemoryBlock++;
+            }
+            //if we are still loading less than 3 programs
+            else if(_CurrentMemoryBlock < 2)
+            {
+              _CurrentMemoryBlock++;
+              base = _CurrentMemoryBlock * 256;
+              limit = (_CurrentMemoryBlock * 256) + 255;
+            }
 
+            _CurrentPCB = new PCB(); //setting the current pcb
+            _CurrentPCB.priority = _Priority;
+            //setting the base and limit for the current PCB
+            if(_CurrentMemoryBlock <= 2)
+            {
+              _CurrentPCB.base = base;
+              _CurrentPCB.limit = limit;
+            }
+
+            if(_CurrentMemoryBlock <= 2)
+            {
+              //setting the base in memory and then loading the program
+              var pid = (_MemoryManager.loadProgram(_CurrentMemoryBlock, newInput));
+              //_StdOut.putText(pid);
+              //_StdOut.putText("PID: " + pid);
+              //setting the current pcbs base and pid and then adding it to the runnable pids array
+              _CurrentPCB.PC = base;
+              _CurrentPCB.pid = _PID;
+              //console.log("Current pcb pid: " + _CurrentPCB.pid);
+              _RunnablePIDs.push(_CurrentPCB.pid);
+
+              //This program is in memory
+              _CurrentPCB.location = "Memory";
+              //Adding it to the resident list
+              _ResidentList.push(_CurrentPCB);
+
+              _StdOut.putText("Valid code. Congrats! PID: " + _PID);
+              _PID++;
+            }
+
+            //otherwise we need to load it onto the disk
+            else if(_CurrentMemoryBlock > 2 && _Format == true)
+            {
+                console.log("Need to load onto disk!");
+                //set the pid to the currentpcb pid then add it to the runnable pid list
+                _CurrentPCB.pid = _PID;
+                _RunnablePIDs.push(_CurrentPCB.pid);
+
+                _CurrentPCB.location = "Disk";
+                _CurrentPCB.base = -1;
+                //_CurrentPCB.limit = -1;
+
+                _ResidentList.push(_CurrentPCB);
+                var fileName = DEFAULT_FILE_NAME + _PID;
+                _FileSystem.createFile(fileName);
+
+                var fileData = "";
+                for(var i = 0; i < newInput.length; i++)
+                {
+                  if(newInput[i] != ",")
+                  {
+                    fileData += newInput[i];
+                  }
+                }
+                //console.log("FILE DATA: " + fileData);
+
+                fileData = _FileSystem.stringToHex(fileData);
+                _FileSystem.writeFile(fileName, fileData);
+
+                _StdOut.putText(fileName + " was created!");
+                _StdOut.advanceLine();
+                _StdOut.putText(">");
+
+                _StdOut.putText("Valid code. Congrats! PID: " + _PID);
+                _PID++;
+            }
+            else if(_Format == false)
+            {
+              if(_SarcasticMode == true)
+              {
+                _StdOut.putText("Ha. You are the smartest user i've seen.");
+              }
+              else
+              {
+                _StdOut.putText("Please format the disk first");
+              }
+            }
           }
+          //console.log("Resident list: " + _ResidentList);
+          //console.log(_Formatted);
 
           _ExecutedCommands.push("load");
           Shell.clearCounts();
@@ -409,39 +529,35 @@ module TSOS {
           }
           else
           {
-            //Runs the pid associated with the memory location 0-2
-            if(args == _MemoryAllocation[0])
+            var runningPID = args[0];
+            var validPID = false;
+
+            //finding the pid the user has requested to run
+            for(var i = 0; i < _ResidentList.length; i++)
             {
-              //make sure the base and limit are correct
-              _MemoryManager.setBase(0);
-              _MemoryManager.setLimit(255);
-
-              _CPU.PC = 0;
-              _Pcb0.running = true;
+              //checking the pid entered with the pids in the array
+              if(runningPID == _ResidentList[i].pid)
+              {
+                _CurrentPCB = _ResidentList[i];
+                validPID = true;
+              }
             }
-            else if(args == _MemoryAllocation[1])
+
+            if(validPID == true)
             {
-              //make sure the base and limit are correct
-              _MemoryManager.setBase(256);
-              _MemoryManager.setLimit(511);
-
-              _CPU.PC = 256;
-              _Pcb1.running = true;
+              if(_CurrentPCB.location === "Disk")
+              {
+                //swap to mem
+                console.log("Need to swap from the disk");
+                var opCode = _FileSystem.findProgram(_CurrentPCB.pid);
+                opCode = _FileSystem.hexToString(opCode);
+                console.log("OP CODE: " + opCode);
+                _CpuScheduler.rollInOut(opCode);
+              }
+              _CPU.PC = _CurrentPCB.base;
+              _CPU.isExecuting = true;
             }
-            else if(args == _MemoryAllocation[2])
-            {
-              //make sure the base and limit are correct
-              _MemoryManager.setBase(512);
-              _MemoryManager.setLimit(768);
-
-              _CPU.PC = 512;
-              _Pcb2.running = true;
-            }
-            _CPU.isExecuting = true;
-
           }
-
-
           _ExecutedCommands.push("run");
           Shell.clearCounts();
         }
@@ -457,24 +573,26 @@ module TSOS {
         public shellRunAll()
         {
           _RunAll = true;
+          //_MemoryManager.base = 0;
+          _ReadyQueue = [];
 
+          //adding the programs to the ready queue
+          for(var i = 0; i < _ResidentList.length; i++)
+          {
+            _ReadyQueue.push(_ResidentList[i]);
+
+            if(i > 0)
+            {
+              _ReadyQueue[i].state = WAITING;
+            }
+          }
+          //console.log("Ready queue 0: " + _ReadyQueue[0].pid);
+          _CurrentPCB = _ReadyQueue[0];
+          //console.log("Current PCB PID: " + _CurrentPCB.pid);
+          _CurrentPCB.state = RUNNING;
           _CPU.isExecuting = true;
-          //checking to see if there is something in each block
-          if(_MemoryAllocation[0] != "-1")
-          {
-            _Pcb0.running = true;
-          }
-          if(_MemoryAllocation[1] != "-1")
-          {
-            _Pcb1.running = true;
-          }
-          if(_MemoryAllocation[2] != "-1")
-          {
-            _Pcb2.running = true;
-          }
 
-          //console.log("Memory base: " + _MemoryManager.base);
-          //_CpuScheduler.roundRobin();
+          //console.log("Current PCB pid: " + _CurrentPCB.pid);
 
           _ExecutedCommands.push("runall");
           Shell.clearCounts();
@@ -518,39 +636,228 @@ module TSOS {
           }
           else
           {
-            //find which process we want to kill
-            for(var i = 0; i < 3; i++)
+            if(_SarcasticMode == true)
             {
-              if(args = _MemoryAllocation[i])
+              _StdOut.putText("I don't wanna and you can't stop me");
+            }
+            else
+            {
+              var pid = args[0];
+              //removing from ready queue
+              for(var i = 0; i < _ReadyQueue.length; i++)
               {
-                var base = 0;
+                if(pid == _ReadyQueue[i].pid)
+                {
+                  _ReadyQueue.splice(i, 1);
+                }
+              }
+              //removing from runnable pid array
+              for(var i = 0; i < _RunnablePIDs.length; i++)
+              {
+                var pidCheck = _RunnablePIDs[i];
 
-                if(i == 1)
+                if(pid == pidCheck)
                 {
-                  base = 256;
-                  _MemoryAllocation[i] = "-1";
+                  _RunnablePIDs.splice(i, 1);
                 }
-                else if(i == 2)
-                {
-                  base = 512;
-                  _MemoryAllocation[i] = "-1";
-                }
-                else
-                {
-                  _MemoryAllocation[0] = "-1";
-                }
-                _MemoryManager.clearMemorySegment(base);
               }
             }
-            //kill process
-            _CPU.break();
-            //_CPU.isExecuting = false;
-
-            //_MemoryManager.clearMemorySegment();
-            //_Memory.clearMemory();
           }
 
           _ExecutedCommands.push("kill");
+          Shell.clearCounts();
+        }
+
+        public shellGetSchedule()
+        {
+          if(_SarcasticMode == true)
+          {
+            _StdOut.putText("Open your calendar app on your phone");
+          }
+          else
+          {
+            _StdOut.putText("The current selected schedule is: " + _SchedulingAlgorithm);
+          }
+
+          _ExecutedCommands.push("getschedule");
+          Shell.clearCounts();
+        }
+
+        public shellSetSchedule(args)
+        {
+          if(args.length > 0)
+          {
+            if(args[0] == "rr" || args[0] == "fcfs" || args[0] == "priority")
+            {
+              _SchedulingAlgorithm = args[0];
+              _StdOut.putText("Set schedule to: " + _SchedulingAlgorithm);
+            }
+            else
+            {
+              _StdOut.putText("You've entered in the wrong algorithm");
+            }
+          }
+          else
+          {
+            //they used the command wrong
+            if(_SarcasticMode == true)
+            {
+              _StdOut.putText("Hahahaha. You're so smart.");
+            }
+            else
+            {
+              _StdOut.putText("It looks like you used the command wrong.");
+            }
+          }
+
+          _ExecutedCommands.push("setschedule");
+          Shell.clearCounts();
+        }
+
+        public shellFormat()
+        {
+          //dont want user to format while programs are running
+          if(_CPU.isExecuting == false)
+          {
+            _Format = true;
+            _FileSystem.init();
+
+            _FileSystem.displayMessage(1, "Format");
+          }
+          else
+          {
+            if(_SarcasticMode == true)
+            {
+              alert("NO");
+            }
+            else
+            {
+              _StdOut.putText("You cannot format disk will executing programs");
+            }
+          }
+          _ExecutedCommands.push("format");
+          Shell.clearCounts();
+        }
+
+        public shellLs()
+        {
+          //check if there are any files created first
+          if(_ListOfFiles.length > 0)
+          {
+            for(var i = 0; i < _ListOfFiles.length; i++)
+            {
+              _StdOut.putText(_ListOfFiles[i]);
+              _StdOut.advanceLine();
+            }
+          }
+          else
+          {
+            _StdOut.putText("Sorry. You don't seem to have any files");
+          }
+
+          _ExecutedCommands.push("ls");
+          Shell.clearCounts();
+        }
+
+        public shellCreate(args)
+        {
+          if(args.length > 0)
+          {
+            //removing the quotes
+            var name = args[0].replace(/"/g,"");
+            _FileSystem.createFile(name);
+          }
+          else
+          {
+            if(_SarcasticMode == true)
+            {
+              _StdOut.putText("Wow. Just wow. You must be so fricken smart");
+            }
+            else
+            {
+              _StdOut.putText("You must have used the create command incorectly. Try again");
+            }
+          }
+
+          _FileSystem.displayMessage(1, "Creating file " + name);
+          _ExecutedCommands.push("create");
+          Shell.clearCounts();
+        }
+
+        public shellWrite(args)
+        {
+          if(args.length > 1)
+          {
+            var write = "";
+            //combining what they want to write into one string
+            for(var i = 1; i < args.length; i++)
+            {
+              write+=args[i];
+              write+=" ";//adding a space after every word
+            }
+
+            //removing quotes
+            var name = args[0].replace(/"/g,"");
+            write = write.replace(/"/g,"");
+
+            _FileSystem.writeFile(name, write);
+          }
+          else
+          {
+            _StdOut.putText("Use the command right");
+          }
+
+          _FileSystem.displayMessage(1, "Writing to file");
+          _ExecutedCommands.push("write");
+          Shell.clearCounts();
+        }
+
+        public shellRead(args)
+        {
+          if(args.length > 0)
+          {
+            //removing quotes first
+            var name = args[0].replace(/"/g,"");
+            _FileSystem.readFile(name);
+          }
+          else
+          {
+            if(_SarcasticMode == true)
+            {
+              _StdOut.putText("Use it right you piece of s***");
+            }
+            else
+            {
+              _StdOut.putText("It looks like you've used the command wrong. Try again");
+            }
+          }
+
+
+          _ExecutedCommands.push("read");
+          Shell.clearCounts();
+        }
+
+        public shellDelete(args)
+        {
+          if(args.length > 0)
+          {
+            var deleteFileName = args[0].replace(/"/g,"");
+            _FileSystem.deleteFile(deleteFileName);
+          }
+          else
+          {
+            if(_SarcasticMode == true)
+            {
+              _StdOut.putText("You wanna maybe use the command right? Yes? No?");
+            }
+            else
+            {
+              _StdOut.putText("It looks like you've used the command wrong. Try again");
+            }
+          }
+
+          _FileSystem.displayMessage(1, "Delete");
+          _ExecutedCommands.push("delete");
           Shell.clearCounts();
         }
 

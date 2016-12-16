@@ -56,23 +56,30 @@ module TSOS {
 
             //console.log("Memory at location" + _MemoryManager.getMemoryAtLocation(this.PC));
             //console.log("PC: " + this.PC);
-            this.runOpCode(_MemoryManager.getMemoryAtLocation(this.PC));
-
-            if(_RunAll == true)
+            if(this.isExecuting == true)
             {
-              _QuantumCounter++;
-              _CpuScheduler.roundRobin();
+              this.runOpCode(_MemoryManager.getMemoryAtLocation(this.PC));
+              TSOS.Control.updateReadyQueue();
+              this.updateCPUDisplay();
+              //_CpuScheduler.scheduler();
             }
 
+            /*
+            if(_RunAll == true)
+            {
+              _CpuScheduler.scheduler();
+              //_CpuScheduler.roundRobin();
+            }
+            */
             //console.log("Mem at this loc: " + _MemoryManager.getMemoryAtLocation(this.PC));
 
             //console.log("PC: " + this.PC);
             //console.log(_Memory.getMemory());
 
-            this.updateCPUDisplay();
+            //this.updateCPUDisplay();
             //this.updatePCB();
             //this.updateCPU();
-            _Pcb0.updateDisplay();
+            //_Pcb0.updateDisplay();
             //_Memory.clearMemory();
 
             if(_SingleStep == true)
@@ -117,6 +124,7 @@ module TSOS {
       public runOpCode(code)
       {
         this.instruction = code.toUpperCase();
+        //console.log("Instruction: " + this.instruction);
         //console.log("PC: " + this.PC);
         //console.log("Counter: " + counter);
         //don't really need the counter in there. I'll take it out later
@@ -225,6 +233,12 @@ module TSOS {
           //default: alert("default");
         }
         this.PC++;
+        _CurrentPCB.PC = this.PC;
+        _CurrentPCB.Acc = this.Acc;
+        _CurrentPCB.XReg = this.Xreg;
+        _CurrentPCB.YReg = this.Yreg;
+        _CurrentPCB.ZFlag = this.Zflag;
+
 
         //}
         //his.isExecuting = false;
@@ -242,9 +256,9 @@ module TSOS {
       public loadAccFromMemory()
       {
         var nxtTwoBytes = this.getNextTwoBytes();
-        if(_MemoryManager.base > 0)
+        if(_CurrentPCB.base > 0)
         {
-          nxtTwoBytes += _MemoryManager.base;
+          nxtTwoBytes += _CurrentPCB.base;
         }
         var decimal = this.conversionToDecimal(_MemoryManager.getMemoryAtLocation(nxtTwoBytes));
 
@@ -258,6 +272,7 @@ module TSOS {
         var nextTwoBytes = this.getNextTwoBytes();
         var hexNum = this.Acc;
 
+        _MemoryManager.base = _CurrentPCB.base;
         _MemoryManager.updateMemoryAtLocation(nextTwoBytes, hexNum); //updates memory
         this.PC+=2;
 
@@ -267,9 +282,9 @@ module TSOS {
       public addWithCarry()
       {
         var memoryLocation = this.getNextTwoBytes();
-        if(_MemoryManager.base > 0)
+        if(_CurrentPCB.base > 0)
         {
-          memoryLocation += _MemoryManager.base;
+          memoryLocation += _CurrentPCB.base;
         }
         this.Acc += this.conversionToDecimal(_MemoryManager.getMemoryAtLocation(memoryLocation));
         this.PC+=2;
@@ -286,9 +301,9 @@ module TSOS {
       public loadXregisterFromMemory()
       {
         var memoryLocation = this.conversionToDecimal(_MemoryManager.getMemoryAtLocation(this.PC + 1));
-        if(_MemoryManager.base > 0)
+        if(_CurrentPCB.base > 0)
         {
-          memoryLocation += _MemoryManager.base;
+          memoryLocation += _CurrentPCB.base;
         }
         this.Xreg = this.conversionToDecimal(_MemoryManager.getMemoryAtLocation(memoryLocation));
 
@@ -307,9 +322,9 @@ module TSOS {
       {
         var memoryLocation = this.conversionToDecimal(_MemoryManager.getMemoryAtLocation(this.PC + 1));
 
-        if(_MemoryManager.base > 0)
+        if(_CurrentPCB.base > 0)
         {
-          memoryLocation += _MemoryManager.base;
+          memoryLocation += _CurrentPCB.base;
         }
         this.Yreg = this.conversionToDecimal(_MemoryManager.getMemoryAtLocation(memoryLocation));
 
@@ -320,9 +335,9 @@ module TSOS {
       {
         var memoryLocation = this.getNextByte(); //getting the location of the byte to get
 
-        if(_MemoryManager.base > 0)
+        if(_CurrentPCB.base > 0)
         {
-          memoryLocation += _MemoryManager.base;
+          memoryLocation += _CurrentPCB.base;
         }
         var hexNum = this.conversionToDecimal(_MemoryManager.getMemoryAtLocation(memoryLocation));
 
@@ -346,7 +361,7 @@ module TSOS {
           this.PC++;
 
 
-          var combined = (_ProgramSize + _MemoryManager.base);
+          var combined = (_ProgramSize + _CurrentPCB.base);
 
           if(this.PC >= combined)
           {
@@ -363,14 +378,15 @@ module TSOS {
       {
         var memoryLocation = this.conversionToDecimal(_MemoryManager.getMemoryAtLocation(this.PC + 1));
 
-        if(_MemoryManager.base > 0)
+        if(_CurrentPCB.base > 0)
         {
-          memoryLocation += _MemoryManager.base;
+          memoryLocation += _CurrentPCB.base;
         }
         var hexAtLocation = _MemoryManager.getMemoryAtLocation(memoryLocation);
         var decimalNum = this.conversionToDecimal(hexAtLocation);
 
         decimalNum++;
+        _MemoryManager.base = _CurrentPCB.base;
         _MemoryManager.updateMemoryAtLocation(memoryLocation, decimalNum);
         this.PC+=2;
       }
@@ -406,7 +422,8 @@ module TSOS {
           //console.log("Base: " + _MemoryManager.base);
           if(this.Xreg == 1)
           {
-            _StdOut.putText(this.conversionToDecimal(this.Yreg).toString());
+            //console.log("Y reg: " + this.conversionToDecimal(this.Yreg).toString());
+            _StdOut.putText(this.Yreg.toString());
           }
           else if(this.Xreg == 2)
           {
@@ -414,9 +431,9 @@ module TSOS {
             var char = "";
             var location = this.Yreg;
 
-            if(_MemoryManager.base > 0)
+            if(_CurrentPCB.base > 0)
             {
-              location += _MemoryManager.base;
+              location += _CurrentPCB.base;
             }
 
             var character = _MemoryManager.getMemoryAtLocation(location);
@@ -424,6 +441,7 @@ module TSOS {
 
             while(character != "00")
             {
+              //console.log("Character: " + character);
               var decimalNum = this.conversionToDecimal(character);
               //console.log("character: " + character);
 
@@ -435,9 +453,9 @@ module TSOS {
               this.Yreg++;
               var location2 = this.Yreg;
 
-              if(_MemoryManager.base > 0)
+              if(_CurrentPCB.base > 0)
               {
-                location2 += _MemoryManager.base;
+                location2 += _CurrentPCB.base;
               }
               character = _MemoryManager.getMemoryAtLocation(location2);
             }
@@ -448,68 +466,53 @@ module TSOS {
 
       public break()
       {
-
-        //figure out which program is ending
-        if(_MemoryManager.base == 0 && _Pcb0.running == true)
+        if(_ReadyQueue.length > 1)
         {
-          //alert("First one finished");
-          _Pcb0.running = false;
-          _MemoryManager.clearMemorySegment(0);
-          this.displayStats(0);
-
-          _MemoryAllocation[0] = "-1";
-          //this.check();
-        }
-        else if(_MemoryManager.base == 256 && _Pcb1.running == true)
-        {
-          //alert("Second one finished");
-          _Pcb1.running = false;
-          _MemoryManager.clearMemorySegment(255);
-          this.displayStats(1);
-
-          _MemoryAllocation[1] = "-1";
-
-          //this.check();
-        }
-        else if(_MemoryManager.base = 512 && _Pcb2.running == true)
-        {
-          //alert("Third one finished");
-          _Pcb2.running = false;
-          _MemoryManager.clearMemorySegment(512);
-          this.displayStats(2);
-
-          //this.check();
-          _MemoryAllocation[2] = "-1";
-        }
-
-        //if one of them is running
-        if(_Pcb0.running == true || _Pcb1.running == true || _Pcb2.running == true)
-        {
-          if(_RunAll == true) //if the run all command was used to run them
+          for(var i = 0; i < _ReadyQueue.length; i++)
           {
-            //_QuantumCounter = _Quantum;
-            //this.cycle();
-            _CPU.isExecuting = true; //continue on
+            //Maybe use this to prevent zombie processes
+            if(_ReadyQueue[i].location == "Disk")
+            {
+              //alert("There is a program still on disk");
+              /*
+              for(var x = 0; x < _ReadyQueue.length; x++)
+              {
+                if(_ReadyQueue[x].state == TERMINATED)
+                {
+                  _ReadyQueue[x] = _ReadyQueue[i];
+                }
+              }
+              */
+            }
           }
+          _ReadyQueue[0].state = "Terminated";
+          _CpuScheduler.roundRobin();
         }
-        //if they are all finished
-        else if(_Pcb0.running == false && _Pcb1.running == false && _Pcb2.running == false)
+        else
         {
-          //alert("Done");
-          //_Memory.clearMemory();
-          _RunAll = false;
+          //if we used fcfs algorithm
+          if(_FCFS == true)
+          {
+            _SchedulingAlgorithm = "fcfs";
+            _FCFS = false;
+          }
+          //if we used priority algorithm
+          if(_PriorityAlg == true)
+          {
+            _SchedulingAlgorithm = "priority";
+            _PriorityAlg = false;
+          }
           this.isExecuting = false;
-          _Console.advanceLine();
-          _Console.putText(">");
+          _StdOut.advanceLine();
+          _StdOut.putText(">");
         }
-
-
       }
 
+      /*
       public displayStats(loc)
       {
-        console.log("Turn around: " + _TurnAroundTime[loc]);
-        console.log("Wait Time: " + _WaitTime[loc]);
+        //console.log("Turn around: " + _TurnAroundTime[loc]);
+        //console.log("Wait Time: " + _WaitTime[loc]);
         //display the running and wait time..if there is one
         if(_TurnAroundTime[loc] > 0)
         {
@@ -541,33 +544,8 @@ module TSOS {
           }
         }
       }
+      */
 
-      //check if other programs are finished...so processes eventually get finished
-      public check()
-      {
-
-        if(_MemoryAllocation[0] != "-1")
-        {
-          //alert("0 is not finished");
-          _MemoryManager.base = 0;
-          _MemoryManager.limit = 255;
-          this.PC = 0;
-        }
-        else if(_MemoryAllocation[1] != "-1")
-        {
-          //alert("1 is not finished");
-          _MemoryManager.base = 256;
-          _MemoryManager.limit = 511;
-          this.PC = 255;
-        }
-        else if(_MemoryAllocation[2] != "-1")
-        {
-          //alert("2 is not finished");
-          _MemoryManager.base = 512;
-          _MemoryManager.limit = 768;
-          this.PC = 511;
-        }
-      }
       public updateCPUDisplay()
       {
         document.getElementById("cpuPC").innerHTML = this.PC.toString();

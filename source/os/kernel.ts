@@ -92,10 +92,17 @@ module TSOS {
                 var interrupt = _KernelInterruptQueue.dequeue();
                 this.krnInterruptHandler(interrupt.irq, interrupt.params);
             } else if (_CPU.isExecuting) { // If there are no interrupts then run one CPU cycle if there is anything being processed. {
-                _CPU.cycle();
+                this.handleClockPulse();
             } else {                      // If there are no interrupts and there is nothing being executed then just be idle. {
                 this.krnTrace("Idle");
             }
+        }
+
+        //calls the scheduler
+        public handleClockPulse()
+        {
+          _CpuScheduler.scheduler();
+          _CPU.cycle();
         }
 
 
@@ -134,6 +141,18 @@ module TSOS {
                 case CONTEXT_SWITCH_IRQ:
                     this.krnTrace("Context Switch");
                     break;
+                case CREATE_FILE_IRQ:
+                  this.krnTrace("Creating File");
+                  break;
+                case WRITE_FILE_IRQ:
+                  this.krnTrace("Writing File");
+                  break;
+                case READ_FILE_IRQ:
+                  this.krnTrace("Reading File");
+                  break;
+                case DELETE_FILE_IRQ:
+                  this.krnTrace("Deleting File");
+                  break;
                 default:
                     this.krnTrapError("Invalid Interrupt Request. irq=" + irq + " params=[" + params + "]");
             }
@@ -183,12 +202,13 @@ module TSOS {
             Control.hostLog("OS ERROR - TRAP: " + msg);
             // TODO: Display error on console, perhaps in some sort of colored screen. (Maybe blue?)
             var page = (<HTMLElement>document.getElementById("divMain"))
-            page.setAttribute("style", "background-color: blue"); //bsod
+            //page.setAttribute("style", "background-color: blue"); //bsod
             _Console.putText("Oh no its the blue screen of death!");
             // TODO: Get a blue screen of death image to flash
             //img.src = "bsod.jpg";
             this.krnShutdown();
             clearInterval(_hardwareClockID);
         }
+        
     }
 }

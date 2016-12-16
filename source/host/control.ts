@@ -107,17 +107,11 @@ module TSOS {
             _Memory = new Memory(768);
             //console.log(_Memory.getMemory());
             _MemoryManager = new MemoryManager();
-            _CpuScheduler = new CpuScheduler();
-            _MemoryAllocation[0] = "-1";
-            _MemoryAllocation[1] = "-1";
-            _MemoryAllocation[2] = "-1";
+            _CpuScheduler = new TSOS.CpuScheduler();
 
-            _Pcb0 = new PCB();
-            _Pcb1 = new PCB();
-            _Pcb2 = new PCB();
-            _Pcb0.PC = 0;
-            _Pcb1.PC = 256;
-            _Pcb2.PC = 512;
+            //initializing hard drive stuff
+            this.createHardDrive();
+            _FileSystem = new fileSystemDeviceDriver();
 
             _TurnAroundTime[0] = 0;
             _TurnAroundTime[1] = 0;
@@ -129,6 +123,8 @@ module TSOS {
 
             //draw memory table
             this.drawMemory();
+
+            (<HTMLInputElement>document.getElementById("taProgramInput")).value = "A9 00 8D 00 00 A9 00 8D 4B 00 A9 00 8D 4B 00 A2 03 EC 4B 00 D0 07 A2 01 EC 00 00 D0 05 A2 00 EC 00 00 D0 26 A0 4C A2 02 FF AC 4B 00 A2 01 FF A9 01 6D 4B 00 8D 4B 00 A2 02 EC 4B 00 D0 05 A0 55 A2 02 FF A2 01 EC 00 00 D0 C5 00 00 63 6F 75 6E 74 69 6E 67 00 68 65 6C 6C 6F 20 77 6F 72 6C 64 00";
         }
 
         public static hostBtnHaltOS_click(btn): void {
@@ -238,6 +234,47 @@ module TSOS {
               _MemoryTable.rows[row].cells[cell].innerHTML = "00";
             }
           }
+        }
+
+        public static updateReadyQueue()
+        {
+          var output = "<thead style='font-weight:bold'>";
+            output += "<th>PID</th>";
+            output += "<th>Base</th>";
+            output += "<th>Limit</th>";
+            output += "<th>PC</th>";
+            output += "<th>ACC</th>";
+            output += "<th>XReg</th>";
+            output += "<th>YReg</th>";
+            output += "<th>ZFlag</th>";
+            output += "<th>State</th>";
+            output += "<th>Priority</th>";
+            output += "<th>Location</th>";
+            output += "</thead>";
+
+            for (var i = 0; i < _ReadyQueue.length; i++)
+            {
+              output += "<tr>";
+              output += "<td> " + _ReadyQueue[i].pid   + "</td>";
+              output += "<td> " + _ReadyQueue[i].base  + "</td>";
+              output += "<td> " + _ReadyQueue[i].limit + "</td>";
+              output += "<td> " + _ReadyQueue[i].PC    + "</td>";
+              output += "<td> " + _ReadyQueue[i].Acc   + "</td>";
+              output += "<td> " + _ReadyQueue[i].XReg  + "</td>";
+              output += "<td> " + _ReadyQueue[i].YReg  + "</td>";
+              output += "<td> " + _ReadyQueue[i].ZFlag + "</td>";
+              output += "<td> " + _ReadyQueue[i].state + "</td>";
+              output += "<td> " + _ReadyQueue[i].priority + "</td>";
+              output += "<td> " + _ReadyQueue[i].location + "</td>";
+              output += "</tr>";
+            }
+            document.getElementById("ProcessTableDisplay").innerHTML = output;
+        }
+
+        public static createHardDrive()
+        {
+          sessionStorage.clear();
+          _HardDriveTable = <HTMLTableElement>document.getElementById("hdTable");
         }
     }
 }

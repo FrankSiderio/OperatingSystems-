@@ -32,12 +32,13 @@
    <script type="text/javascript" src="distrib/os/memoryManager.js"></script>
    <script type="text/javascript" src="distrib/os/pcbPrototype.js"></script>
    <script type="text/javascript" src="distrib/os/cpuScheduler.js"></script>
+   <script type="text/javascript" src="distrib/os/fileSystemDeviceDriver.js"></script>
 
    <!-- Other Routines -->
    <script type="text/javascript" src="distrib/utils.js"></script>
    <!-- Uncomment this line below to enable GLaDOS testing -->
   <!--<script type="text/javascript" src="http://www.labouseur.com/courses/os/projects/glados.js"></script> -->
-  <!--<script type="text/javascript" src="http://alanclasses.github.io/TSOS/test/glados-ip2.js"></script> -->
+  <script type="text/javascript" src="http://alanclasses.github.io/TSOS/test/glados-ip4.js"></script>
 </head>
 
 <body onload="onDocumentLoad()">
@@ -169,7 +170,7 @@
  -->
   <!-- TODO: Make this look prettier -->
 
-
+<div>
    <div id="divConsole" style="margin:4px; width:500px; height:500px; float:left;">
       <canvas id="display"
               width="500px"
@@ -200,6 +201,29 @@
        <label class = "table" id = "cpuMemory"> Memory </label>
        <table class = "table" id = "memoryTable" style="font-family: Arial; font-size: larger"></table>
      </div>
+
+     <div id="hardDrive" style="float: left; margin-left: 0px">
+       <label id="hdElements"> Hard Drive </label>
+       <div style="height: 100px; width:500px; overflow-y: scroll">
+         <table id="hdTable" class="table table-bordered" style="font-family: Arial; font-size: larger; background: white">
+             <thead>
+             <tr>
+                 <th> T S B  </th>
+                 <th> Meta   </th>
+                 <th> Data  </th>
+             </tr>
+             </thead>
+             <tbody>
+             <tr>
+                 <td id="hdElementTSB"></td>
+                 <td id="hdElementMeta"></td>
+                 <td id="hdElementData"></td>
+             </tr>
+             </tbody>
+         </table>
+       </div>
+     </div>
+
    </div>
 
    <div id="divLog" style="margin-left:520px;">
@@ -233,11 +257,11 @@
           </tr>
           </tbody>
         </table>
-      </div
+      </div>
       <br><br>
-      <div id="pcb">
+      <div id="ProcessTable">
         <div>
-          <table id="pcb" style="font-size: larger; background: white; width: 400px">
+          <table id="ProcessTableDisplay" style="font-size: larger; background: white; width: 700px">
             <thead>
               <td>PID</td>
               <td>IR</td>
@@ -248,65 +272,33 @@
               <td>Z<td>
               <td>State</td>
             </thead>
-            <tbody>
-              <td id="pcbPID0">0</td>
-              <td id="ir0">0</td>
-              <td id="pcbPC0">0</td>
-              <td id="pcbAcc0">0</td>
-              <td id="pcbX0">0<td>
-              <td id="pcbY0">0</td>
-              <td id="pcbZ0">0<td>
-              <td id="state0">0</td>
+            <tbody id = "ProcessTableDisplay">
+              <td id="pidDisplay">0</td>
+              <td id="pcDisplay">0</td>
+              <td id="accDisplay">0</td>
+              <td id="xregDisplay">0</td>
+              <td id="yregDisplay">0<td>
+              <td id="zflagDisplay">0</td>
+              <td id="stateDisplay">0<td>
+              <td id="locationDisplay">0</td>
             </tbody>
-            <tbody>
-              <td id="pcbPID1">0</td>
-              <td id="ir1">0</td>
-              <td id="pcbPC1">0</td>
-              <td id="pcbAcc1">0</td>
-              <td id="pcbX1">0<td>
-              <td id="pcbY1">0</td>
-              <td id="pcbZ1">0<td>
-              <td id="state1">0</td>
-            </tbody>
-            <tbody>
-              <td id="pcbPID2">0</td>
-              <td id="ir2">0</td>
-              <td id="pcbPC2">0</td>
-              <td id="pcbAcc2">0</td>
-              <td id="pcbX2">0<td>
-              <td id="pcbY2">0</td>
-              <td id="pcbZ2">0<td>
-              <td id="state2">0</td>
-            </tbody>
-
-
           </table>
         </div>
       </div>
   </div>
-
-
-    <div id="divUserProgramInput" style="margin-left:520px;">
-       <label>
-          User Program Input
-          <br>
-          <textarea name="taProgramInput"
-                    id  ="taProgramInput"
-                    rows="8"
-                    cols="48"
-          ></textarea>
-       </label>
-    </div>
-
-
-
-
-
-
-
-
+  <br><br>
+  <div id="divUserProgramInput" style="margin-left:520px;">
+     <label>
+        User Program Input
+        <br>
+        <textarea name="taProgramInput"
+                  id  ="taProgramInput"
+                  rows="8"
+                  cols="48"
+        ></textarea>
+     </label>
+  </div>
 </div>
-
 <p class="footerText" style="clear:both;">
    <br>
    Copyright &copy; 2008 - 2015 No Rights Reserved.
