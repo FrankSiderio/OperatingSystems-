@@ -78,6 +78,12 @@ module TSOS
           _CurrentPCB = _ReadyQueue[0];
 
           var location = _CurrentPCB.location;
+          if(location == "Disk")
+          {
+            //var opCode = _FileSystem.findProgram(_CurrentPCB.pid);
+            console.log("Op code rolling onto memory: " + opCode);
+            //this.rollIntoMemory(opCode);
+          }
 
           _RunningPID = parseInt(_ReadyQueue[0].pid);
           //update the state and pc
@@ -107,8 +113,34 @@ module TSOS
       _SchedulingAlgorithm = "rr";
     }
 
-    public rollIntoMemory(opCode)
+    public rollInOut(opCode)
     {
+      _CurrentPCB.location = "Memory";
+      var swappedProgram = "";
+
+      for(var i = 0; i < 255; i++)
+      {
+        swappedProgram += _Memory.getMemoryLocation(i);
+        _MemoryManager.base = 0;
+        _MemoryManager.updateMemoryAtLocation(i, "00");
+        swappedProgram += " ";
+      }
+
+      var pidProgramAtBase0;
+
+      for(var i = 0; i < _ResidentList.length; i++)
+      {
+        if(_ResidentList[i].base == 0)
+        {
+          _ResidentList[i].location = "Disk";
+          _ResidentList[i].base = -1;
+          _ResidentList[i].limit = -1;
+          pidProgramAtBase0 = _ResidentList[i].pid;
+        }
+      }
+
+      var fileName = DEFAULT_FILE_NAME + pidProgramAtBase0;
+      _FileSystem.writeFile(fileName, swappedProgram);
       //opCode = opCode.replace(/(.{2})/g, " ");
       var newOpCode = "";
 
@@ -134,12 +166,13 @@ module TSOS
       }
 
       //var oldProgram = mem.substr(512, _Memory.getMemory.length);
-      console.log("Program length: " + _ProgramLength[2]);
-      console.log("Old program: " + memory.substr(0, (_ProgramLength[2] * 2)));
-      _SwappedProgram = memory.substr(0, (_ProgramLength[2] * 2));
+      //console.log("Program length: " + _ProgramLength[2]);
+      //console.log("Old program: " + memory.substr(0, (_ProgramLength[2] * 2)));
+      //_SwappedProgram = memory.substr(0, (_ProgramLength[2] * 2));
 
+      _CurrentPCB.base = 0;
       _MemoryManager.setBase(0);
-      _MemoryManager.loadProgram(program);
+      _MemoryManager.loadProgram(0, program);
     }
 
     public rollOntoDisk(program)

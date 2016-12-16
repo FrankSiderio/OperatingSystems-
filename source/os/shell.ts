@@ -545,6 +545,8 @@ module TSOS {
               {
                 //swap to mem
                 console.log("Need to swap from the disk");
+                var opCode = _FileSystem.findProgram(_CurrentPCB.pid);
+                _CpuScheduler.rollInOut(opCode);
               }
               _CPU.PC = _CurrentPCB.base;
               _CPU.isExecuting = true;

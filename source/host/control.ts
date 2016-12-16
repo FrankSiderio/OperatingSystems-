@@ -113,17 +113,6 @@ module TSOS {
             this.createHardDrive();
             _FileSystem = new fileSystemDeviceDriver();
 
-            _MemoryAllocation[0] = "-1";
-            _MemoryAllocation[1] = "-1";
-            _MemoryAllocation[2] = "-1";
-
-            _Pcb0 = new PCB();
-            _Pcb1 = new PCB();
-            _Pcb2 = new PCB();
-            _Pcb0.PC = 0;
-            _Pcb1.PC = 256;
-            _Pcb2.PC = 512;
-
             _TurnAroundTime[0] = 0;
             _TurnAroundTime[1] = 0;
             _TurnAroundTime[2] = 0;
@@ -253,9 +242,9 @@ module TSOS {
             output += "<th>Limit</th>";
             output += "<th>PC</th>";
             output += "<th>ACC</th>";
-            output += "<th>X- Reg</th>";
-            output += "<th>Y - Reg</th>";
-            output += "<th>Z - Flag</th>";
+            output += "<th>XReg</th>";
+            output += "<th>YReg</th>";
+            output += "<th>ZFlag</th>";
             output += "<th>State</th>";
             output += "<th>Priority</th>";
             output += "<th>Location</th>";
@@ -269,10 +258,10 @@ module TSOS {
                 output += "<td> "+_ReadyQueue[i].limit+"</td>";
                 output += "<td> "+ _ReadyQueue[i].PC+"</td>";
                 output += "<td> "+_ReadyQueue[i].Acc+"</td>";
-                output += "<td> "+_ReadyQueue[i].Xreg+"</td>";
-                output += "<td> "+_ReadyQueue[i].Yreg+"</td>";
-                output += "<td> "+_ReadyQueue[i].Zflag+"</td>";
-                output += "<td> "+_ReadyQueue[i].processState+"</td>";
+                output += "<td> "+_ReadyQueue[i].XReg+"</td>";
+                output += "<td> "+_ReadyQueue[i].YReg+"</td>";
+                output += "<td> "+_ReadyQueue[i].ZFlag+"</td>";
+                output += "<td> "+_ReadyQueue[i].state+"</td>";
                 output += "<td> "+_ReadyQueue[i].priority+"</td>";
                 output += "<td> "+_ReadyQueue[i].location+"</td>";
                 output += "</tr>";

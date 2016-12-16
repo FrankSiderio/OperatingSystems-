@@ -133,7 +133,7 @@ module TSOS
 
         console.log("File: " + file);
         console.log("Writing: " + write.toString());
-        _StdOut.putText("Writing to file...");
+        //_StdOut.putText("Writing to file...");
         //find which file to write to using a linear search
         for(var t = 0; t < this.tracks; t++)
         {
@@ -211,7 +211,7 @@ module TSOS
             }
           }
         }
-        this.displayMessage(1, "Writing to file");
+        //this.displayMessage(1, "Writing to file");
       }
 
     }

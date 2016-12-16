@@ -436,6 +436,8 @@ var TSOS;
                     if (_CurrentPCB.location === "Disk") {
                         //swap to mem
                         console.log("Need to swap from the disk");
+                        var opCode = _FileSystem.findProgram(_CurrentPCB.pid);
+                        _CpuScheduler.rollIntoMemory(opCode);
                     }
                     _CPU.PC = _CurrentPCB.base;
                     _CPU.isExecuting = true;

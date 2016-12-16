@@ -94,7 +94,7 @@ var TSOS;
                 }
                 console.log("File: " + file);
                 console.log("Writing: " + write.toString());
-                _StdOut.putText("Writing to file...");
+                //_StdOut.putText("Writing to file...");
                 //find which file to write to using a linear search
                 for (var t = 0; t < this.tracks; t++) {
                     for (var s = 0; s < this.sectors; s++) {
@@ -149,7 +149,6 @@ var TSOS;
                         }
                     }
                 }
-                this.displayMessage(1, "Writing to file");
             }
         };
         fileSystemDeviceDriver.prototype.readFile = function (fileName) {
